@@ -35,7 +35,7 @@ Once I'm satisfied with the functionality of this initial prototype, I'm going t
 * 128x32 monochrome OLED display replacing the large backlight character LCD
 * Powered by 2xAA batteries
 
-I'm confident that by carefully managing the power states on both the Teensy and the ESP8266 that I can keep the average power draw under 100mA, which would give 20+ hours of battery life on one pair of rechargeable AAs.
+I'm confident that by carefully managing the power states on both the Teensy and the ESP8266 that I can keep the average power draw under 100mA, which would give 20+ hours of battery life on one pair of rechargeable AAs. In addition, this version should end up being about the size of an original iPod, if not smaller (really, the batteries are going to dominate the size at that point).
 
 Assuming everything goes well and I feel the urge, I could build my own board based on the Freescale microcontroller that Teensy LC uses... but if I can already get the battery life I'm looking for, what's the point? :)
 
