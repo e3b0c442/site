@@ -22,5 +22,6 @@ deploy:
   local-dir: dist
   repo: e3b0c442/e3b0c442.github.io
   target-branch: master
+  fqdn: e3b0c442.io
   on:
     branch: master
