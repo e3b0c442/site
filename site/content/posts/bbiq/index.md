@@ -29,6 +29,7 @@ For this proto-prototype, I'm building with an old [Arduino Uno](https://store.a
 Unfortunately, this means the prototype will be huge and power-hungry, not ideal traits. While I had originally planned on using a Raspberry Pi Zero W in the "final" version, after doing more research I discovered the [ESP8266](https://www.esp8266.com) WiFi microcontroller, and began to hatch a plan.
 
 Once I'm satisfied with the functionality of this initial prototype, I'm going to build a "final" prototype:
+
 * Based on a [Teensy LC](https://www.pjrc.com/teensy/teensyLC.html) dev board (itself based on an ARM Cortex M0+ microcontroller)
 * WiFi provided by an ESP8266 "backpack"
 * 128x32 monochrome OLED display replacing the large backlight character LCD
