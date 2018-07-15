@@ -1,7 +1,5 @@
 +++
 Description = "Why e3b0c442?"
-Tags = ["Development", "golang"]
-Categories = ["Development", "GoLang"]
 title = "Why e3b0c442?"
 date = "2018-07-02"
 markup = "markdown"
