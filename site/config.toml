@@ -3,6 +3,7 @@ languageCode = "en-us"
 languageLang = "en"
 title = "e3b0c442"
 theme = "hyde"
+disqusShortname = "e3b0c442"
 
 # RSS, categories and tags disabled for an easy start
 # See configuration options for more details: 
@@ -11,4 +12,4 @@ disableKinds = ["RSS", "taxonomy", "taxonomyTerm"]
 
 [params]
   description = "Rants and ramblings of a bit mangler and electron herder."
-  copyright = "©2018 Nick. 85E3 8F69 046B 44C1 EC9F  B07B 76D7 8F05 00D0 26C4"
+  copyright = "©2018 Nick. 85E3 8F69 046B 44C1 EC9F B07B 76D7 8F05 00D0 26C4"
