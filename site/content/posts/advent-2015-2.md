@@ -1,6 +1,6 @@
 +++
 title = "Advent of Code 2015, Day 2: I Was Told There Would Be No Math"
-date = 2018-12-21T09:42:00-06:00
+date = 2018-12-21T14:41:00-06:00
 tags = ["Advent of Code", "Advent of Code 2015"]
 markup = "markdown"
 +++
@@ -116,4 +116,4 @@ The followup problem appears:
 
 The only change in operation for the second problem is an update of the
 arithmetic. Sorting is still required as we still need to find the shortest
-dimensions.
+dimensions. The complexity remains the same.
