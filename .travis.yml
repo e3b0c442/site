@@ -1,5 +1,5 @@
 language: node_js
-node_js: lts/8
+node_js: 8
 env:
   - HUGO_VER=0.52
 cache: yarn
