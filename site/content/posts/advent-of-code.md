@@ -17,6 +17,9 @@ they are similar.
 
 I will update this post with links to new posts in this series as I make them, 
 so feel free to bookmark this post as a shortcut. I hope you find these
-posts enlightening.
+posts enlightening, and if you have additional feedback about how to optimize
+or better solve these puzzles, please leave comments.
+
+The code for my solutions can be found in [my Advent of Code repository](https://github.com/e3b0c442/advent)
 
  [Advent of Code 2015, Day 1: Not Quite Lisp]({{< relref "advent-2015-1.md" >}})
