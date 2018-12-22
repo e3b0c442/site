@@ -198,4 +198,4 @@ while(fread(&c, 1, 1, input)) {
 }
 {{< /highlight >}}
 
-Next: _coming soon_
+Next: [Advent of Code 2015, Day 4: The Ideal Stocking Stuffer]({{< relref "advent-2015-4.md" >}})
