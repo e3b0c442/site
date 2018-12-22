@@ -21,6 +21,7 @@ elves need wrapping paper and ribbon.
 
 ## Analysis
 
+<!--more-->
 There are several steps required in order to achieve the requirements of this
 program:
 

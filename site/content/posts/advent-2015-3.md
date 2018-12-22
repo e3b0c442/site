@@ -22,6 +22,7 @@ The elves have everything wrapped up, and it's time for Santa to do some more de
 
 ## Analysis
 
+<!--more-->
 This problem elicits echos of Day 1, except it involves more dimensions.
 
 We are given the setup of an infinite two-dimensional grid of houses. Unfortunately for us, allocating an infinite amount of memory is impossible. Further muddying the water is the fact that arrays cannot have negative indices.
