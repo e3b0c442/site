@@ -11,7 +11,7 @@ I had lost my old barbecue thermometer in our move last year. My mother- and fat
 
 * It could only handle two probe jacks.
 * Bluetooth range, while nominally 100 meters, depends on the transmit power and it was clearly obvious that in order to save power that transmit power had been reduced on this device; it would not cover the house.
-
+<!--more-->
 After considering the problem, I decided that WiFi would be a better connection mechanism to use, because:
 
 * My primary router has line-of-sight to the grill

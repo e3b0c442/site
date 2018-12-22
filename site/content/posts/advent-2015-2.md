@@ -117,3 +117,5 @@ The followup problem appears:
 The only change in operation for the second problem is an update of the
 arithmetic. Sorting is still required as we still need to find the shortest
 dimensions. The complexity remains the same.
+
+Next: [Advent of Code 2015, Day 3: Perfectly Spherical Houses in a Vacuum]({{< relref "advent-2015-3.md" >}})

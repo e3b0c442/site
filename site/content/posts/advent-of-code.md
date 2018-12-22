@@ -14,6 +14,7 @@ problems in computer science, analyzing the complexity of the problem and
 possible solutions, and discussing implementation details. In each post, I will
 cover both of the days problems as seperate, even though in many cases
 they are similar.
+<!--more-->
 
 I will update this post with links to new posts in this series as I make them, 
 so feel free to bookmark this post as a shortcut. I hope you find these
@@ -22,4 +23,6 @@ or better solve these puzzles, please leave comments.
 
 The code for my solutions can be found in [my Advent of Code repository](https://github.com/e3b0c442/advent)
 
- [Advent of Code 2015, Day 1: Not Quite Lisp]({{< relref "advent-2015-1.md" >}})
+* [Advent of Code 2015, Day 1: Not Quite Lisp]({{< relref "advent-2015-1.md" >}})
+* [Advent of Code 2015, Day 2: I Was Told There Would Be No Math]({{< relref "advent-2015-2.md" >}})
+* [Advent of Code 2015, Day 3: Perfectly Spherical Houses in a Vacuum]({{< relref "advent-2015-3.md" >}})

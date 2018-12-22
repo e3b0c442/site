@@ -25,6 +25,7 @@ Advent of Code debuted on December 1, 2015, with this puzzle:
 
 ## Analysis
 
+<!--more-->
 As can be expected for a "warm-up" puzzle this one is fairly straightforward.
 Each byte in the input must result in a calculation being performed, making the
 complexity *O(n)*.
@@ -107,3 +108,5 @@ while(fread(&c, 1, 1, input) > 0) {
 Optimization may again be achieved by reading the whole file, although the 
 picture here is somewhat murkier as this problem does not necessarily require
 us to loop through the whole array. Regardless, the complexity remains at _O(n)_.
+
+Next: [Advent of Code 2015, Day 2: I Was Told There Would Be No Math]({{< relref "advent-2015-2.md" >}})
