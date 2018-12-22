@@ -21,8 +21,10 @@ so feel free to bookmark this post as a shortcut. I hope you find these
 posts enlightening, and if you have additional feedback about how to optimize
 or better solve these puzzles, please leave comments.
 
-The code for my solutions can be found in [my Advent of Code repository](https://github.com/e3b0c442/advent)
+The code for my solutions can be found in [my Advent of Code repository](https://github.com/e3b0c442/advent).
 
 * [Advent of Code 2015, Day 1: Not Quite Lisp]({{< relref "advent-2015-1.md" >}})
 * [Advent of Code 2015, Day 2: I Was Told There Would Be No Math]({{< relref "advent-2015-2.md" >}})
 * [Advent of Code 2015, Day 3: Perfectly Spherical Houses in a Vacuum]({{< relref "advent-2015-3.md" >}})
+* [Advent of Code 2015, Day 4: The Ideal Stocking Stuffer]({{< relref "advent-2015-4.md" >}})
+* [Advent of Code 2015, Day 5: Doesn't He Have Intern-Elves For This?]({{< relref "advent-2015-5.md" >}})

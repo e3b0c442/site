@@ -100,4 +100,4 @@ Apparently the AdventCoin mining difficulty has just been bumped up:
 There is no change required in our algorithm, except for checking that the third
 byte of the hash is 0 instead of < 0x10.
 
-Next: _coming soon_
+Next: [Advent of Code 2015, Day 5: Doesn't He Have Intern-Elves For This?]({{< relref "advent-2015-5.md" >}})
