@@ -1,7 +1,7 @@
 +++
 title = "Advent of Code 2015, Day 1: Not Quite Lisp"
 date = 2018-12-21T09:42:00-06:00
-tags = ["Advent of Code", "Advent of Code 2015", "C", "Go"]
+tags = ["Advent of Code", "Advent of Code 2015"]
 markup = "markdown"
 +++
 
