@@ -28,3 +28,4 @@ The code for my solutions can be found in [my Advent of Code repository](https:/
 * [Advent of Code 2015, Day 3: Perfectly Spherical Houses in a Vacuum]({{< relref "advent-2015-3.md" >}})
 * [Advent of Code 2015, Day 4: The Ideal Stocking Stuffer]({{< relref "advent-2015-4.md" >}})
 * [Advent of Code 2015, Day 5: Doesn't He Have Intern-Elves For This?]({{< relref "advent-2015-5.md" >}})
+* [Advent of Code 2015, Day 6: Probably a Fire Hazard]({{< relref "advent-2015-6.md" >}})
