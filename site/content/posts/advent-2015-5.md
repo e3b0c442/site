@@ -104,7 +104,7 @@ doing one operation per input line, for a complexity of _O(n)_.
 
 ### C
 {{< highlight c >}}
-#include <openssl/md5.h>
+#include <pcre.h>
 FILE *input = fopen(input_file, "r");
 
 const char *pcre_err;
@@ -185,4 +185,4 @@ and end- (`$`) of pattern markers, for a full expression of
 `^(?=.*(..).*\1)(?=.*(.).\2).*$`. We can replace the previous expression
 with this one using the same supporting code to get the result for part 2.
 
-Next: _coming soon_
+Next: [Advent of Code 2015, Day 6: Probably a Fire Hazard]({{< relref "advent-2015-6.md" >}})
