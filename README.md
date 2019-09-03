@@ -1,116 +1,42 @@
-# Victor Hugo
+# [Academic Kickstart](https://sourcethemes.com/academic/)
 
-**A Hugo boilerplate for creating truly epic websites**
+**Academic** makes it easy to create a beautiful website for free using Markdown, Jupyter, or RStudio. Customize anything on your site with widgets, themes, and language packs. [Check out the latest demo](https://academic-demo.netlify.com/) of what you'll get in less than 10 minutes, or [view the showcase](https://sourcethemes.com/academic/#expo).
 
-This is a boilerplate for using [Hugo](https://gohugo.io/) as a static site generator and [Webpack](https://webpack.js.org/) as your asset pipeline.
+**Academic Kickstart** provides a minimal template to kickstart your new website.
 
-Victor Hugo setup to use [PostCSS](http://postcss.org/) and [Babel](https://babeljs.io/) for CSS and JavaScript compiling/transpiling.
+- [**Get Started**](#install)
+- [View the documentation](https://sourcethemes.com/academic/docs/)
+- [Ask a question](http://discuss.gohugo.io/)
+- [Request a feature or report a bug](https://github.com/gcushen/hugo-academic/issues)
+- Updating? View the [Update Guide](https://sourcethemes.com/academic/docs/update/) and [Release Notes](https://sourcethemes.com/academic/updates/)
+- Support development of Academic:
+  - [Donate a coffee](https://paypal.me/cushen)
+  - [Become a backer on Patreon](https://www.patreon.com/cushen)
+  - [Decorate your laptop or journal with an Academic sticker](https://www.redbubble.com/people/neutreno/works/34387919-academic)
+  - [Wear the T-shirt](https://academic.threadless.com/)
 
-This project is released under the [MIT license](LICENSE). Please make sure you understand its implications and guarantees.
+[![Screenshot](https://raw.githubusercontent.com/gcushen/hugo-academic/master/academic.png)](https://github.com/gcushen/hugo-academic/)
 
-## Usage
+## Install
 
-### :exclamation: Prerequisites
+You can choose from one of the following four methods to install:
 
-You need to have the latest/LTS [node](https://nodejs.org/en/download/) and [npm](https://www.npmjs.com/get-npm) versions installed in order to use Victor Hugo.
+* [**one-click install using your web browser (recommended)**](https://sourcethemes.com/academic/docs/install/#install-with-web-browser)
+* [install on your computer using **Git** with the Command Prompt/Terminal app](https://sourcethemes.com/academic/docs/install/#install-with-git)
+* [install on your computer by downloading the **ZIP files**](https://sourcethemes.com/academic/docs/install/#install-with-zip)
+* [install on your computer with **RStudio**](https://sourcethemes.com/academic/docs/install/#install-with-rstudio)
 
-Next step, clone this repository and run:
+Then [personalize your new site](https://sourcethemes.com/academic/docs/get-started/).
 
-```bash
-npm install
-```
+## Ecosystem
 
-This will take some time and will install all packages necessary to run Victor Hugo and its tasks.
+* **[Academic Admin](https://github.com/sourcethemes/academic-admin):** An admin tool to import publications from BibTeX or import assets for an offline site
+* **[Academic Scripts](https://github.com/sourcethemes/academic-scripts):** Scripts to help migrate content to new versions of Academic
 
-### :construction_worker: Development
+## License
 
-While developing your website, use:
+Copyright 2017-present [George Cushen](https://georgecushen.com).
 
-```bash
-npm start
-```
+Released under the [MIT](https://github.com/sourcethemes/academic-kickstart/blob/master/LICENSE.md) license.
 
-or for developing your website with `hugo server --buildDrafts --buildFuture`, use:
-
-```bash
-npm run preview
-```
-
-Then visit http://localhost:3000/ _- or a new browser windows popped-up already -_ to preview your new website. Webpack Dev Server will automatically reload the CSS or refresh the whole page, when stylesheets or content changes.
-
-### :package: Static build
-
-To build a static version of the website inside the `/dist` folder, run:
-
-```bash
-npm run build
-```
-
-To get a preview of posts or articles not yet published, run:
-
-```bash
-npm run build:preview
-```
-
-See [package.json](package.json#L8) for all tasks.
-
-## Structure
-
-```
-|--site                // Everything in here will be built with hugo
-|  |--content          // Pages and collections - ask if you need extra pages
-|  |--data             // YAML data files with any data for use in examples
-|  |--layouts          // This is where all templates go
-|  |  |--partials      // This is where includes live
-|  |  |--index.html    // The index page
-|  |--static           // Files in here ends up in the public folder
-|--src                 // Files that will pass through the asset pipeline
-|  |--css              // Webpack will bundle imported css seperately
-|  |--index.js         // index.js is the webpack entry for your css & js assets
-```
-
-## Basic Concepts
-
-You can read more about Hugo's template language in their documentation here:
-
-https://gohugo.io/templates/overview/
-
-The most useful page there is the one about the available functions:
-
-https://gohugo.io/templates/functions/
-
-For assets that are completely static and don't need to go through the asset pipeline,
-use the `site/static` folder. Images, font-files, etc, all go there.
-
-Files in the static folder end up in the web root. So a file called `site/static/favicon.ico`
-will end up being available as `/favicon.ico` and so on...
-
-The `src/index.js` file is the entrypoint for webpack and will be built to `/dist/main.js`
-
-You can use **ES6** and use both relative imports or import libraries from npm.
-
-Any CSS file imported into the `index.js` will be run through Webpack, compiled with [PostCSS Next](http://cssnext.io/), and
-minified to `/dist/[name].[hash:5].css`. Import statements will be resolved as part of the build.
-
-## Environment variables
-
-To separate the development and production _- aka build -_ stages, all gulp tasks run with a node environment variable named either `development` or `production`.
-
-You can access the environment variable inside the theme files with `getenv "NODE_ENV"`. See the following example for a conditional statement:
-
-    {{ if eq (getenv "NODE_ENV") "development" }}You're in development!{{ end }}
-
-All tasks starting with _build_ set the environment variable to `production` - the other will set it to `development`.
-
-## Deploying to Netlify
-
-- Push your clone to your own GitHub repository.
-- [Create a new site on Netlify](https://app.netlify.com/start) and link the repository.
-
-Now Netlify will build and deploy your site whenever you push to git.
-
-You can also click this button:
-
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/netlify/victor-hugo)
-
-## Enjoy!! 😸
+[![Analytics](https://ga-beacon.appspot.com/UA-78646709-2/academic-kickstart/readme?pixel)](https://github.com/igrigorik/ga-beacon)
