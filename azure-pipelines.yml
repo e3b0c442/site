@@ -18,7 +18,9 @@ pool:
   vmImage: "ubuntu-latest"
 
 variables:
-  dist_folder: dist
+  hugo_version: 0.57.2
+  hugo_checksum: f4ce91d6909d489fe5461633f6b6bd689ed14c9e06b1b7af110024420aa8fd91
+  dist_folder: public
   domain: e3b0c442.io
   pr_repo: e3b0c442/site
   pr_branch: gh-pages
@@ -28,50 +30,58 @@ variables:
   git_email: "cicd@e3b0c442.io"
 
 steps:
-  - task: NodeTool@0
-    inputs:
-      versionSpec: "10.x"
-    displayName: "Install Node.js"
-
   - script: |
+      set -eux
       git config --global user.email "$(git_email)"
       git config --global user.name "$(git_username)"
     displayName: "Setup Git"
 
-  - script: git clone --single-branch --branch $(pr_branch) https://${GITHUB_PAT}@github.com/$(pr_repo) $(dist_folder)
-    displayName: "Clone PR build branch"
+  - script: |
+      set -eu
+      git clone --single-branch --branch $(pr_branch) https://${GITHUB_PAT}@github.com/$(pr_repo) $(dist_folder)
+      rm -rf "$(dist_folder)/*" "$(dist_folder)/.!(git)"
+      mkdir -p layouts/partials
+      echo '<meta name="robots" content="noindex,nofollow">' > layouts/partials/custom_head.html
+    displayName: "Clone and set up PR build branch"
     env:
       GITHUB_PAT: $(github_pat)
     condition: eq(variables['Build.Reason'], 'PullRequest')
 
-  - script: git clone --single-branch --branch $(ci_branch) https://${GITHUB_PAT}@github.com/$(ci_repo) $(dist_folder)
-    displayName: "Clone production build branch"
+  - script: |
+      set -eu
+      git clone --single-branch --branch $(ci_branch) https://${GITHUB_PAT}@github.com/$(ci_repo) $(dist_folder)
+      rm -rf "$(dist_folder)/*" "$(dist_folder)/.!(git)"
+    displayName: "Clone and clear production build branch"
     env:
       GITHUB_PAT: $(github_pat)
     condition: in(variables['Build.Reason'], 'IndividualCI', 'Schedule', 'Manual')
 
   - script: |
-      npm install
-      npm run build
-    displayName: "npm install and build"
+      set -eux
+      wget https://github.com/gohugoio/hugo/releases/download/v$(hugo_version)/hugo_extended_$(hugo_version)_Linux-64bit.tar.gz
+      echo "$(hugo_checksum)  hugo_extended_$(hugo_version)_Linux-64bit.tar.gz" | sha256sum -c -
+      tar xfvz hugo_extended_$(hugo_version)_Linux-64bit.tar.gz
+    displayName: "Install Hugo"
+
+  - script: ./hugo
+    displayName: "Build site"
 
   - script: |
+      set -eux
       pushd $(dist_folder)
-      git add . && git commit -m "Production deploy"
+      echo "$(domain)" > CNAME
+      git add . && git commit -m "Production deploy" || true
       git push origin $(ci_branch)
       popd
     displayName: "Production deploy"
-    env:
-      GITHUB_PAT: $(github_pat)
     condition: and(succeeded(), in(variables['Build.Reason'], 'IndividualCI', 'Schedule', 'Manual'))
 
   - script: |
+      set -eux
       pushd $(dist_folder)
-      sed -i'' 's/$(domain)/preview.$(domain)/' CNAME
-      git add . && git commit -m "PR deploy"
+      echo "preview.$(domain)" > CNAME
+      git add . && git commit -m "PR deploy" || true
       git push origin $(pr_branch)
       popd
     displayName: "PR deploy"
-    env:
-      GITHUB_PAT: $(github_pat)
     condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
