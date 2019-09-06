@@ -8,17 +8,36 @@
   </url>
   
   <url>
+    <loc>/tags/personal/</loc>
+    <lastmod>2019-09-03T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/post/</loc>
     <lastmod>2019-09-03T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/post/e3b0c442/</loc>
+    <loc>/post/e3b0c442-returns/</loc>
+    <lastmod>2019-09-03T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/</loc>
+    <lastmod>2019-09-03T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/website/</loc>
     <lastmod>2019-09-03T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>/authors/nick/</loc>
+  </url>
+  
+  <url>
+    <loc>/about/</loc>
   </url>
   
   <url>
@@ -31,10 +50,6 @@
   
   <url>
     <loc>/publication_types/</loc>
-  </url>
-  
-  <url>
-    <loc>/tags/</loc>
   </url>
   
 </urlset>

@@ -13,10 +13,29 @@
     
     <item>
       <title>Return of the... me?</title>
-      <link>/post/e3b0c442/</link>
+      <link>/post/e3b0c442-returns/</link>
       <pubDate>Tue, 03 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>/post/e3b0c442/</guid>
+      <guid>/post/e3b0c442-returns/</guid>
+      <description>&lt;p&gt;So here we are again.&lt;/p&gt;
+
+&lt;p&gt;After 20 years, you&amp;rsquo;d think I&amp;rsquo;d have gotten the hang of keeping a personal
+website current and up to date. Alas, times and priorities change.&lt;/p&gt;
+
+&lt;p&gt;Hopefully now that it&amp;rsquo;s easy to build with &lt;a href=&#34;https://gohugo.io&#34; target=&#34;_blank&#34;&gt;Hugo&lt;/a&gt; that will
+change and I can stick around for awhile and actually keep this up to date and
+post regularly.&lt;/p&gt;
+
+&lt;p&gt;We&amp;rsquo;ll see.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>About Me</title>
+      <link>/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/about/</guid>
       <description></description>
     </item>
     
