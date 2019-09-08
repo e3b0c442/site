@@ -6,10 +6,240 @@
     <description>Recent content in Posts on e3b0c442.io</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 03 Sep 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 08 Sep 2019 00:00:00 +0000</lastBuildDate>
     
 	    <atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Advent of Code in-depth</title>
+      <link>/post/advent-setup-c/</link>
+      <pubDate>Sun, 08 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/advent-setup-c/</guid>
+      <description>&lt;p&gt;In the first technical article for this iteration of the site, I&amp;rsquo;d like to turn
+to &lt;a href=&#34;https://adventofcode.com&#34; target=&#34;_blank&#34;&gt;Advent of Code&lt;/a&gt;. These are programming problems
+built around a fun Christmas-themed storyline each year. I especially appreciate
+that the problems are language-agnostic, so I frequently turn to some of the
+easier ones when I&amp;rsquo;m getting familiar with a new language.&lt;/p&gt;
+
+&lt;p&gt;It can be easy to throw together just enough code to make the puzzle work, but
+I thought I&amp;rsquo;d revisit these problems from a different angle, looking not only
+at how to solve the problem, but how to write high-quality code, including error
+handling and memory management. In order to up the challenge, the solutions will
+be written in C, and the code will pass all Valgrind tests for memory leaks and
+other issues. All code discussed in these posts will be in my &lt;a href=&#34;https://github.com/e3b0c442/advent&#34; target=&#34;_blank&#34;&gt;Advent of Code
+solutions repository&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;To kick things off, we&amp;rsquo;ll take a look at code reuse. When you&amp;rsquo;re quickly
+prototyping or problem solving, you&amp;rsquo;re frequently going to have identical
+snippets of code in multiple places. If we&amp;rsquo;re writing high-quality code, we want
+to avoid this wherever possible. One common theme throughout the Advent of Code
+problems will be reading an input file into memory. In order to avoid writing
+the same code over and over, we&amp;rsquo;re going to start things off by writing a
+function to read a file into a memory buffer:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;int read_file_to_buffer(char **buf, char *filename);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Already, just in the function signature, we are making design decisions. We
+could have written the function to return the pointer to the memory buffer, and
+in most languages this makes the most sense. However, in C, the length of an
+array is not an integral part of the data type, so we need to pass that
+information back as well. Therefore, I made the decision to pass a pointer to
+pointer to char (array) to the function, which will be modified in the function
+with the actual pointer to the allocated buffer, and to return the size of the
+buffer in the return value (or -1 if there is an error). We use this pattern
+rather than passing in the buffer itself because we do not know ahead of time
+how the buffer needs to be sized. The caller will be responsible for freeing the
+buffer when they are done using it.&lt;/p&gt;
+
+&lt;p&gt;Now, lets think about what actually needs to happen to read a file into memory,
+and what can go wrong.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Does the file exist? Is it a valid, readable file?&lt;/li&gt;
+&lt;li&gt;How big is the file; consequently, how big does my buffer need to be?&lt;/li&gt;
+&lt;li&gt;What happens if we don&amp;rsquo;t succeed in reading the actual data?&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;As you can see, when reading a file, there are a lot of potential failure
+points. Keeping that in mind, let&amp;rsquo;s start writing our code.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;int read_file_to_buffer(char **buf, const char *filename)
+{
+    int rval = 0;
+    FILE *f = NULL;
+    *buf = NULL;
+
+    /* check that the file exists and is valid to read */
+    struct stat s;
+    int rc = stat(filename, &amp;amp;s);
+    if (rc == -1)
+        goto err_cleanup; /* errno is set by stat() */
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The first thing we do is initialize variables that will exist for the life of
+the function (and be part of the cleanup). &lt;code&gt;rval&lt;/code&gt; will hold our return value,
+&lt;code&gt;f&lt;/code&gt; will hold our file pointer, and &lt;code&gt;*buf&lt;/code&gt; is the pointer to the buffer that
+will hold the file contents, which is passed in as a parameter. Each is
+initialized to a sane default, as variables are not automatically initialized
+in C.&lt;/p&gt;
+
+&lt;p&gt;With that out of the way, we&amp;rsquo;ll make our first check. Using the POSIX &lt;code&gt;stat&lt;/code&gt;
+function, we query the file for information. Right off the bat, this will tell
+us if the file exists; if it does not, &lt;code&gt;stat&lt;/code&gt; will return &lt;code&gt;-1&lt;/code&gt; and set &lt;code&gt;errno&lt;/code&gt;
+accordingly. If we see this, we will jump to our error cleanup.&lt;/p&gt;
+
+&lt;p&gt;At this point, I&amp;rsquo;m going to take a sidebar and talk a bit about &lt;code&gt;goto&lt;/code&gt;. For most
+programmers, there&amp;rsquo;s a knee-jerk reaction to avoid &lt;code&gt;goto&lt;/code&gt; at all costs.
+Generally, I agree with this with one exception: &lt;em&gt;error cleanup.&lt;/em&gt; In this case,
+&lt;code&gt;goto&lt;/code&gt; properly used provides an avenue to short-circuit function execution and
+provide for cleanup in the case of an error without reusing the same code.&lt;/p&gt;
+
+&lt;p&gt;If the file exists, the &lt;code&gt;struct stat&lt;/code&gt; will be populated with information about
+the file, including the type and size. Continuing on:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    /* check that we are working with an actual file */
+    if (!S_ISREG(s.st_mode))
+    {
+        errno = EINVAL;
+        goto err_cleanup;
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Our next check is that we are working with a regular file, as opposed to a
+directory, block device, or other file type. (note: &lt;code&gt;stat&lt;/code&gt; follows symlinks!).
+We use the &lt;code&gt;S_ISREG&lt;/code&gt; macro to accomplish this. Because this is a check and not
+necessarily an error condition, if the provided file is not a regular file we
+will set &lt;code&gt;errno&lt;/code&gt; ourselves to indicate an invalid parameter and then jump to our
+error cleanup.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    /* open the file */
+    f = fopen(filename, &amp;quot;r&amp;quot;);
+    if (f == NULL) 
+        goto err_cleanup; /* errno is set by fopen() */
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now that we know the file exists, and that it&amp;rsquo;s a regular file, we will try to
+open it for reading. If the file is not readable for any reason, &lt;code&gt;fopen&lt;/code&gt; will
+return &lt;code&gt;NULL&lt;/code&gt; and set &lt;code&gt;errno&lt;/code&gt; appropriately. We will check for the &lt;code&gt;NULL&lt;/code&gt;
+return value and short-circuit as needed.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    /* allocate the buffer */
+    *buf = malloc(s.st_size);
+    if (*buf == NULL)
+        goto err_cleanup; /* errno is set by malloc() */
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now that we&amp;rsquo;ve successfully opened the file, we&amp;rsquo;ll allocate the buffer. Even
+though we already had the size information from the &lt;code&gt;stat&lt;/code&gt; call, I&amp;rsquo;ve chosen
+not to allocate the buffer until we know the file is readable, to avoid
+unnecessary allocations. For this problem it doesn&amp;rsquo;t really matter, but it&amp;rsquo;s
+a good habit to be in. If there is an error allocating the buffer such as
+running out of memory, &lt;code&gt;malloc&lt;/code&gt; will return &lt;code&gt;NULL&lt;/code&gt; and set &lt;code&gt;errno&lt;/code&gt;; again we
+will check for this and short-circuit the function as necessary. I&amp;rsquo;m using
+&lt;code&gt;malloc&lt;/code&gt; instead of &lt;code&gt;calloc&lt;/code&gt; because we have designed the function such that the
+buffer will be completely filled by the file, negating the need to initialize
+it.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    /* read the file into the buffer */
+    size_t rd = fread(*buf, 1, s.st_size, f);
+    if (rd &amp;lt; s.st_size)
+        if (ferror(f))
+            goto err_cleanup;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now we perform the actual read. &lt;code&gt;fread&lt;/code&gt; is a buffered read which calls the
+low-level &lt;code&gt;read&lt;/code&gt; syscall, and as such it will block until the requested size
+is read unless there is an error, allowing us to avoid need to loop until the
+expected data is read. Instead, we will check to make sure the expected size
+of data is read (the file size) and check for an error if it is not. If there
+is an error reading the file, we&amp;rsquo;ll short-circuit to our error cleanup.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    /* file is read into the buffer, return the number of bytes read */
+    rval = rd;
+    goto cleanup;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We finish up the logic of our function by setting the return value to the amount
+of data read, and then jumping to our non-error cleanup.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;err_cleanup:
+    rval = -1;
+    if (*buf != NULL)
+        free(*buf);
+    *buf = NULL;
+cleanup:
+    if (f != NULL)
+        fclose(f);
+    return rval;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now for our cleanup. There are two things that need to be cleaned up in this
+function: first, the file needs to be closed if it was opened, to avoid file
+handle leaks. Also, if there was an error, the data buffer needs to be freed
+if it was allocated and the pointer set to NULL. Finally, if we did error,
+we set &lt;code&gt;rval&lt;/code&gt; to -1 which indicates the error to the caller, who can then get
+more information by inspecting &lt;code&gt;errno.&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;The whole function:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;int read_file_to_buffer(char **buf, const char *filename)
+{
+    int rval = 0;
+    FILE *f = NULL;
+    *buf = NULL;
+
+    /* check that the file exists and is valid to read */
+    struct stat s;
+    int rc = stat(filename, &amp;amp;s);
+    if (rc == -1)
+        goto err_cleanup; /* errno is set by stat() */
+
+    /* check that we are working with an actual file */
+    if (!S_ISREG(s.st_mode))
+    {
+        errno = EINVAL;
+        goto err_cleanup;
+    }
+
+    /* open the file */
+    f = fopen(filename, &amp;quot;r&amp;quot;);
+    if (f == NULL)
+        goto err_cleanup; /* errno is set by fopen() */
+
+    /* allocate the buffer */
+    *buf = malloc(s.st_size);
+    if (*buf == NULL)
+        goto err_cleanup; /* errno is set by malloc() */
+
+    /* read the file into the buffer */
+    size_t rd = fread(*buf, 1, s.st_size, f);
+    if (rd &amp;lt; s.st_size)
+        if (ferror(f))
+            goto err_cleanup;
+
+    /* file is read into the buffer, return the number of bytes read */
+    rval = rd;
+    goto cleanup;
+
+err_cleanup:
+    rval = -1;
+    if (*buf != NULL)
+        free(*buf);
+    *buf = NULL;
+cleanup:
+    if (f != NULL)
+        fclose(f);
+    return rval;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We&amp;rsquo;ve now written a function with appropriate error checking that can be reused
+throughout our Advent of Code exercises!&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Return of the... me?</title>
