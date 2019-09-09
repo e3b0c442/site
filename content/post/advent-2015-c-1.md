@@ -28,7 +28,7 @@ will be used frequently throughout the series. Now it's time to dig in.
 > * `())` and `))(` both result in floor `-1` (the first basement level).
 > * `)))` and `)())())` both result in floor `-3`.
 > 
-> To what floor do the instructions take Santa?
+> To **what floor** do the instructions take Santa?
 
 Before we start writing code, let's think about what needs to happen. We will
 need to input a file, read through it, determine which characters are important
@@ -118,14 +118,14 @@ is our solution.
 
 Once we input our solution, a second problem appears!
 
-> Now, given the same instructions, find the position of the first character that causes him to enter the basement (floor -1). The first character in the instructions has position 1, the second character has position 2, and so on.
+> Now, given the same instructions, find the **position** of the first character that causes him to enter the basement (floor -1). The first character in the instructions has position 1, the second character has position 2, and so on.
 > 
 > For example:
 >
 > * `)` causes him to enter the basement at character position `1`.
 > * `()())` causes him to enter the basement at character position `5`.
 > 
-> What is the position of the character that causes Santa to first enter the basement?
+> What is the **position** of the character that causes Santa to first enter the basement?
 
 In the interest of saving compute time and code, we will attempt to integrate
 the finding of the second solution into the original code. In this case, it's

@@ -117,7 +117,7 @@ return value and short-circuit as needed.
 
 ```c
     /* allocate the buffer */
-    *buf = malloc(s.st_size);
+    *buf = malloc(s.st_size + 1);
     if (*buf == NULL)
         goto err_cleanup; /* errno is set by malloc() */
 ```
@@ -131,7 +131,8 @@ running out of memory, `malloc` will return `NULL` and set `errno`; again we
 will check for this and short-circuit the function as necessary. I'm using
 `malloc` instead of `calloc` because we have designed the function such that the
 buffer will be completely filled by the file, negating the need to initialize
-it.
+it. The extra +1 is to make room for a null terminator so that we may treat the
+buffer as a string.
 
 ```c
     /* read the file into the buffer */
@@ -150,12 +151,17 @@ is an error reading the file, we'll short-circuit to our error cleanup.
 
 ```c
     /* file is read into the buffer, return the number of bytes read */
+    (*buf)[rd] = '\0';
     rval = rd;
     goto cleanup;
 ```
 
-We finish up the logic of our function by setting the return value to the amount
-of data read, and then jumping to our non-error cleanup.
+We finish up the logic of our function by setting the extra allocated byte at
+the end of the buffer to a null terminator, then set the return value to the
+amount of data read, and finally jumping to our non-error cleanup. Array
+indeces have a higher precedence than the indirection operator, so we need to
+enclose the indirection in parentheses to avoid writing to the wrong memory
+address.
 
 ```c
 err_cleanup:
@@ -203,7 +209,7 @@ int read_file_to_buffer(char **buf, const char *filename)
         goto err_cleanup; /* errno is set by fopen() */
 
     /* allocate the buffer */
-    *buf = malloc(s.st_size);
+    *buf = malloc(s.st_size + 1);
     if (*buf == NULL)
         goto err_cleanup; /* errno is set by malloc() */
 
@@ -214,6 +220,7 @@ int read_file_to_buffer(char **buf, const char *filename)
             goto err_cleanup;
 
     /* file is read into the buffer, return the number of bytes read */
+    (*buf)[rd] = '\0';
     rval = rd;
     goto cleanup;
 
