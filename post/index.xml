@@ -6,15 +6,265 @@
     <description>Recent content in Posts on e3b0c442.io</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 08 Sep 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 09 Sep 2019 00:00:00 +0000</lastBuildDate>
     
 	    <atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Advent of Code in-depth</title>
+      <title>Advent of Code 2015 Day 1: Not Quite Lisp</title>
+      <link>/post/advent-2015-c-1/</link>
+      <pubDate>Mon, 09 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/advent-2015-c-1/</guid>
+      <description>&lt;p&gt;Yesterday, I talked in general about what I am trying to accomplish with this
+series, and wrote a reusable function to read the input files into memory, which
+will be used frequently throughout the series. Now it&amp;rsquo;s time to dig in.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Santa was hoping for a white Christmas, but his weather machine&amp;rsquo;s &amp;ldquo;snow&amp;rdquo; function is powered by stars, and he&amp;rsquo;s fresh out! To save Christmas, he needs you to collect fifty stars by December 25th.&lt;/p&gt;
+
+&lt;p&gt;Collect stars by helping Santa solve puzzles. Two puzzles will be made available on each day in the advent calendar; the second puzzle is unlocked when you complete the first. Each puzzle grants one star. Good luck!&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s an easy puzzle to warm you up.&lt;/p&gt;
+
+&lt;p&gt;Santa is trying to deliver presents in a large apartment building, but he can&amp;rsquo;t find the right floor - the directions he got are a little confusing. He starts on the ground floor (floor 0) and then follows the instructions one character at a time.&lt;/p&gt;
+
+&lt;p&gt;An opening parenthesis, &lt;code&gt;(&lt;/code&gt;, means he should go up one floor, and a closing parenthesis, &lt;code&gt;)&lt;/code&gt;, means he should go down one floor.&lt;/p&gt;
+
+&lt;p&gt;The apartment building is very tall, and the basement is very deep; he will never find the top or bottom  floors.&lt;/p&gt;
+
+&lt;p&gt;For example:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;(())&lt;/code&gt; and &lt;code&gt;()()&lt;/code&gt; both result in floor &lt;code&gt;0&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;(((&lt;/code&gt; and &lt;code&gt;(()(()(&lt;/code&gt; both result in floor &lt;code&gt;3&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;))(((((&lt;/code&gt; also results in floor &lt;code&gt;3&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;())&lt;/code&gt; and &lt;code&gt;))(&lt;/code&gt; both result in floor &lt;code&gt;-1&lt;/code&gt; (the first basement level).&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;)))&lt;/code&gt; and &lt;code&gt;)())())&lt;/code&gt; both result in floor &lt;code&gt;-3&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;To what floor do the instructions take Santa?&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Before we start writing code, let&amp;rsquo;s think about what needs to happen. We will
+need to input a file, read through it, determine which characters are important
+(&lt;code&gt;(&lt;/code&gt; and &lt;code&gt;)&lt;/code&gt;) and adjust the floor number accordingly. Then we&amp;rsquo;ll need to output
+our solution somehow.&lt;/p&gt;
+
+&lt;p&gt;Generally speaking, each day&amp;rsquo;s puzzle will be its own executable and the input
+filename will be a command-line argument.&lt;/p&gt;
+
+&lt;p&gt;Now that we have a plan of attack, let&amp;rsquo;s dig in.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;int main(int argc, char const *argv[])
+{
+    /* check that filename was provided */
+    if (argc &amp;lt; 2)
+    {
+        fprintf(stderr, &amp;quot;Must provide filename of input file\n&amp;quot;);
+        return -1;
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;First things first, let&amp;rsquo;s check and make sure the user actually provided a
+filename. Don&amp;rsquo;t forget that &lt;code&gt;argv[0]&lt;/code&gt; is always the name of the invoked command,
+so &lt;code&gt;argc&lt;/code&gt; must be at least &lt;code&gt;2&lt;/code&gt; if the user has provided any arguments at all. If
+the argument is not present, we&amp;rsquo;ll print a useful error message to &lt;code&gt;stderr&lt;/code&gt; and
+return from &lt;code&gt;main&lt;/code&gt; with a non-zero code.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    /* read the file into memory */
+    char *input;
+    int filesize = read_file_to_buffer(&amp;amp;input, argv[1]);
+    if (filesize &amp;lt; 0)
+    {
+        fprintf(stderr, &amp;quot;File read failed: %s\n&amp;quot;, strerror(errno));
+        return -1;
+    }
+
+    printf(&amp;quot;Day 1:\n&amp;quot;);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Remember that input file function we wrote yesterday? Now we get to use it. We
+declare a pointer to the buffer and pass it into the function, along with the
+filename which should be in &lt;code&gt;argv[1]&lt;/code&gt;. If the file doesn&amp;rsquo;t exist, isn&amp;rsquo;t
+readable, or any other problem that we handled in the function, it will return
+&lt;code&gt;-1&lt;/code&gt; and &lt;code&gt;errno&lt;/code&gt; will be set. In that case, we print the error message to
+&lt;code&gt;stderr&lt;/code&gt; and return non-zero. If everything worked, the contents of the file
+are now in the location in memory pointed to by our &lt;code&gt;input&lt;/code&gt; pointer. Once we&amp;rsquo;ve
+successfully read the file, we&amp;rsquo;ll print our header line for the output.&lt;/p&gt;
+
+&lt;p&gt;Now it&amp;rsquo;s time to solve the problem. The most straightforward way is going to be
+to iterate over the contents of the file in memory byte-by-byte and adjust the
+floor accordingly.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    /* solve the first puzzle */
+    int floor = 0;
+    for (int i = 0; i &amp;lt; filesize; i++)
+    {
+        switch (input[i])
+        {
+        case &#39;(&#39;:
+            floor++;
+            break;
+        case &#39;)&#39;:
+            floor--;
+            break;
+        default:;
+        }
+    }
+
+    printf(&amp;quot;\tSolution 1: %d\n&amp;quot;, floor);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We initialize our floor variable to zero as noted in the problem description
+(&lt;code&gt;He starts on the ground floor (floor 0)...&lt;/code&gt;), and then construct a &lt;code&gt;for&lt;/code&gt; loop
+with the index starting at &lt;code&gt;0&lt;/code&gt; (remember, C arrays are zero-indexed) and
+incrementing by one until we reach the file size which was returned by our file
+input function. During each iteration of the loop, we check the byte at that
+index and either increment or decrement the floor number depending on the
+character. In this case, I have chosen to ignore any spurious characters that
+may be in the input.&lt;/p&gt;
+
+&lt;p&gt;The object of the problem is to determine which floor we arrive at (&lt;code&gt;To what 
+floor do the instructions take Santa?&lt;/code&gt;), so the value of the &lt;code&gt;floor&lt;/code&gt; variable
+is our solution.&lt;/p&gt;
+
+&lt;p&gt;Once we input our solution, a second problem appears!&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Now, given the same instructions, find the position of the first character that causes him to enter the basement (floor -1). The first character in the instructions has position 1, the second character has position 2, and so on.&lt;/p&gt;
+
+&lt;p&gt;For example:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;)&lt;/code&gt; causes him to enter the basement at character position &lt;code&gt;1&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;()())&lt;/code&gt; causes him to enter the basement at character position &lt;code&gt;5&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;What is the position of the character that causes Santa to first enter the basement?&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;In the interest of saving compute time and code, we will attempt to integrate
+the finding of the second solution into the original code. In this case, it&amp;rsquo;s
+a matter of finding the index where we first hit floor &lt;code&gt;-1&lt;/code&gt;. We can do this by
+setting a variable to a known bad value, and checking whether it has been reset
+to a known good value and if not, setting it. So, we&amp;rsquo;ll update our problem logic
+as such:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    /* solve the puzzles */
+    int floor = 0;
+    int basement = -1;
+    for (int i = 0; i &amp;lt; filesize; i++)
+    {
+        switch (input[i])
+        {
+        case &#39;(&#39;:
+            floor++;
+            break;
+        case &#39;)&#39;:
+            floor--;
+            break;
+        default:;
+        }
+        if (floor == -1 &amp;amp;&amp;amp; basement == -1)
+        {
+            basement = i + 1;
+        }
+    }
+
+    printf(&amp;quot;\tSolution 1: %d\n&amp;quot;, floor);
+    printf(&amp;quot;\tSolution 2: %d\n&amp;quot;, basement);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In this updated logic, we set &lt;code&gt;basement&lt;/code&gt; to a sentinel value of &lt;code&gt;-1&lt;/code&gt;; since we
+are counting up, the value cannot possibly be negative. Then, in each iteration
+of the loop, we check for the floor to be &lt;code&gt;-1&lt;/code&gt; (since we can only move one
+floor at a time) and for the basement value to be the sentinel. For those of
+you counting instructions, notice that the floor check will short-circuit; i.e.
+the basement check will not happen unless the floor is &lt;code&gt;-1&lt;/code&gt;. The net effect is
+that on average we are only adding one instruction per loop. Also notice that
+we set the value of basement to &lt;code&gt;i + 1&lt;/code&gt; as the positions are one-indexed per
+the problem parameters (&lt;code&gt;The first character in the instructions has position 
+1...&lt;/code&gt;).&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;
+    free(input);
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now that we have solved the problem, we&amp;rsquo;ll clean up and return &lt;code&gt;0&lt;/code&gt;. Note that it
+is not strictly necessary to free &lt;code&gt;input&lt;/code&gt;, but it is a good habit to be in.&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s the whole program for day 1:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;#include &amp;lt;errno.h&amp;gt;
+#include &amp;lt;stdio.h&amp;gt;
+#include &amp;lt;stdlib.h&amp;gt;
+#include &amp;lt;string.h&amp;gt;
+#include &amp;quot;common.h&amp;quot;
+
+int main(int argc, char const *argv[])
+{
+    /* check that filename was provided */
+    if (argc &amp;lt; 2)
+    {
+        fprintf(stderr, &amp;quot;Must provide filename of input file\n&amp;quot;);
+        return -1;
+    }
+
+    /* read the file into memory */
+    char *input;
+    int filesize = read_file_to_buffer(&amp;amp;input, argv[1]);
+    if (filesize &amp;lt; 0)
+    {
+        fprintf(stderr, &amp;quot;File read failed: %s\n&amp;quot;, strerror(errno));
+        return -1;
+    }
+
+    printf(&amp;quot;Day 1:\n&amp;quot;);
+
+    /* solve the puzzles */
+    int floor = 0;
+    int basement = 0;
+    for (int i = 0; i &amp;lt; filesize; i++)
+    {
+        switch (input[i])
+        {
+        case &#39;(&#39;:
+            floor++;
+            break;
+        case &#39;)&#39;:
+            floor--;
+            break;
+        default:;
+        }
+        if (floor == -1 &amp;amp;&amp;amp; basement == 0)
+        {
+            basement = i + 1;
+        }
+    }
+
+    printf(&amp;quot;\tSolution 1: %d\n&amp;quot;, floor);
+    printf(&amp;quot;\tSolution 2: %d\n&amp;quot;, basement);
+
+    free(input);
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This program makes proper error checks and manages memory properly, and will
+pass all Valgrind checks in a variety of test scenarios.&lt;/p&gt;
+
+&lt;p&gt;If I&amp;rsquo;ve done something horribly wrong or you have questions, please comment!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Advent of Code deep dive kickoff</title>
       <link>/post/advent-setup-c/</link>
-      <pubDate>Sun, 08 Sep 2019 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 08 Sep 2019 22:00:00 +0000</pubDate>
       
       <guid>/post/advent-setup-c/</guid>
       <description>&lt;p&gt;In the first technical article for this iteration of the site, I&amp;rsquo;d like to turn

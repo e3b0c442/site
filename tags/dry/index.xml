@@ -6,15 +6,15 @@
     <description>Recent content in DRY on e3b0c442.io</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 08 Sep 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 08 Sep 2019 22:00:00 +0000</lastBuildDate>
     
 	    <atom:link href="/tags/dry/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Advent of Code in-depth</title>
+      <title>Advent of Code deep dive kickoff</title>
       <link>/post/advent-setup-c/</link>
-      <pubDate>Sun, 08 Sep 2019 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 08 Sep 2019 22:00:00 +0000</pubDate>
       
       <guid>/post/advent-setup-c/</guid>
       <description>&lt;p&gt;In the first technical article for this iteration of the site, I&amp;rsquo;d like to turn
