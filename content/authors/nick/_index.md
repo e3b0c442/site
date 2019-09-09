@@ -82,4 +82,4 @@ or tinkering with his homemade wireless grill thermometer.
 He flatly denies that the hash he uses to identify himself to the internet is a
 measurement of his personality.
 
-GPG fingerprint: `9408 6361 4B0B 3307 5068  5FE8 DD3F EC7C 659D CEA2`
+PGP fingerprint: `9408 6361 4B0B 3307 5068  5FE8 DD3F EC7C 659D CEA2`

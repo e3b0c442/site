@@ -1,7 +1,7 @@
 ---
 date: 2019-09-03
 title: Return of the... me?
-tags: ["personal", "website"]
+tags: ["Personal", "Website"]
 ---
 
 So here we are again.
