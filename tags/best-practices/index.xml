@@ -127,7 +127,7 @@ return &lt;code&gt;NULL&lt;/code&gt; and set &lt;code&gt;errno&lt;/code&gt; appr
 return value and short-circuit as needed.&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    /* allocate the buffer */
-    *buf = malloc(s.st_size);
+    *buf = malloc(s.st_size + 1);
     if (*buf == NULL)
         goto err_cleanup; /* errno is set by malloc() */
 &lt;/code&gt;&lt;/pre&gt;
@@ -141,7 +141,8 @@ running out of memory, &lt;code&gt;malloc&lt;/code&gt; will return &lt;code&gt;N
 will check for this and short-circuit the function as necessary. I&amp;rsquo;m using
 &lt;code&gt;malloc&lt;/code&gt; instead of &lt;code&gt;calloc&lt;/code&gt; because we have designed the function such that the
 buffer will be completely filled by the file, negating the need to initialize
-it.&lt;/p&gt;
+it. The extra +1 is to make room for a null terminator so that we may treat the
+buffer as a string.&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    /* read the file into the buffer */
     size_t rd = fread(*buf, 1, s.st_size, f);
@@ -158,12 +159,17 @@ of data is read (the file size) and check for an error if it is not. If there
 is an error reading the file, we&amp;rsquo;ll short-circuit to our error cleanup.&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    /* file is read into the buffer, return the number of bytes read */
+    (*buf)[rd] = &#39;\0&#39;;
     rval = rd;
     goto cleanup;
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;We finish up the logic of our function by setting the return value to the amount
-of data read, and then jumping to our non-error cleanup.&lt;/p&gt;
+&lt;p&gt;We finish up the logic of our function by setting the extra allocated byte at
+the end of the buffer to a null terminator, then set the return value to the
+amount of data read, and finally jumping to our non-error cleanup. Array
+indeces have a higher precedence than the indirection operator, so we need to
+enclose the indirection in parentheses to avoid writing to the wrong memory
+address.&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;err_cleanup:
     rval = -1;
@@ -210,7 +216,7 @@ more information by inspecting &lt;code&gt;errno.&lt;/code&gt;&lt;/p&gt;
         goto err_cleanup; /* errno is set by fopen() */
 
     /* allocate the buffer */
-    *buf = malloc(s.st_size);
+    *buf = malloc(s.st_size + 1);
     if (*buf == NULL)
         goto err_cleanup; /* errno is set by malloc() */
 
@@ -221,6 +227,7 @@ more information by inspecting &lt;code&gt;errno.&lt;/code&gt;&lt;/p&gt;
             goto err_cleanup;
 
     /* file is read into the buffer, return the number of bytes read */
+    (*buf)[rd] = &#39;\0&#39;;
     rval = rd;
     goto cleanup;
 

@@ -28,11 +28,11 @@
   
     
   
-  <meta name="description" content="Yesterday, I talked in general about what I am trying to accomplish with this series, and wrote a reusable function to read the input files into memory, which will be used frequently throughout the series. Now it&rsquo;s time to dig in.
- Santa was hoping for a white Christmas, but his weather machine&rsquo;s &ldquo;snow&rdquo; function is powered by stars, and he&rsquo;s fresh out! To save Christmas, he needs you to collect fifty stars by December 25th.">
+  <meta name="description" content="I&rsquo;m going to go ahead and do a second puzzle today since the early ones are relatively simple. Day 1&rsquo;s puzzles were mostly incrementing, decrementing and tracking variables; Day 2&rsquo;s have a bit more math involved.
+ The elves are running low on wrapping paper, and so they need to submit an order for more. They have a list of the dimensions (length l, width w, and height h) of each present, and only want to order exactly as much as they need.">
 
   
-  <link rel="alternate" hreflang="en-us" href="/post/advent-2015-c-1/">
+  <link rel="alternate" hreflang="en-us" href="/post/advent-2015-c-2/">
 
   
 
@@ -99,7 +99,7 @@
   <link rel="icon" type="image/png" href="/img/icon.png">
   <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
 
-  <link rel="canonical" href="/post/advent-2015-c-1/">
+  <link rel="canonical" href="/post/advent-2015-c-2/">
 
   
   
@@ -114,15 +114,15 @@
   <meta property="twitter:creator" content="@0xe3b0c442">
   
   <meta property="og:site_name" content="e3b0c442.io">
-  <meta property="og:url" content="/post/advent-2015-c-1/">
-  <meta property="og:title" content="Advent of Code 2015 Day 1: Not Quite Lisp | e3b0c442.io">
-  <meta property="og:description" content="Yesterday, I talked in general about what I am trying to accomplish with this series, and wrote a reusable function to read the input files into memory, which will be used frequently throughout the series. Now it&rsquo;s time to dig in.
- Santa was hoping for a white Christmas, but his weather machine&rsquo;s &ldquo;snow&rdquo; function is powered by stars, and he&rsquo;s fresh out! To save Christmas, he needs you to collect fifty stars by December 25th."><meta property="og:image" content="/img/icon-192.png">
+  <meta property="og:url" content="/post/advent-2015-c-2/">
+  <meta property="og:title" content="Advent of Code 2015 Day 2: I Was Told There Would Be No Math | e3b0c442.io">
+  <meta property="og:description" content="I&rsquo;m going to go ahead and do a second puzzle today since the early ones are relatively simple. Day 1&rsquo;s puzzles were mostly incrementing, decrementing and tracking variables; Day 2&rsquo;s have a bit more math involved.
+ The elves are running low on wrapping paper, and so they need to submit an order for more. They have a list of the dimensions (length l, width w, and height h) of each present, and only want to order exactly as much as they need."><meta property="og:image" content="/img/icon-192.png">
   <meta property="twitter:image" content="/img/icon-192.png"><meta property="og:locale" content="en-us">
   
-  <meta property="article:published_time" content="2019-09-09T00:00:00&#43;00:00">
+  <meta property="article:published_time" content="2019-09-09T02:00:00&#43;00:00">
   
-  <meta property="article:modified_time" content="2019-09-09T00:00:00&#43;00:00">
+  <meta property="article:modified_time" content="2019-09-09T02:00:00&#43;00:00">
   
 
   
@@ -131,7 +131,7 @@
   <meta name="robots" content="noindex,nofollow">
 
 
-  <title>Advent of Code 2015 Day 1: Not Quite Lisp | e3b0c442.io</title>
+  <title>Advent of Code 2015 Day 2: I Was Told There Would Be No Math | e3b0c442.io</title>
 
 </head>
 
@@ -319,7 +319,7 @@
   
   
 <div class="article-container pt-3">
-  <h1 itemprop="name">Advent of Code 2015 Day 1: Not Quite Lisp</h1>
+  <h1 itemprop="name">Advent of Code 2015 Day 2: I Was Told There Would Be No Math</h1>
 
   
 
@@ -328,8 +328,8 @@
 
 
 
-<meta content="2019-09-09 00:00:00 &#43;0000 UTC" itemprop="datePublished">
-<meta content="2019-09-09 00:00:00 &#43;0000 UTC" itemprop="dateModified">
+<meta content="2019-09-09 02:00:00 &#43;0000 UTC" itemprop="datePublished">
+<meta content="2019-09-09 02:00:00 &#43;0000 UTC" itemprop="dateModified">
 
 <div class="article-metadata">
 
@@ -351,14 +351,14 @@
   
   <span class="middot-divider"></span>
   <span class="article-reading-time">
-    7 min read
+    8 min read
   </span>
   
 
   
   
   <span class="middot-divider"></span>
-  <a href="/post/advent-2015-c-1/#disqus_thread"></a>
+  <a href="/post/advent-2015-c-2/#disqus_thread"></a>
   
 
   
@@ -377,7 +377,7 @@
       
       
       <li>
-        <a href="https://twitter.com/intent/tweet?url=/post/advent-2015-c-1/&amp;text=Advent%20of%20Code%202015%20Day%201:%20Not%20Quite%20Lisp" target="_blank" rel="noopener" class="share-btn-twitter">
+        <a href="https://twitter.com/intent/tweet?url=/post/advent-2015-c-2/&amp;text=Advent%20of%20Code%202015%20Day%202:%20I%20Was%20Told%20There%20Would%20Be%20No%20Math" target="_blank" rel="noopener" class="share-btn-twitter">
           <i class="fab fa-twitter"></i>
         </a>
       </li>
@@ -390,7 +390,7 @@
       
       
       <li>
-        <a href="https://www.facebook.com/sharer.php?u=/post/advent-2015-c-1/&amp;t=Advent%20of%20Code%202015%20Day%201:%20Not%20Quite%20Lisp" target="_blank" rel="noopener" class="share-btn-facebook">
+        <a href="https://www.facebook.com/sharer.php?u=/post/advent-2015-c-2/&amp;t=Advent%20of%20Code%202015%20Day%202:%20I%20Was%20Told%20There%20Would%20Be%20No%20Math" target="_blank" rel="noopener" class="share-btn-facebook">
           <i class="fab fa-facebook-f"></i>
         </a>
       </li>
@@ -403,7 +403,7 @@
       
       
       <li>
-        <a href="mailto:?subject=Advent%20of%20Code%202015%20Day%201:%20Not%20Quite%20Lisp&amp;body=/post/advent-2015-c-1/" target="_blank" rel="noopener" class="share-btn-email">
+        <a href="mailto:?subject=Advent%20of%20Code%202015%20Day%202:%20I%20Was%20Told%20There%20Would%20Be%20No%20Math&amp;body=/post/advent-2015-c-2/" target="_blank" rel="noopener" class="share-btn-email">
           <i class="fas fa-envelope"></i>
         </a>
       </li>
@@ -416,7 +416,7 @@
       
       
       <li>
-        <a href="https://www.linkedin.com/shareArticle?url=/post/advent-2015-c-1/&amp;title=Advent%20of%20Code%202015%20Day%201:%20Not%20Quite%20Lisp" target="_blank" rel="noopener" class="share-btn-linkedin">
+        <a href="https://www.linkedin.com/shareArticle?url=/post/advent-2015-c-2/&amp;title=Advent%20of%20Code%202015%20Day%202:%20I%20Was%20Told%20There%20Would%20Be%20No%20Math" target="_blank" rel="noopener" class="share-btn-linkedin">
           <i class="fab fa-linkedin-in"></i>
         </a>
       </li>
@@ -429,7 +429,7 @@
       
       
       <li>
-        <a href="https://web.whatsapp.com/send?text=Advent%20of%20Code%202015%20Day%201:%20Not%20Quite%20Lisp%20/post/advent-2015-c-1/" target="_blank" rel="noopener" class="share-btn-whatsapp">
+        <a href="https://web.whatsapp.com/send?text=Advent%20of%20Code%202015%20Day%202:%20I%20Was%20Told%20There%20Would%20Be%20No%20Math%20/post/advent-2015-c-2/" target="_blank" rel="noopener" class="share-btn-whatsapp">
           <i class="fab fa-whatsapp"></i>
         </a>
       </li>
@@ -442,7 +442,7 @@
       
       
       <li>
-        <a href="https://service.weibo.com/share/share.php?url=/post/advent-2015-c-1/&amp;title=Advent%20of%20Code%202015%20Day%201:%20Not%20Quite%20Lisp" target="_blank" rel="noopener" class="share-btn-weibo">
+        <a href="https://service.weibo.com/share/share.php?url=/post/advent-2015-c-2/&amp;title=Advent%20of%20Code%202015%20Day%202:%20I%20Was%20Told%20There%20Would%20Be%20No%20Math" target="_blank" rel="noopener" class="share-btn-weibo">
           <i class="fab fa-weibo"></i>
         </a>
       </li>
@@ -478,63 +478,45 @@
   <div class="article-container">
 
     <div class="article-style" itemprop="articleBody">
-      <p>Yesterday, I talked in general about what I am trying to accomplish with this
-series, and wrote a reusable function to read the input files into memory, which
-will be used frequently throughout the series. Now it&rsquo;s time to dig in.</p>
+      <p>I&rsquo;m going to go ahead and do a second puzzle today since the early ones are
+relatively simple. Day 1&rsquo;s puzzles were mostly incrementing, decrementing and
+tracking variables; Day 2&rsquo;s have a bit more math involved.</p>
 
 <blockquote>
-<p>Santa was hoping for a white Christmas, but his weather machine&rsquo;s &ldquo;snow&rdquo; function is powered by stars, and he&rsquo;s fresh out! To save Christmas, he needs you to collect fifty stars by December 25th.</p>
+<p>The elves are running low on wrapping paper, and so they need to submit an order for more. They have a list of the dimensions (length l, width w, and height h) of each present, and only want to order exactly as much as they need.</p>
 
-<p>Collect stars by helping Santa solve puzzles. Two puzzles will be made available on each day in the advent calendar; the second puzzle is unlocked when you complete the first. Each puzzle grants one star. Good luck!</p>
-
-<p>Here&rsquo;s an easy puzzle to warm you up.</p>
-
-<p>Santa is trying to deliver presents in a large apartment building, but he can&rsquo;t find the right floor - the directions he got are a little confusing. He starts on the ground floor (floor 0) and then follows the instructions one character at a time.</p>
-
-<p>An opening parenthesis, <code>(</code>, means he should go up one floor, and a closing parenthesis, <code>)</code>, means he should go down one floor.</p>
-
-<p>The apartment building is very tall, and the basement is very deep; he will never find the top or bottom  floors.</p>
+<p>Fortunately, every present is a box (a perfect right rectangular prism), which makes calculating the required wrapping paper for each gift a little easier: find the surface area of the box, which is <code>2*l*w + 2*w*h + 2*h*l</code>. The elves also need a little extra paper for each present: the area of the smallest side.</p>
 
 <p>For example:</p>
 
 <ul>
-<li><code>(())</code> and <code>()()</code> both result in floor <code>0</code>.</li>
-<li><code>(((</code> and <code>(()(()(</code> both result in floor <code>3</code>.</li>
-<li><code>))(((((</code> also results in floor <code>3</code>.</li>
-<li><code>())</code> and <code>))(</code> both result in floor <code>-1</code> (the first basement level).</li>
-<li><code>)))</code> and <code>)())())</code> both result in floor <code>-3</code>.</li>
+<li>A present with dimensions <code>2x3x4</code> requires <code>2*6 + 2*12 + 2*8 = 52</code> square feet of wrapping paper plus <code>6</code> square feet of slack, for a total of <code>58</code> square feet.</li>
+<li>A present with dimensions <code>1x1x10</code> requires <code>2*1 + 2*10 + 2*10 = 42</code> square feet of wrapping paper plus <code>1</code> square foot of slack, for a total of <code>43</code> square feet.</li>
 </ul>
 
-<p>To <strong>what floor</strong> do the instructions take Santa?</p>
+<p>All numbers in the elves&rsquo; list are in feet. How many total <strong>square feet of wrapping paper</strong> should they order?</p>
 </blockquote>
 
-<p>Before we start writing code, let&rsquo;s think about what needs to happen. We will
-need to input a file, read through it, determine which characters are important
-(<code>(</code> and <code>)</code>) and adjust the floor number accordingly. Then we&rsquo;ll need to output
-our solution somehow.</p>
+<p>As with day 1, we&rsquo;re going to take a minute to break the problem down. As the
+problem states, the input is formatted as XXxYYxZZ, so we will need to parse
+the input into usable numbers. Since we need to operate on the smallest
+dimensions for the slack, we&rsquo;ll need to be able to sort the inputted values.
+Finally, we&rsquo;ll need to do the math and keep a running total.</p>
 
-<p>Generally speaking, each day&rsquo;s puzzle will be its own executable and the input
-filename will be a command-line argument.</p>
-
-<p>Now that we have a plan of attack, let&rsquo;s dig in.</p>
+<p>Let&rsquo;s dig in:</p>
 
 <pre><code class="language-c">int main(int argc, char const *argv[])
 {
+    int rval = 0;
+
     /* check that filename was provided */
     if (argc &lt; 2)
     {
         fprintf(stderr, &quot;Must provide filename of input file\n&quot;);
         return -1;
     }
-</code></pre>
 
-<p>First things first, let&rsquo;s check and make sure the user actually provided a
-filename. Don&rsquo;t forget that <code>argv[0]</code> is always the name of the invoked command,
-so <code>argc</code> must be at least <code>2</code> if the user has provided any arguments at all. If
-the argument is not present, we&rsquo;ll print a useful error message to <code>stderr</code> and
-return from <code>main</code> with a non-zero code.</p>
-
-<pre><code class="language-c">    /* read the file into memory */
+    /* read the file into memory */
     char *input;
     int filesize = read_file_to_buffer(&amp;input, argv[1]);
     if (filesize &lt; 0)
@@ -542,123 +524,157 @@ return from <code>main</code> with a non-zero code.</p>
         fprintf(stderr, &quot;File read failed: %s\n&quot;, strerror(errno));
         return -1;
     }
-
-    printf(&quot;Day 1:\n&quot;);
 </code></pre>
 
-<p>Remember that input file function we wrote yesterday? Now we get to use it. We
-declare a pointer to the buffer and pass it into the function, along with the
-filename which should be in <code>argv[1]</code>. If the file doesn&rsquo;t exist, isn&rsquo;t
-readable, or any other problem that we handled in the function, it will return
-<code>-1</code> and <code>errno</code> will be set. In that case, we print the error message to
-<code>stderr</code> and return non-zero. If everything worked, the contents of the file
-are now in the location in memory pointed to by our <code>input</code> pointer. Once we&rsquo;ve
-successfully read the file, we&rsquo;ll print our header line for the output.</p>
+<p>The preamble to our function is identical to day 1, with the exception of
+initializing our return value early as we&rsquo;ll be using our <code>goto</code> short circuit
+pattern to handle some later potential errors. We check that the user provided a
+filename and read the file into the <code>input</code> buffer.</p>
 
-<p>Now it&rsquo;s time to solve the problem. The most straightforward way is going to be
-to iterate over the contents of the file in memory byte-by-byte and adjust the
-floor accordingly.</p>
+<pre><code class="language-c">    printf(&quot;Day 2:\n&quot;);
 
-<pre><code class="language-c">    /* solve the first puzzle */
-    int floor = 0;
-    for (int i = 0; i &lt; filesize; i++)
+    int paper = 0;
+</code></pre>
+
+<p>We&rsquo;ll then print our daily header and initialize the running total for the
+wrapping paper.</p>
+
+<pre><code class="language-c">    /* tokenize the data into lines */
+    char *cursor = input;
+    char *line = strsep(&amp;cursor, &quot;\n&quot;);
+</code></pre>
+
+<p>Now we start getting into some more interesting string handling. Note that the
+input has one present per line, so we need to effectively split the string on
+the lines. We will use the POSIX <code>strsep</code> function for this. There is a similar
+<code>strtok</code> function in the C standard librory, but it has the downside of being
+non-reentrant. If portability is a concern, you may want to stick use <code>strtok</code>,
+however <code>strsep</code> is widely supported and should  be used instead of <code>strtok</code>
+wherever possible.</p>
+
+<p>In order to avoid changing the original value of the pointer to the input, we
+make a copy into <code>cursor</code> which becomes the moving pointer passed as the first
+argument of <code>strsep</code>. Finally, we are splitting on the newline character <code>\n</code>.
+We will not bother to make a copy of the input buffer as we only need to parse
+it once.</p>
+
+<pre><code class="language-c">    while (line != NULL)
     {
-        switch (input[i])
-        {
-        case '(':
-            floor++;
-            break;
-        case ')':
-            floor--;
-            break;
-        default:;
-        }
-    }
-
-    printf(&quot;\tSolution 1: %d\n&quot;, floor);
+        if (strlen(line) == 0)
+            goto tokenize;
 </code></pre>
 
-<p>We initialize our floor variable to zero as noted in the problem description
-(<code>He starts on the ground floor (floor 0)...</code>), and then construct a <code>for</code> loop
-with the index starting at <code>0</code> (remember, C arrays are zero-indexed) and
-incrementing by one until we reach the file size which was returned by our file
-input function. During each iteration of the loop, we check the byte at that
-index and either increment or decrement the floor number depending on the
-character. In this case, I have chosen to ignore any spurious characters that
-may be in the input.</p>
+<p>One side effect of <code>strsep</code> that one needs to be aware of is that if multiple
+delimiters are encountered in a row, <code>strsep</code> will return a pointer to an empty
+string instead of consuming all of the delimiters at once. We check for the
+empty string and short-circuit the loop if we encounter this.</p>
 
-<p>The object of the problem is to determine which floor we arrive at (<code>To what 
-floor do the instructions take Santa?</code>), so the value of the <code>floor</code> variable
-is our solution.</p>
+<pre><code class="language-c">        /* scan each line's values */
+        int dims[3] = {0};
 
-<p>Once we input our solution, a second problem appears!</p>
+        int scanned = sscanf(line, &quot;%dx%dx%d&quot;, &amp;dims[0], &amp;dims[1], &amp;dims[2]);
+        if (scanned != 3)
+        {
+            fprintf(stderr, &quot;Invalid input line \&quot;%s\&quot;\n&quot;, line);
+            goto err_cleanup;
+        }
+</code></pre>
+
+<p>We now initialize an array of three <code>int</code>s to hold the parsed values. We use an
+array instead of separate variables because we will need to sort the result.
+Once the array is initialized, we use the <code>sscanf</code> function to scan the
+dimensions into the array. As we are not trying to scan <em>into</em> string variables,
+<code>sscanf</code> is perfectly safe for our usage. As an error check, we will
+short-circuit to the function cleanup if we have an invalid line which scans
+less than three values.</p>
+
+<pre><code class="language-c">        qsort(dims, 3, sizeof(int), cmp_int_asc);
+</code></pre>
+
+<p>Once the values are scanned, they need to be sorted so that we can find the
+slack using the smallest side. For this we use the standard library function
+<code>qsort</code> with a simple comparator function:</p>
+
+<pre><code class="language-c">int cmp_int_asc(const void *a, const void *b)
+{
+    int l = *(const int *)a;
+    int r = *(const int *)b;
+
+    return l &lt; r ? -1 : l &gt; r ? 1 : 0;
+}
+</code></pre>
+
+<p>The comparator dereferences and casts the inputs and then returns <code>-1</code> if <code>a &lt; 
+b</code>, <code>1</code> if <code>a &gt; b</code>, or <code>0</code> if they are equal. I use the ternary operator here
+for conciseness, but I would refrain from using it for anything more complex.</p>
+
+<pre><code class="language-c">        paper += 2 * dims[0] * dims[1] + 2 * dims[1] * dims[2] + 2 * dims[2] * dims[0] + dims[0] * dims[1];
+    tokenize:
+        line = strsep(&amp;cursor, &quot;\n&quot;);
+    }
+</code></pre>
+
+<p>Now that we have our values and we have them sorted by smallest to largest, we
+just need to do the math and update our running total. As noted in the problem,
+for each present we need to add the area of each side plus the area of the
+smallest side as slack: <code>2xy + 2yz + 2xz + xy</code>.</p>
+
+<pre><code class="language-c">    printf(&quot;\tSolution 1: %d\n&quot;, paper);
+
+    goto cleanup;
+
+err_cleanup:
+    rval = 1;
+cleanup:
+    free(input);
+    return rval;
+}
+</code></pre>
+
+<p>Once we have broken out of the input parsing loop, <code>paper</code> should have the total
+required wrapping paper. We can print the solution and then proceed with
+cleanup. As noted in day 1, freeing <code>input</code> is not strictly necessary in this
+case but is good from a habit-forming perspective.</p>
+
+<p>Once the solution has been input, the second problem is presented:</p>
 
 <blockquote>
-<p>Now, given the same instructions, find the <strong>position</strong> of the first character that causes him to enter the basement (floor -1). The first character in the instructions has position 1, the second character has position 2, and so on.</p>
+<p>The elves are also running low on ribbon. Ribbon is all the same width, so they only have to worry about the length they need to order, which they would again like to be exact.</p>
+
+<p>The ribbon required to wrap a present is the shortest distance around its sides, or the smallest perimeter of any one face. Each present also requires a bow made out of ribbon as well; the feet of ribbon required for the perfect bow is equal to the cubic feet of volume of the present. Don&rsquo;t ask how they tie the bow, though; they&rsquo;ll never tell.</p>
 
 <p>For example:</p>
 
 <ul>
-<li><code>)</code> causes him to enter the basement at character position <code>1</code>.</li>
-<li><code>()())</code> causes him to enter the basement at character position <code>5</code>.</li>
+<li>A present with dimensions <code>2x3x4</code> requires <code>2+2+3+3 = 10</code> feet of ribbon to wrap the present plus <code>2*3*4 = 24</code> feet of ribbon for the bow, for a total of <code>34</code> feet.</li>
+<li>A present with dimensions <code>1x1x10</code> requires <code>1+1+1+1 = 4</code> feet of ribbon to wrap the present plus <code>1*1*10 = 10</code> feet of ribbon for the bow, for a total of <code>14</code> feet.</li>
 </ul>
 
-<p>What is the <strong>position</strong> of the character that causes Santa to first enter the basement?</p>
+<p>How many total <strong>feet of ribbon</strong> should they order?</p>
 </blockquote>
 
-<p>In the interest of saving compute time and code, we will attempt to integrate
-the finding of the second solution into the original code. In this case, it&rsquo;s
-a matter of finding the index where we first hit floor <code>-1</code>. We can do this by
-setting a variable to a known bad value, and checking whether it has been reset
-to a known good value and if not, setting it. So, we&rsquo;ll update our problem logic
-as such:</p>
+<p>As with day 1, we already have all of the infrastructure present to handle this
+new problem. We&rsquo;ll add a new variable to track the running total of ribbon:</p>
 
-<pre><code class="language-c">    /* solve the puzzles */
-    int floor = 0;
-    int basement = -1;
-    for (int i = 0; i &lt; filesize; i++)
-    {
-        switch (input[i])
-        {
-        case '(':
-            floor++;
-            break;
-        case ')':
-            floor--;
-            break;
-        default:;
-        }
-        if (floor == -1 &amp;&amp; basement == -1)
-        {
-            basement = i + 1;
-        }
-    }
-
-    printf(&quot;\tSolution 1: %d\n&quot;, floor);
-    printf(&quot;\tSolution 2: %d\n&quot;, basement);
+<pre><code class="language-c">    int paper = 0;
+    int ribbon = 0;
 </code></pre>
 
-<p>In this updated logic, we set <code>basement</code> to a sentinel value of <code>-1</code>; since we
-are counting up, the value cannot possibly be negative. Then, in each iteration
-of the loop, we check for the floor to be <code>-1</code> (since we can only move one
-floor at a time) and for the basement value to be the sentinel. For those of
-you counting instructions, notice that the floor check will short-circuit; i.e.
-the basement check will not happen unless the floor is <code>-1</code>. The net effect is
-that on average we are only adding one instruction per loop. Also notice that
-we set the value of basement to <code>i + 1</code> as the positions are one-indexed per
-the problem parameters (<code>The first character in the instructions has position 
-1...</code>).</p>
+<p>Then update the total ribbon on each loop, following the instructions to add
+<code>2x+2y+xyz</code> to the total:</p>
+
+<pre><code class="language-c">        paper += 2 * dims[0] * dims[1] + 2 * dims[1] * dims[2] + 2 * dims[2] * dims[0] + dims[0] * dims[1];
+        ribbon += 2 * dims[0] + 2 * dims[1] + dims[0] * dims[1] * dims[2];
+</code></pre>
+
+<p>Finally, we&rsquo;ll print the second solution:</p>
 
 <pre><code class="language-c">
-    free(input);
-    return 0;
-}
+    printf(&quot;\tSolution 1: %d\n&quot;, paper);
+    printf(&quot;\tSolution 2: %d\n&quot;, ribbon);
 </code></pre>
 
-<p>Now that we have solved the problem, we&rsquo;ll clean up and return <code>0</code>. Note that it
-is not strictly necessary to free <code>input</code>, but it is a good habit to be in.</p>
-
-<p>Here&rsquo;s the whole program for day 1:</p>
+<p>When it&rsquo;s all put together, we have:</p>
 
 <pre><code class="language-c">#include &lt;errno.h&gt;
 #include &lt;stdio.h&gt;
@@ -668,6 +684,8 @@ is not strictly necessary to free <code>input</code>, but it is a good habit to 
 
 int main(int argc, char const *argv[])
 {
+    int rval = 0;
+
     /* check that filename was provided */
     if (argc &lt; 2)
     {
@@ -684,41 +702,53 @@ int main(int argc, char const *argv[])
         return -1;
     }
 
-    printf(&quot;Day 1:\n&quot;);
+    printf(&quot;Day 2:\n&quot;);
 
-    /* solve the puzzles */
-    int floor = 0;
-    int basement = 0;
-    for (int i = 0; i &lt; filesize; i++)
+    int paper = 0;
+    int ribbon = 0;
+
+    /* tokenize the data into lines */
+    char *cursor = input;
+    char *line = strsep(&amp;cursor, &quot;\n&quot;);
+    while (line != NULL)
     {
-        switch (input[i])
+        if (strlen(line) == 0)
+            goto tokenize;
+
+        /* scan each line's values */
+        int dims[3] = {0};
+
+        int scanned = sscanf(line, &quot;%dx%dx%d&quot;, &amp;dims[0], &amp;dims[1], &amp;dims[2]);
+        if (scanned != 3)
         {
-        case '(':
-            floor++;
-            break;
-        case ')':
-            floor--;
-            break;
-        default:;
+            fprintf(stderr, &quot;Invalid input line \&quot;%s\&quot;\n&quot;, line);
+            goto err_cleanup;
         }
-        if (floor == -1 &amp;&amp; basement == 0)
-        {
-            basement = i + 1;
-        }
+
+        qsort(dims, 3, sizeof(int), cmp_int_asc);
+
+        paper += 2 * dims[0] * dims[1] + 2 * dims[1] * dims[2] + 2 * dims[2] * dims[0] + dims[0] * dims[1];
+        ribbon += 2 * dims[0] + 2 * dims[1] + dims[0] * dims[1] * dims[2];
+    tokenize:
+        line = strsep(&amp;cursor, &quot;\n&quot;);
     }
 
-    printf(&quot;\tSolution 1: %d\n&quot;, floor);
-    printf(&quot;\tSolution 2: %d\n&quot;, basement);
+    printf(&quot;\tSolution 1: %d\n&quot;, paper);
+    printf(&quot;\tSolution 2: %d\n&quot;, ribbon);
 
+    goto cleanup;
+
+err_cleanup:
+    rval = 1;
+cleanup:
     free(input);
-    return 0;
+    return rval;
 }
 </code></pre>
 
-<p>This program makes proper error checks and manages memory properly, and will
-pass all Valgrind checks in a variety of test scenarios.</p>
+<p>As before, this program will pass all Valgrind checks and does not leak memory.</p>
 
-<p>If I&rsquo;ve done something horribly wrong or you have questions, please comment!</p>
+<p>Suggestions, questions, and criticism welcome! Comments can be added below.</p>
 
     </div>
 
@@ -731,6 +761,8 @@ pass all Valgrind checks in a variety of test scenarios.</p>
   <a class="badge badge-light" href="/tags/advent-of-code/">Advent of Code</a>
   
   <a class="badge badge-light" href="/tags/c/">C</a>
+  
+  <a class="badge badge-light" href="/tags/string-parsing/">String parsing</a>
   
 </div>
 
@@ -849,6 +881,8 @@ pass all Valgrind checks in a variety of test scenarios.</p>
         <div class="hr-light"></div>
         <h3>Related</h3>
         <ul>
+          
+          <li><a href="/post/advent-2015-c-1/">Advent of Code 2015 Day 1: Not Quite Lisp</a></li>
           
           <li><a href="/post/advent-setup-c/">Advent of Code deep dive kickoff</a></li>
           

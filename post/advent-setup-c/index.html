@@ -588,7 +588,7 @@ return <code>NULL</code> and set <code>errno</code> appropriately. We will check
 return value and short-circuit as needed.</p>
 
 <pre><code class="language-c">    /* allocate the buffer */
-    *buf = malloc(s.st_size);
+    *buf = malloc(s.st_size + 1);
     if (*buf == NULL)
         goto err_cleanup; /* errno is set by malloc() */
 </code></pre>
@@ -602,7 +602,8 @@ running out of memory, <code>malloc</code> will return <code>NULL</code> and set
 will check for this and short-circuit the function as necessary. I&rsquo;m using
 <code>malloc</code> instead of <code>calloc</code> because we have designed the function such that the
 buffer will be completely filled by the file, negating the need to initialize
-it.</p>
+it. The extra +1 is to make room for a null terminator so that we may treat the
+buffer as a string.</p>
 
 <pre><code class="language-c">    /* read the file into the buffer */
     size_t rd = fread(*buf, 1, s.st_size, f);
@@ -619,12 +620,17 @@ of data is read (the file size) and check for an error if it is not. If there
 is an error reading the file, we&rsquo;ll short-circuit to our error cleanup.</p>
 
 <pre><code class="language-c">    /* file is read into the buffer, return the number of bytes read */
+    (*buf)[rd] = '\0';
     rval = rd;
     goto cleanup;
 </code></pre>
 
-<p>We finish up the logic of our function by setting the return value to the amount
-of data read, and then jumping to our non-error cleanup.</p>
+<p>We finish up the logic of our function by setting the extra allocated byte at
+the end of the buffer to a null terminator, then set the return value to the
+amount of data read, and finally jumping to our non-error cleanup. Array
+indeces have a higher precedence than the indirection operator, so we need to
+enclose the indirection in parentheses to avoid writing to the wrong memory
+address.</p>
 
 <pre><code class="language-c">err_cleanup:
     rval = -1;
@@ -671,7 +677,7 @@ more information by inspecting <code>errno.</code></p>
         goto err_cleanup; /* errno is set by fopen() */
 
     /* allocate the buffer */
-    *buf = malloc(s.st_size);
+    *buf = malloc(s.st_size + 1);
     if (*buf == NULL)
         goto err_cleanup; /* errno is set by malloc() */
 
@@ -682,6 +688,7 @@ more information by inspecting <code>errno.</code></p>
             goto err_cleanup;
 
     /* file is read into the buffer, return the number of bytes read */
+    (*buf)[rd] = '\0';
     rval = rd;
     goto cleanup;
 
@@ -752,23 +759,6 @@ throughout our Advent of Code exercises!</p>
       <h6 class="card-subtitle">Sr Software Engineer, Infrastructure as a Service</h6>
       <p class="card-text" itemprop="description">Building the infrastructure for building the Internet.</p>
       <ul class="network-icon" aria-hidden="true">
-        
-          
-          
-          
-            
-          
-          
-          
-          
-          
-            
-          
-          <li>
-            <a itemprop="sameAs" href="/#contact" >
-              <i class="fas fa-envelope"></i>
-            </a>
-          </li>
         
           
           

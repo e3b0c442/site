@@ -6,10 +6,290 @@
     <description>Recent content in Programming on e3b0c442.io</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 09 Sep 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 09 Sep 2019 02:00:00 +0000</lastBuildDate>
     
 	    <atom:link href="/tags/programming/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Advent of Code 2015 Day 2: I Was Told There Would Be No Math</title>
+      <link>/post/advent-2015-c-2/</link>
+      <pubDate>Mon, 09 Sep 2019 02:00:00 +0000</pubDate>
+      
+      <guid>/post/advent-2015-c-2/</guid>
+      <description>&lt;p&gt;I&amp;rsquo;m going to go ahead and do a second puzzle today since the early ones are
+relatively simple. Day 1&amp;rsquo;s puzzles were mostly incrementing, decrementing and
+tracking variables; Day 2&amp;rsquo;s have a bit more math involved.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;The elves are running low on wrapping paper, and so they need to submit an order for more. They have a list of the dimensions (length l, width w, and height h) of each present, and only want to order exactly as much as they need.&lt;/p&gt;
+
+&lt;p&gt;Fortunately, every present is a box (a perfect right rectangular prism), which makes calculating the required wrapping paper for each gift a little easier: find the surface area of the box, which is &lt;code&gt;2*l*w + 2*w*h + 2*h*l&lt;/code&gt;. The elves also need a little extra paper for each present: the area of the smallest side.&lt;/p&gt;
+
+&lt;p&gt;For example:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;A present with dimensions &lt;code&gt;2x3x4&lt;/code&gt; requires &lt;code&gt;2*6 + 2*12 + 2*8 = 52&lt;/code&gt; square feet of wrapping paper plus &lt;code&gt;6&lt;/code&gt; square feet of slack, for a total of &lt;code&gt;58&lt;/code&gt; square feet.&lt;/li&gt;
+&lt;li&gt;A present with dimensions &lt;code&gt;1x1x10&lt;/code&gt; requires &lt;code&gt;2*1 + 2*10 + 2*10 = 42&lt;/code&gt; square feet of wrapping paper plus &lt;code&gt;1&lt;/code&gt; square foot of slack, for a total of &lt;code&gt;43&lt;/code&gt; square feet.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;All numbers in the elves&amp;rsquo; list are in feet. How many total &lt;strong&gt;square feet of wrapping paper&lt;/strong&gt; should they order?&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;As with day 1, we&amp;rsquo;re going to take a minute to break the problem down. As the
+problem states, the input is formatted as XXxYYxZZ, so we will need to parse
+the input into usable numbers. Since we need to operate on the smallest
+dimensions for the slack, we&amp;rsquo;ll need to be able to sort the inputted values.
+Finally, we&amp;rsquo;ll need to do the math and keep a running total.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s dig in:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;int main(int argc, char const *argv[])
+{
+    int rval = 0;
+
+    /* check that filename was provided */
+    if (argc &amp;lt; 2)
+    {
+        fprintf(stderr, &amp;quot;Must provide filename of input file\n&amp;quot;);
+        return -1;
+    }
+
+    /* read the file into memory */
+    char *input;
+    int filesize = read_file_to_buffer(&amp;amp;input, argv[1]);
+    if (filesize &amp;lt; 0)
+    {
+        fprintf(stderr, &amp;quot;File read failed: %s\n&amp;quot;, strerror(errno));
+        return -1;
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The preamble to our function is identical to day 1, with the exception of
+initializing our return value early as we&amp;rsquo;ll be using our &lt;code&gt;goto&lt;/code&gt; short circuit
+pattern to handle some later potential errors. We check that the user provided a
+filename and read the file into the &lt;code&gt;input&lt;/code&gt; buffer.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    printf(&amp;quot;Day 2:\n&amp;quot;);
+
+    int paper = 0;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We&amp;rsquo;ll then print our daily header and initialize the running total for the
+wrapping paper.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    /* tokenize the data into lines */
+    char *cursor = input;
+    char *line = strsep(&amp;amp;cursor, &amp;quot;\n&amp;quot;);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now we start getting into some more interesting string handling. Note that the
+input has one present per line, so we need to effectively split the string on
+the lines. We will use the POSIX &lt;code&gt;strsep&lt;/code&gt; function for this. There is a similar
+&lt;code&gt;strtok&lt;/code&gt; function in the C standard librory, but it has the downside of being
+non-reentrant. If portability is a concern, you may want to stick use &lt;code&gt;strtok&lt;/code&gt;,
+however &lt;code&gt;strsep&lt;/code&gt; is widely supported and should  be used instead of &lt;code&gt;strtok&lt;/code&gt;
+wherever possible.&lt;/p&gt;
+
+&lt;p&gt;In order to avoid changing the original value of the pointer to the input, we
+make a copy into &lt;code&gt;cursor&lt;/code&gt; which becomes the moving pointer passed as the first
+argument of &lt;code&gt;strsep&lt;/code&gt;. Finally, we are splitting on the newline character &lt;code&gt;\n&lt;/code&gt;.
+We will not bother to make a copy of the input buffer as we only need to parse
+it once.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    while (line != NULL)
+    {
+        if (strlen(line) == 0)
+            goto tokenize;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;One side effect of &lt;code&gt;strsep&lt;/code&gt; that one needs to be aware of is that if multiple
+delimiters are encountered in a row, &lt;code&gt;strsep&lt;/code&gt; will return a pointer to an empty
+string instead of consuming all of the delimiters at once. We check for the
+empty string and short-circuit the loop if we encounter this.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;        /* scan each line&#39;s values */
+        int dims[3] = {0};
+
+        int scanned = sscanf(line, &amp;quot;%dx%dx%d&amp;quot;, &amp;amp;dims[0], &amp;amp;dims[1], &amp;amp;dims[2]);
+        if (scanned != 3)
+        {
+            fprintf(stderr, &amp;quot;Invalid input line \&amp;quot;%s\&amp;quot;\n&amp;quot;, line);
+            goto err_cleanup;
+        }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We now initialize an array of three &lt;code&gt;int&lt;/code&gt;s to hold the parsed values. We use an
+array instead of separate variables because we will need to sort the result.
+Once the array is initialized, we use the &lt;code&gt;sscanf&lt;/code&gt; function to scan the
+dimensions into the array. As we are not trying to scan &lt;em&gt;into&lt;/em&gt; string variables,
+&lt;code&gt;sscanf&lt;/code&gt; is perfectly safe for our usage. As an error check, we will
+short-circuit to the function cleanup if we have an invalid line which scans
+less than three values.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;        qsort(dims, 3, sizeof(int), cmp_int_asc);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Once the values are scanned, they need to be sorted so that we can find the
+slack using the smallest side. For this we use the standard library function
+&lt;code&gt;qsort&lt;/code&gt; with a simple comparator function:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;int cmp_int_asc(const void *a, const void *b)
+{
+    int l = *(const int *)a;
+    int r = *(const int *)b;
+
+    return l &amp;lt; r ? -1 : l &amp;gt; r ? 1 : 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The comparator dereferences and casts the inputs and then returns &lt;code&gt;-1&lt;/code&gt; if &lt;code&gt;a &amp;lt; 
+b&lt;/code&gt;, &lt;code&gt;1&lt;/code&gt; if &lt;code&gt;a &amp;gt; b&lt;/code&gt;, or &lt;code&gt;0&lt;/code&gt; if they are equal. I use the ternary operator here
+for conciseness, but I would refrain from using it for anything more complex.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;        paper += 2 * dims[0] * dims[1] + 2 * dims[1] * dims[2] + 2 * dims[2] * dims[0] + dims[0] * dims[1];
+    tokenize:
+        line = strsep(&amp;amp;cursor, &amp;quot;\n&amp;quot;);
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now that we have our values and we have them sorted by smallest to largest, we
+just need to do the math and update our running total. As noted in the problem,
+for each present we need to add the area of each side plus the area of the
+smallest side as slack: &lt;code&gt;2xy + 2yz + 2xz + xy&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    printf(&amp;quot;\tSolution 1: %d\n&amp;quot;, paper);
+
+    goto cleanup;
+
+err_cleanup:
+    rval = 1;
+cleanup:
+    free(input);
+    return rval;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Once we have broken out of the input parsing loop, &lt;code&gt;paper&lt;/code&gt; should have the total
+required wrapping paper. We can print the solution and then proceed with
+cleanup. As noted in day 1, freeing &lt;code&gt;input&lt;/code&gt; is not strictly necessary in this
+case but is good from a habit-forming perspective.&lt;/p&gt;
+
+&lt;p&gt;Once the solution has been input, the second problem is presented:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;The elves are also running low on ribbon. Ribbon is all the same width, so they only have to worry about the length they need to order, which they would again like to be exact.&lt;/p&gt;
+
+&lt;p&gt;The ribbon required to wrap a present is the shortest distance around its sides, or the smallest perimeter of any one face. Each present also requires a bow made out of ribbon as well; the feet of ribbon required for the perfect bow is equal to the cubic feet of volume of the present. Don&amp;rsquo;t ask how they tie the bow, though; they&amp;rsquo;ll never tell.&lt;/p&gt;
+
+&lt;p&gt;For example:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;A present with dimensions &lt;code&gt;2x3x4&lt;/code&gt; requires &lt;code&gt;2+2+3+3 = 10&lt;/code&gt; feet of ribbon to wrap the present plus &lt;code&gt;2*3*4 = 24&lt;/code&gt; feet of ribbon for the bow, for a total of &lt;code&gt;34&lt;/code&gt; feet.&lt;/li&gt;
+&lt;li&gt;A present with dimensions &lt;code&gt;1x1x10&lt;/code&gt; requires &lt;code&gt;1+1+1+1 = 4&lt;/code&gt; feet of ribbon to wrap the present plus &lt;code&gt;1*1*10 = 10&lt;/code&gt; feet of ribbon for the bow, for a total of &lt;code&gt;14&lt;/code&gt; feet.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;How many total &lt;strong&gt;feet of ribbon&lt;/strong&gt; should they order?&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;As with day 1, we already have all of the infrastructure present to handle this
+new problem. We&amp;rsquo;ll add a new variable to track the running total of ribbon:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    int paper = 0;
+    int ribbon = 0;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then update the total ribbon on each loop, following the instructions to add
+&lt;code&gt;2x+2y+xyz&lt;/code&gt; to the total:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;        paper += 2 * dims[0] * dims[1] + 2 * dims[1] * dims[2] + 2 * dims[2] * dims[0] + dims[0] * dims[1];
+        ribbon += 2 * dims[0] + 2 * dims[1] + dims[0] * dims[1] * dims[2];
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Finally, we&amp;rsquo;ll print the second solution:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;
+    printf(&amp;quot;\tSolution 1: %d\n&amp;quot;, paper);
+    printf(&amp;quot;\tSolution 2: %d\n&amp;quot;, ribbon);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;When it&amp;rsquo;s all put together, we have:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;#include &amp;lt;errno.h&amp;gt;
+#include &amp;lt;stdio.h&amp;gt;
+#include &amp;lt;stdlib.h&amp;gt;
+#include &amp;lt;string.h&amp;gt;
+#include &amp;quot;common.h&amp;quot;
+
+int main(int argc, char const *argv[])
+{
+    int rval = 0;
+
+    /* check that filename was provided */
+    if (argc &amp;lt; 2)
+    {
+        fprintf(stderr, &amp;quot;Must provide filename of input file\n&amp;quot;);
+        return -1;
+    }
+
+    /* read the file into memory */
+    char *input;
+    int filesize = read_file_to_buffer(&amp;amp;input, argv[1]);
+    if (filesize &amp;lt; 0)
+    {
+        fprintf(stderr, &amp;quot;File read failed: %s\n&amp;quot;, strerror(errno));
+        return -1;
+    }
+
+    printf(&amp;quot;Day 2:\n&amp;quot;);
+
+    int paper = 0;
+    int ribbon = 0;
+
+    /* tokenize the data into lines */
+    char *cursor = input;
+    char *line = strsep(&amp;amp;cursor, &amp;quot;\n&amp;quot;);
+    while (line != NULL)
+    {
+        if (strlen(line) == 0)
+            goto tokenize;
+
+        /* scan each line&#39;s values */
+        int dims[3] = {0};
+
+        int scanned = sscanf(line, &amp;quot;%dx%dx%d&amp;quot;, &amp;amp;dims[0], &amp;amp;dims[1], &amp;amp;dims[2]);
+        if (scanned != 3)
+        {
+            fprintf(stderr, &amp;quot;Invalid input line \&amp;quot;%s\&amp;quot;\n&amp;quot;, line);
+            goto err_cleanup;
+        }
+
+        qsort(dims, 3, sizeof(int), cmp_int_asc);
+
+        paper += 2 * dims[0] * dims[1] + 2 * dims[1] * dims[2] + 2 * dims[2] * dims[0] + dims[0] * dims[1];
+        ribbon += 2 * dims[0] + 2 * dims[1] + dims[0] * dims[1] * dims[2];
+    tokenize:
+        line = strsep(&amp;amp;cursor, &amp;quot;\n&amp;quot;);
+    }
+
+    printf(&amp;quot;\tSolution 1: %d\n&amp;quot;, paper);
+    printf(&amp;quot;\tSolution 2: %d\n&amp;quot;, ribbon);
+
+    goto cleanup;
+
+err_cleanup:
+    rval = 1;
+cleanup:
+    free(input);
+    return rval;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As before, this program will pass all Valgrind checks and does not leak memory.&lt;/p&gt;
+
+&lt;p&gt;Suggestions, questions, and criticism welcome! Comments can be added below.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Advent of Code 2015 Day 1: Not Quite Lisp</title>
@@ -44,7 +324,7 @@ will be used frequently throughout the series. Now it&amp;rsquo;s time to dig in
 &lt;li&gt;&lt;code&gt;)))&lt;/code&gt; and &lt;code&gt;)())())&lt;/code&gt; both result in floor &lt;code&gt;-3&lt;/code&gt;.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;To what floor do the instructions take Santa?&lt;/p&gt;
+&lt;p&gt;To &lt;strong&gt;what floor&lt;/strong&gt; do the instructions take Santa?&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;p&gt;Before we start writing code, let&amp;rsquo;s think about what needs to happen. We will
@@ -133,7 +413,7 @@ is our solution.&lt;/p&gt;
 &lt;p&gt;Once we input our solution, a second problem appears!&lt;/p&gt;
 
 &lt;blockquote&gt;
-&lt;p&gt;Now, given the same instructions, find the position of the first character that causes him to enter the basement (floor -1). The first character in the instructions has position 1, the second character has position 2, and so on.&lt;/p&gt;
+&lt;p&gt;Now, given the same instructions, find the &lt;strong&gt;position&lt;/strong&gt; of the first character that causes him to enter the basement (floor -1). The first character in the instructions has position 1, the second character has position 2, and so on.&lt;/p&gt;
 
 &lt;p&gt;For example:&lt;/p&gt;
 
@@ -142,7 +422,7 @@ is our solution.&lt;/p&gt;
 &lt;li&gt;&lt;code&gt;()())&lt;/code&gt; causes him to enter the basement at character position &lt;code&gt;5&lt;/code&gt;.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;What is the position of the character that causes Santa to first enter the basement?&lt;/p&gt;
+&lt;p&gt;What is the &lt;strong&gt;position&lt;/strong&gt; of the character that causes Santa to first enter the basement?&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;p&gt;In the interest of saving compute time and code, we will attempt to integrate
@@ -377,7 +657,7 @@ return &lt;code&gt;NULL&lt;/code&gt; and set &lt;code&gt;errno&lt;/code&gt; appr
 return value and short-circuit as needed.&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    /* allocate the buffer */
-    *buf = malloc(s.st_size);
+    *buf = malloc(s.st_size + 1);
     if (*buf == NULL)
         goto err_cleanup; /* errno is set by malloc() */
 &lt;/code&gt;&lt;/pre&gt;
@@ -391,7 +671,8 @@ running out of memory, &lt;code&gt;malloc&lt;/code&gt; will return &lt;code&gt;N
 will check for this and short-circuit the function as necessary. I&amp;rsquo;m using
 &lt;code&gt;malloc&lt;/code&gt; instead of &lt;code&gt;calloc&lt;/code&gt; because we have designed the function such that the
 buffer will be completely filled by the file, negating the need to initialize
-it.&lt;/p&gt;
+it. The extra +1 is to make room for a null terminator so that we may treat the
+buffer as a string.&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    /* read the file into the buffer */
     size_t rd = fread(*buf, 1, s.st_size, f);
@@ -408,12 +689,17 @@ of data is read (the file size) and check for an error if it is not. If there
 is an error reading the file, we&amp;rsquo;ll short-circuit to our error cleanup.&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    /* file is read into the buffer, return the number of bytes read */
+    (*buf)[rd] = &#39;\0&#39;;
     rval = rd;
     goto cleanup;
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;We finish up the logic of our function by setting the return value to the amount
-of data read, and then jumping to our non-error cleanup.&lt;/p&gt;
+&lt;p&gt;We finish up the logic of our function by setting the extra allocated byte at
+the end of the buffer to a null terminator, then set the return value to the
+amount of data read, and finally jumping to our non-error cleanup. Array
+indeces have a higher precedence than the indirection operator, so we need to
+enclose the indirection in parentheses to avoid writing to the wrong memory
+address.&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;err_cleanup:
     rval = -1;
@@ -460,7 +746,7 @@ more information by inspecting &lt;code&gt;errno.&lt;/code&gt;&lt;/p&gt;
         goto err_cleanup; /* errno is set by fopen() */
 
     /* allocate the buffer */
-    *buf = malloc(s.st_size);
+    *buf = malloc(s.st_size + 1);
     if (*buf == NULL)
         goto err_cleanup; /* errno is set by malloc() */
 
@@ -471,6 +757,7 @@ more information by inspecting &lt;code&gt;errno.&lt;/code&gt;&lt;/p&gt;
             goto err_cleanup;
 
     /* file is read into the buffer, return the number of bytes read */
+    (*buf)[rd] = &#39;\0&#39;;
     rval = rd;
     goto cleanup;
 
