@@ -1,7 +1,7 @@
 ---
-date: 2019-09-08
-title: Advent of Code in-depth
-tags: ["programming", "advent of code", "c", "best practices", "DRY"]
+date: 2019-09-08T22:00:00Z
+title: Advent of Code deep dive kickoff
+tags: ["Programming", "Advent of Code", "C", "Best practices", "DRY"]
 ---
 
 In the first technical article for this iteration of the site, I'd like to turn
