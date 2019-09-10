@@ -6,10 +6,248 @@
     <description>Recent content in Posts on e3b0c442.io</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 10 Sep 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 10 Sep 2019 03:00:00 +0000</lastBuildDate>
     
 	    <atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Advent of Code 2015 Day 4: The Ideal Stocking Stuffer</title>
+      <link>/post/advent-2015-c-4/</link>
+      <pubDate>Tue, 10 Sep 2019 03:00:00 +0000</pubDate>
+      
+      <guid>/post/advent-2015-c-4/</guid>
+      <description>&lt;p&gt;I&amp;rsquo;m back for a second time today since this puzzle is fairly straightforward:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Santa needs help mining some AdventCoins (very similar to bitcoins) to use as gifts for all the economically forward-thinking little girls and boys.&lt;/p&gt;
+
+&lt;p&gt;To do this, he needs to find MD5 hashes which, in hexadecimal, start with at least &lt;strong&gt;five zeroes&lt;/strong&gt;. The input to the MD5 hash is some secret key (your puzzle input, given below) followed by a number in decimal. To mine AdventCoins, you must find Santa the lowest positive number (no leading zeroes: &lt;code&gt;1&lt;/code&gt;, &lt;code&gt;2&lt;/code&gt;, &lt;code&gt;3&lt;/code&gt;, &amp;hellip;) that produces such a hash.&lt;/p&gt;
+
+&lt;p&gt;For example:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;If your secret key is &lt;code&gt;abcdef&lt;/code&gt;, the answer is &lt;code&gt;609043&lt;/code&gt;, because the MD5 hash of &lt;code&gt;abcdef609043&lt;/code&gt; starts with five zeroes &lt;code&gt;(000001dbbfa...&lt;/code&gt;), and it is the lowest such number to do so.&lt;/li&gt;
+&lt;li&gt;If your secret key is &lt;code&gt;pqrstuv&lt;/code&gt;, the lowest number it combines with to make an MD5 hash starting with five zeroes is &lt;code&gt;1048970&lt;/code&gt;; that is, the MD5 hash of &lt;code&gt;pqrstuv1048970&lt;/code&gt; looks like &lt;code&gt;000006136ef...&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;As always, we&amp;rsquo;ll start with breaking down the problem into discrete parts:
+* Read the input
+* Convert a number to a string
+* Combine the input and the number string
+* Get the MD5 digest of the combined string
+* Check that the first five digits of the digest are &lt;code&gt;0&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Rather than write our own MD5 hashing implementation, we will use the well-known
+and commonly-installed OpenSSL library&amp;rsquo;s implementation. You&amp;rsquo;ll need to make
+sure that your linker pulls in the OpenSSL library.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s write some code:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;int main(int argc, char const *argv[])
+{
+    /* check that filename was provided */
+    if (argc &amp;lt; 2)
+    {
+        fprintf(stderr, &amp;quot;Must provide filename of input file\n&amp;quot;);
+        return -1;
+    }
+
+    /* read the file into memory */
+    char *input;
+    int filesize = read_file_to_buffer(&amp;amp;input, argv[1]);
+    if (filesize &amp;lt; 0)
+    {
+        fprintf(stderr, &amp;quot;File read failed: %s\n&amp;quot;, strerror(errno));
+        return -1;
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;For the sake of completion, this is our standard prelude of verifying the
+command-line argument and reading the input file.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    printf(&amp;quot;Day 4:\n&amp;quot;);
+
+    /* initialize variables */
+    int i = 1;
+    char buf[strlen(input) + 11];
+    memset(buf, 0, strlen(input) + 11);
+    strcpy(buf, input);
+    unsigned char digest[16];
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We print our preamble, then initialize some variables. Note that I&amp;rsquo;m doing this
+outside of a loop so that we do not incur this cost in the loop. Our code will
+be written in such a way that the variables do not need to be reinitialized on
+every pass. Step by step we have:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;The declaration of the iteration index &lt;code&gt;i&lt;/code&gt;, which is the number that will be
+added to the input string on each pass&lt;/li&gt;
+&lt;li&gt;The declaration of the buffer which stores the whole string to be hashed. We
+size from the input and then add 11 &amp;ndash; 10 for the maximum number of digits in a
+32-bit integer, and 1 for the null terminator.&lt;/li&gt;
+&lt;li&gt;The initialization of the string buffer. Ensuring all bytes are set to &lt;code&gt;0&lt;/code&gt; now
+will help us not need to re-initialize the variable on every loop&lt;/li&gt;
+&lt;li&gt;Copying the input into the buffer&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Creating a buffer for the MD5 digest. MD5 digests are 128 bits, so we need a
+16-byte buffer. Note that we do &lt;em&gt;not&lt;/em&gt; have a null terminator here because this
+is not a string.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;while (1)
+{
+    sprintf(buf + strlen(input), &amp;quot;%d&amp;quot;, i);
+    MD5((const unsigned char *)buf, strlen(buf), digest);
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Now we begin the loop. W se formatted print to append the string representation
+of &lt;code&gt;i&lt;/code&gt; to the buffer. Notice that we are using pointer arithmetic to point to
+the first index in the buffer after the original input string. Because the
+numbers will only ever increase, we will overwrite this on each loop and not
+need to reinitialize the variable. We then get the MD5 digest of the constructed
+string.&lt;/p&gt;
+
+&lt;p&gt;At this point, one might be tempted to use formatted print to output the
+hexadecimal representation of the digest. &lt;em&gt;Don&amp;rsquo;t!&lt;/em&gt; String formatting operations
+are computationally expensive, and we have the information we need to solve
+the problem without doing it.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;        if (digest[0] == 0 &amp;amp;&amp;amp; digest[1] == 0 &amp;amp;&amp;amp; digest[2] &amp;lt; 16)
+            break;
+        i++;
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Note that the ratio of bytes to hex characters is 1:2; that is, each byte of the
+digest would translate to two hex characters. With this in mind, remember that
+this digest is just one big number; so, rather than convert the number back to
+a string, let&amp;rsquo;s just check the number.&lt;/p&gt;
+
+&lt;p&gt;We are searching for a digest where the first five digits of the hexadecimal
+representation of the digest are &lt;code&gt;0&lt;/code&gt;. For bytes 0 and 1, this is easy: the value
+of the byte must be 0. For byte 2, it requires a little bit more thought, since
+only the first digit must be zero. In this case, it&amp;rsquo;s just a matter of places
+like in decimal math. There are 16 possible hexadecimal digits, so any value
+of the byte that is less than 16 will have the first hex digit as 0.&lt;/p&gt;
+
+&lt;p&gt;By checking this way and avoiding the string conversion, we cut our compute
+usage down by 10-100x, which is important in this exercise as hashing is not a
+fast operation, relatively speaking.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    printf(&amp;quot;\tSolution 1: %d\n&amp;quot;, i);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We now have our solution, which is the current value of &lt;code&gt;i&lt;/code&gt;. Once this is
+validated, our second puzzle appears:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Now find one that starts with six zeroes.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Well, that&amp;rsquo;s succinct, isn&amp;rsquo;t it? Literally all we need to do at this point is
+resume the loop right where we left off, making one change: we can check that
+byte 2 of the digest is equal to zero, rather than less than 16:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    while (1)
+    {
+        sprintf(buf + strlen(input), &amp;quot;%d&amp;quot;, i);
+        MD5((const unsigned char *)buf, strlen(buf), digest);
+
+        if (digest[0] == 0 &amp;amp;&amp;amp; digest[1] == 0 &amp;amp;&amp;amp; digest[2] == 0)
+            break;
+        i++;
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We don&amp;rsquo;t even need to reset &lt;code&gt;i&lt;/code&gt; here, since by definition a digest can&amp;rsquo;t start
+with six zeroes without starting with five. In the circumstance that the first
+digest that begins with five zeroes also begins with six zeroes, the first
+iteration of our loop will catch it because we broke out of the previous loop
+before incrementing the index, and we don&amp;rsquo;t increment until the end of the loop.&lt;/p&gt;
+
+&lt;p&gt;We now have our solution, and can print it and clean up:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    printf(&amp;quot;\tSolution 2: %d\n&amp;quot;, i);
+
+    free(input);
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;When we put it all together, we have:&lt;/p&gt;
+
+&lt;p&gt;&amp;rdquo;&amp;lsquo;c
+#include &lt;errno.h&gt;
+#include &lt;openssl/md5.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &amp;ldquo;common.h&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;int main(int argc, char const &lt;em&gt;argv[])
+{
+    /&lt;/em&gt; check that filename was provided */
+    if (argc &amp;lt; 2)
+    {
+        fprintf(stderr, &amp;ldquo;Must provide filename of input file\n&amp;rdquo;);
+        return -1;
+    }&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;/* read the file into memory */
+char *input;
+int filesize = read_file_to_buffer(&amp;amp;input, argv[1]);
+if (filesize &amp;lt; 0)
+{
+    fprintf(stderr, &amp;quot;File read failed: %s\n&amp;quot;, strerror(errno));
+    return -1;
+}
+
+printf(&amp;quot;Day 4:\n&amp;quot;);
+
+/* initialize variables */
+int i = 1;
+char buf[strlen(input) + 11];
+memset(buf, 0, strlen(input) + 11);
+strcpy(buf, input);
+unsigned char digest[16];
+
+/* find the first matching digest */
+while (1)
+{
+    sprintf(buf + strlen(input), &amp;quot;%d&amp;quot;, i);
+    MD5((const unsigned char *)buf, strlen(buf), digest);
+
+    if (digest[0] == 0 &amp;amp;&amp;amp; digest[1] == 0 &amp;amp;&amp;amp; digest[2] &amp;lt; 16)
+        break;
+    i++;
+}
+
+printf(&amp;quot;\tSolution 1: %d\n&amp;quot;, i);
+
+/* find the first matching digest */
+while (1)
+{
+    sprintf(buf + strlen(input), &amp;quot;%d&amp;quot;, i);
+    MD5((const unsigned char *)buf, strlen(buf), digest);
+
+    if (digest[0] == 0 &amp;amp;&amp;amp; digest[1] == 0 &amp;amp;&amp;amp; digest[2] == 0)
+        break;
+    i++;
+}
+
+printf(&amp;quot;\tSolution 2: %d\n&amp;quot;, i);
+
+free(input);
+return 0;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;}
+```&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Advent of Code 2015 Day 3: Perfectly Spherical Houses in a Vacuum</title>

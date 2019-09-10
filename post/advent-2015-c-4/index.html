@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.4.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Nick Meyer">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="I&rsquo;m back for a second time today since this puzzle is fairly straightforward:
+ Santa needs help mining some AdventCoins (very similar to bitcoins) to use as gifts for all the economically forward-thinking little girls and boys.
+To do this, he needs to find MD5 hashes which, in hexadecimal, start with at least five zeroes. The input to the MD5 hash is some secret key (your puzzle input, given below) followed by a number in decimal.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/advent-2015-c-4/">
+
+  
+
+
+  
+
+  
+  
+  
+  <meta name="theme-color" content="#2962ff">
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css" integrity="sha384-aOkxzJ5uQz7WBObEZcHvV5JvRW3TUc2rNPA7pe3AwnsUohiw1Vj2Rgx2KSOkF5+h" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css" integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ==" crossorigin="anonymous">
+    
+
+    
+
+  
+
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700|Roboto:400,400italic,700|Roboto+Mono&display=swap">
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.min.3bc694af15fd1e4ff7262e7dd46f11a8.css">
+
+  
+
+  
+  
+  
+
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/advent-2015-c-4/">
+
+  
+  
+  
+  
+    
+    
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="twitter:site" content="@0xe3b0c442">
+  <meta property="twitter:creator" content="@0xe3b0c442">
+  
+  <meta property="og:site_name" content="e3b0c442.io">
+  <meta property="og:url" content="/post/advent-2015-c-4/">
+  <meta property="og:title" content="Advent of Code 2015 Day 4: The Ideal Stocking Stuffer | e3b0c442.io">
+  <meta property="og:description" content="I&rsquo;m back for a second time today since this puzzle is fairly straightforward:
+ Santa needs help mining some AdventCoins (very similar to bitcoins) to use as gifts for all the economically forward-thinking little girls and boys.
+To do this, he needs to find MD5 hashes which, in hexadecimal, start with at least five zeroes. The input to the MD5 hash is some secret key (your puzzle input, given below) followed by a number in decimal."><meta property="og:image" content="/img/icon-192.png">
+  <meta property="twitter:image" content="/img/icon-192.png"><meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2019-09-10T03:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2019-09-10T03:00:00&#43;00:00">
+  
+
+  
+
+
+  <meta name="robots" content="noindex,nofollow">
+
+
+  <title>Advent of Code 2015 Day 4: The Ideal Stocking Stuffer | e3b0c442.io</title>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+<nav class="navbar navbar-light fixed-top navbar-expand-lg py-0 compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+      <a class="navbar-brand" href="/">e3b0c442.io</a>
+      
+      <button type="button" class="navbar-toggler" data-toggle="collapse"
+              data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span><i class="fas fa-bars"></i></span>
+      </button>
+      
+
+    
+    <div class="collapse navbar-collapse" id="navbar">
+
+      
+      
+      <ul class="navbar-nav mr-auto">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#banner"><span>Home</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/about/"><span>About</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+      
+      </ul>
+      <ul class="navbar-nav ml-auto">
+      
+
+        
+
+        
+        <li class="nav-item">
+          <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+        </li>
+        
+
+        
+
+        
+        <li class="nav-item">
+          <a class="nav-link js-dark-toggle" href="#"><i class="fas fa-moon" aria-hidden="true"></i></a>
+        </li>
+        
+
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+  <article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  
+<div class="article-container pt-3">
+  <h1 itemprop="name">Advent of Code 2015 Day 4: The Ideal Stocking Stuffer</h1>
+
+  
+
+  
+    
+
+
+
+<meta content="2019-09-10 03:00:00 &#43;0000 UTC" itemprop="datePublished">
+<meta content="2019-09-10 03:00:00 &#43;0000 UTC" itemprop="dateModified">
+
+<div class="article-metadata">
+
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+    
+    <time>Sep 10, 2019</time>
+  </span>
+  
+
+  
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    6 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/advent-2015-c-4/#disqus_thread"></a>
+  
+
+  
+  
+
+  
+    
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=/post/advent-2015-c-4/&amp;text=Advent%20of%20Code%202015%20Day%204:%20The%20Ideal%20Stocking%20Stuffer" target="_blank" rel="noopener" class="share-btn-twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=/post/advent-2015-c-4/&amp;t=Advent%20of%20Code%202015%20Day%204:%20The%20Ideal%20Stocking%20Stuffer" target="_blank" rel="noopener" class="share-btn-facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=Advent%20of%20Code%202015%20Day%204:%20The%20Ideal%20Stocking%20Stuffer&amp;body=/post/advent-2015-c-4/" target="_blank" rel="noopener" class="share-btn-email">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=/post/advent-2015-c-4/&amp;title=Advent%20of%20Code%202015%20Day%204:%20The%20Ideal%20Stocking%20Stuffer" target="_blank" rel="noopener" class="share-btn-linkedin">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://web.whatsapp.com/send?text=Advent%20of%20Code%202015%20Day%204:%20The%20Ideal%20Stocking%20Stuffer%20/post/advent-2015-c-4/" target="_blank" rel="noopener" class="share-btn-whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=/post/advent-2015-c-4/&amp;title=Advent%20of%20Code%202015%20Day%204:%20The%20Ideal%20Stocking%20Stuffer" target="_blank" rel="noopener" class="share-btn-weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style" itemprop="articleBody">
+      <p>I&rsquo;m back for a second time today since this puzzle is fairly straightforward:</p>
+
+<blockquote>
+<p>Santa needs help mining some AdventCoins (very similar to bitcoins) to use as gifts for all the economically forward-thinking little girls and boys.</p>
+
+<p>To do this, he needs to find MD5 hashes which, in hexadecimal, start with at least <strong>five zeroes</strong>. The input to the MD5 hash is some secret key (your puzzle input, given below) followed by a number in decimal. To mine AdventCoins, you must find Santa the lowest positive number (no leading zeroes: <code>1</code>, <code>2</code>, <code>3</code>, &hellip;) that produces such a hash.</p>
+
+<p>For example:</p>
+
+<ul>
+<li>If your secret key is <code>abcdef</code>, the answer is <code>609043</code>, because the MD5 hash of <code>abcdef609043</code> starts with five zeroes <code>(000001dbbfa...</code>), and it is the lowest such number to do so.</li>
+<li>If your secret key is <code>pqrstuv</code>, the lowest number it combines with to make an MD5 hash starting with five zeroes is <code>1048970</code>; that is, the MD5 hash of <code>pqrstuv1048970</code> looks like <code>000006136ef...</code>.</li>
+</ul>
+</blockquote>
+
+<p>As always, we&rsquo;ll start with breaking down the problem into discrete parts:
+* Read the input
+* Convert a number to a string
+* Combine the input and the number string
+* Get the MD5 digest of the combined string
+* Check that the first five digits of the digest are <code>0</code></p>
+
+<p>Rather than write our own MD5 hashing implementation, we will use the well-known
+and commonly-installed OpenSSL library&rsquo;s implementation. You&rsquo;ll need to make
+sure that your linker pulls in the OpenSSL library.</p>
+
+<p>Let&rsquo;s write some code:</p>
+
+<pre><code class="language-c">int main(int argc, char const *argv[])
+{
+    /* check that filename was provided */
+    if (argc &lt; 2)
+    {
+        fprintf(stderr, &quot;Must provide filename of input file\n&quot;);
+        return -1;
+    }
+
+    /* read the file into memory */
+    char *input;
+    int filesize = read_file_to_buffer(&amp;input, argv[1]);
+    if (filesize &lt; 0)
+    {
+        fprintf(stderr, &quot;File read failed: %s\n&quot;, strerror(errno));
+        return -1;
+    }
+</code></pre>
+
+<p>For the sake of completion, this is our standard prelude of verifying the
+command-line argument and reading the input file.</p>
+
+<pre><code class="language-c">    printf(&quot;Day 4:\n&quot;);
+
+    /* initialize variables */
+    int i = 1;
+    char buf[strlen(input) + 11];
+    memset(buf, 0, strlen(input) + 11);
+    strcpy(buf, input);
+    unsigned char digest[16];
+</code></pre>
+
+<p>We print our preamble, then initialize some variables. Note that I&rsquo;m doing this
+outside of a loop so that we do not incur this cost in the loop. Our code will
+be written in such a way that the variables do not need to be reinitialized on
+every pass. Step by step we have:</p>
+
+<ul>
+<li>The declaration of the iteration index <code>i</code>, which is the number that will be
+added to the input string on each pass</li>
+<li>The declaration of the buffer which stores the whole string to be hashed. We
+size from the input and then add 11 &ndash; 10 for the maximum number of digits in a
+32-bit integer, and 1 for the null terminator.</li>
+<li>The initialization of the string buffer. Ensuring all bytes are set to <code>0</code> now
+will help us not need to re-initialize the variable on every loop</li>
+<li>Copying the input into the buffer</li>
+
+<li><p>Creating a buffer for the MD5 digest. MD5 digests are 128 bits, so we need a
+16-byte buffer. Note that we do <em>not</em> have a null terminator here because this
+is not a string.</p>
+
+<pre><code class="language-c">while (1)
+{
+    sprintf(buf + strlen(input), &quot;%d&quot;, i);
+    MD5((const unsigned char *)buf, strlen(buf), digest);
+</code></pre></li>
+</ul>
+
+<p>Now we begin the loop. W se formatted print to append the string representation
+of <code>i</code> to the buffer. Notice that we are using pointer arithmetic to point to
+the first index in the buffer after the original input string. Because the
+numbers will only ever increase, we will overwrite this on each loop and not
+need to reinitialize the variable. We then get the MD5 digest of the constructed
+string.</p>
+
+<p>At this point, one might be tempted to use formatted print to output the
+hexadecimal representation of the digest. <em>Don&rsquo;t!</em> String formatting operations
+are computationally expensive, and we have the information we need to solve
+the problem without doing it.</p>
+
+<pre><code class="language-c">        if (digest[0] == 0 &amp;&amp; digest[1] == 0 &amp;&amp; digest[2] &lt; 16)
+            break;
+        i++;
+    }
+</code></pre>
+
+<p>Note that the ratio of bytes to hex characters is 1:2; that is, each byte of the
+digest would translate to two hex characters. With this in mind, remember that
+this digest is just one big number; so, rather than convert the number back to
+a string, let&rsquo;s just check the number.</p>
+
+<p>We are searching for a digest where the first five digits of the hexadecimal
+representation of the digest are <code>0</code>. For bytes 0 and 1, this is easy: the value
+of the byte must be 0. For byte 2, it requires a little bit more thought, since
+only the first digit must be zero. In this case, it&rsquo;s just a matter of places
+like in decimal math. There are 16 possible hexadecimal digits, so any value
+of the byte that is less than 16 will have the first hex digit as 0.</p>
+
+<p>By checking this way and avoiding the string conversion, we cut our compute
+usage down by 10-100x, which is important in this exercise as hashing is not a
+fast operation, relatively speaking.</p>
+
+<pre><code class="language-c">    printf(&quot;\tSolution 1: %d\n&quot;, i);
+</code></pre>
+
+<p>We now have our solution, which is the current value of <code>i</code>. Once this is
+validated, our second puzzle appears:</p>
+
+<blockquote>
+<p>Now find one that starts with six zeroes.</p>
+</blockquote>
+
+<p>Well, that&rsquo;s succinct, isn&rsquo;t it? Literally all we need to do at this point is
+resume the loop right where we left off, making one change: we can check that
+byte 2 of the digest is equal to zero, rather than less than 16:</p>
+
+<pre><code class="language-c">    while (1)
+    {
+        sprintf(buf + strlen(input), &quot;%d&quot;, i);
+        MD5((const unsigned char *)buf, strlen(buf), digest);
+
+        if (digest[0] == 0 &amp;&amp; digest[1] == 0 &amp;&amp; digest[2] == 0)
+            break;
+        i++;
+    }
+</code></pre>
+
+<p>We don&rsquo;t even need to reset <code>i</code> here, since by definition a digest can&rsquo;t start
+with six zeroes without starting with five. In the circumstance that the first
+digest that begins with five zeroes also begins with six zeroes, the first
+iteration of our loop will catch it because we broke out of the previous loop
+before incrementing the index, and we don&rsquo;t increment until the end of the loop.</p>
+
+<p>We now have our solution, and can print it and clean up:</p>
+
+<pre><code class="language-c">    printf(&quot;\tSolution 2: %d\n&quot;, i);
+
+    free(input);
+    return 0;
+}
+</code></pre>
+
+<p>When we put it all together, we have:</p>
+
+<p>&rdquo;&lsquo;c
+#include <errno.h>
+#include <openssl/md5.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include &ldquo;common.h&rdquo;</p>
+
+<p>int main(int argc, char const <em>argv[])
+{
+    /</em> check that filename was provided */
+    if (argc &lt; 2)
+    {
+        fprintf(stderr, &ldquo;Must provide filename of input file\n&rdquo;);
+        return -1;
+    }</p>
+
+<pre><code>/* read the file into memory */
+char *input;
+int filesize = read_file_to_buffer(&amp;input, argv[1]);
+if (filesize &lt; 0)
+{
+    fprintf(stderr, &quot;File read failed: %s\n&quot;, strerror(errno));
+    return -1;
+}
+
+printf(&quot;Day 4:\n&quot;);
+
+/* initialize variables */
+int i = 1;
+char buf[strlen(input) + 11];
+memset(buf, 0, strlen(input) + 11);
+strcpy(buf, input);
+unsigned char digest[16];
+
+/* find the first matching digest */
+while (1)
+{
+    sprintf(buf + strlen(input), &quot;%d&quot;, i);
+    MD5((const unsigned char *)buf, strlen(buf), digest);
+
+    if (digest[0] == 0 &amp;&amp; digest[1] == 0 &amp;&amp; digest[2] &lt; 16)
+        break;
+    i++;
+}
+
+printf(&quot;\tSolution 1: %d\n&quot;, i);
+
+/* find the first matching digest */
+while (1)
+{
+    sprintf(buf + strlen(input), &quot;%d&quot;, i);
+    MD5((const unsigned char *)buf, strlen(buf), digest);
+
+    if (digest[0] == 0 &amp;&amp; digest[1] == 0 &amp;&amp; digest[2] == 0)
+        break;
+    i++;
+}
+
+printf(&quot;\tSolution 2: %d\n&quot;, i);
+
+free(input);
+return 0;
+</code></pre>
+
+<p>}
+```</p>
+
+    </div>
+
+    
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/tags/programming/">Programming</a>
+  
+  <a class="badge badge-light" href="/tags/advent-of-code/">Advent of Code</a>
+  
+  <a class="badge badge-light" href="/tags/c/">C</a>
+  
+  <a class="badge badge-light" href="/tags/cryptography/">Cryptography</a>
+  
+  <a class="badge badge-light" href="/tags/hashing/">Hashing</a>
+  
+</div>
+
+
+
+    
+      
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+  
+  
+    
+  
+  
+  <div class="media author-card" itemscope itemtype="http://schema.org/Person">
+    
+      <img class="portrait mr-3" src="https://s.gravatar.com/avatar/19df311615fff265c919af6f4e1db103?s=200')" itemprop="image" alt="Avatar">
+    
+
+    <div class="media-body">
+      <h5 class="card-title" itemprop="name"><a href="/">Nick Meyer</a></h5>
+      <h6 class="card-subtitle">Sr Software Engineer, Infrastructure as a Service</h6>
+      <p class="card-text" itemprop="description">Building the infrastructure for building the Internet.</p>
+      <ul class="network-icon" aria-hidden="true">
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+            
+          
+          <li>
+            <a itemprop="sameAs" href="https://twitter.com/0xe3b0c442" target="_blank" rel="noopener">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+            
+          
+          <li>
+            <a itemprop="sameAs" href="https://linkedin.com/in/meyerns" target="_blank" rel="noopener">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+            
+          
+          <li>
+            <a itemprop="sameAs" href="https://github.com/e3b0c442" target="_blank" rel="noopener">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+            
+          
+          <li>
+            <a itemprop="sameAs" href="https://gitlab.com/e3b0c442" target="_blank" rel="noopener">
+              <i class="fab fa-gitlab"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+
+      
+      
+      <div class="article-widget">
+        <div class="hr-light"></div>
+        <h3>Related</h3>
+        <ul>
+          
+          <li><a href="/post/advent-2015-c-3/">Advent of Code 2015 Day 3: Perfectly Spherical Houses in a Vacuum</a></li>
+          
+          <li><a href="/post/advent-2015-c-2/">Advent of Code 2015 Day 2: I Was Told There Would Be No Math</a></li>
+          
+          <li><a href="/post/advent-2015-c-1/">Advent of Code 2015 Day 1: Not Quite Lisp</a></li>
+          
+          <li><a href="/post/advent-setup-c/">Advent of Code deep dive kickoff</a></li>
+          
+        </ul>
+      </div>
+      
+    
+
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "e3b0c442" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+      
+
+    
+    
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js" integrity="sha256-aYTdUrn6Ow1DDgh5JTc3aDGnnju48y/1c8s1dgkYPQ8=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/languages/r.min.js"></script>
+        
+      
+
+      
+      
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.js" integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log==" crossorigin="anonymous"></script>
+    
+
+    
+    
+    
+    <script id="dsq-count-scr" src="https://e3b0c442.disqus.com/count.js" async></script>
+    
+
+    
+    
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script>
+      const search_index_filename = "/index.json";
+      const i18n = {
+        'placeholder': "Search...",
+        'results': "results found",
+        'no_results': "No results found"
+      };
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.16bbb3750feb7244c9bc409a5a4fe678.js"></script>
+
+    
+
+
+
+
+
+
+  
+  <div class="container">
+    <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+    <span class="float-right" aria-hidden="true">
+      <a href="#" id="back_to_top">
+        <span class="button_icon">
+          <i class="fas fa-chevron-up fa-2x"></i>
+        </span>
+      </a>
+    </span>
+    
+  </p>
+</footer>
+
+  </div>
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
