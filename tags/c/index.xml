@@ -6,10 +6,510 @@
     <description>Recent content in C on e3b0c442.io</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 09 Sep 2019 02:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 10 Sep 2019 00:00:00 +0000</lastBuildDate>
     
 	    <atom:link href="/tags/c/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Advent of Code 2015 Day 3: Perfectly Spherical Houses in a Vacuum</title>
+      <link>/post/advent-2015-c-3/</link>
+      <pubDate>Tue, 10 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/advent-2015-c-3/</guid>
+      <description>&lt;p&gt;You&amp;rsquo;ve made it this far, so either nobody&amp;rsquo;s reading this, you&amp;rsquo;re all masochists,
+or I&amp;rsquo;m doing OK. Let&amp;rsquo;s take a look at day 3:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Santa is delivering presents to an infinite two-dimensional grid of houses.&lt;/p&gt;
+
+&lt;p&gt;He begins by delivering a present to the house at his starting location, and then an elf at the North Pole calls him via radio and tells him where to move next. Moves are always exactly one house to the north (&lt;code&gt;^&lt;/code&gt;), south (&lt;code&gt;v&lt;/code&gt;), east (&lt;code&gt;&amp;gt;&lt;/code&gt;), or west (&lt;code&gt;&amp;lt;&lt;/code&gt;). After each move, he delivers another present to the house at his new location.&lt;/p&gt;
+
+&lt;p&gt;However, the elf back at the north pole has had a little too much eggnog, and so his directions are a little off, and Santa ends up visiting some houses more than once. How many houses receive &lt;strong&gt;at least one present&lt;/strong&gt;?&lt;/p&gt;
+
+&lt;p&gt;For example:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;&amp;gt;&lt;/code&gt; delivers presents to &lt;code&gt;2&lt;/code&gt; houses: one at the starting location, and one to the east.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;^&amp;gt;v&amp;lt;&lt;/code&gt; delivers presents to &lt;code&gt;4&lt;/code&gt; houses in a square, including twice to the house at his starting/ending location.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;^v^v^v^v^v&lt;/code&gt; delivers a bunch of presents to some very lucky children at only 2 houses.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This problem seems pretty simple on the face of it, but let&amp;rsquo;s break it down. We
+will need to:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Read the input from the file&lt;/li&gt;
+&lt;li&gt;Iterate over the input&lt;/li&gt;
+&lt;li&gt;Track which locations have been visited&lt;/li&gt;
+&lt;li&gt;Count the visited locations&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;In order to track the location, we&amp;rsquo;ll need to use a slightly more advanced data
+structure. Since we are working with quantities in 2D space, a 2D array makes
+sense. Thankfully, in newer versions of the C standard, the array sizes do not
+need to be known at compile time, so we can avoid some messy pointer arithmetic.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s get to work.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;int main(int argc, char const *argv[])
+{
+    int rval = 0;
+
+    /* check that filename was provided */
+    if (argc &amp;lt; 2)
+    {
+        fprintf(stderr, &amp;quot;Must provide filename of input file\n&amp;quot;);
+        return -1;
+    }
+
+    /* read the file into memory */
+    char *input;
+    int filesize = read_file_to_buffer(&amp;amp;input, argv[1]);
+    if (filesize &amp;lt; 0)
+    {
+        fprintf(stderr, &amp;quot;File read failed: %s\n&amp;quot;, strerror(errno));
+        return -1;
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If this looks familiar, you&amp;rsquo;re catching on. We check that the filename is
+provided, read the input file to memory, and handle any errors.&lt;/p&gt;
+
+&lt;p&gt;Now we&amp;rsquo;re ready to get started&amp;hellip; but are we? We still have no idea how big
+our grid array needs to be. We could guess, but we run the danger of either
+making the arrays too small and going out-of-bounds, or making them too big and
+unnecessarily tying up memory. The better plan would be to iterate over the
+input and test the constraints.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    printf(&amp;quot;Day 3:\n&amp;quot;);
+
+    /* size the grid */
+    int x = 0, y = 0, min_x = 0, min_y = 0, max_x = 0, max_y = 0;
+    for (int i = 0; i &amp;lt; filesize; i++)
+    {
+        switch (input[i])
+        {
+        case &#39;&amp;gt;&#39;:
+            x++;
+            break;
+        case &#39;v&#39;:
+            y--;
+            break;
+        case &#39;&amp;lt;&#39;:
+            x--;
+            break;
+        case &#39;^&#39;:
+            y++;
+            break;
+        default:;
+        }
+
+        if (x &amp;gt; max_x)
+            max_x = x;
+        if (y &amp;gt; max_y)
+            max_y = y;
+        if (x &amp;lt; min_x)
+            min_x = x;
+        if (y &amp;lt; min_y)
+            min_y = y;
+    }
+
+    int w = (max_x - min_x) + 1;
+    int h = (max_y - min_y) + 1;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;After printing our preamble, we&amp;rsquo;ll create tracking variables for the current x
+and y positions, and the minimum and maximums of both. We&amp;rsquo;ll initialize all of
+them to zero, and then iterate over the input, adjusting the current value of
+x and y and keeping the maximums and minimums updated as needed. Once the loop
+is complete, we have enough information to compute the sizes of the arrays. Note
+that we need to add 1 to the total; e.g. &lt;code&gt;1 - (-1) = 2&lt;/code&gt;, but that covers the
+values &lt;code&gt;-1, 0, 1&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    /* create the grid and travel again */
+    bool grid[w][h];
+    memset(grid, 0, w * h * sizeof(bool));
+
+    x = 0 - min_x;
+    y = 0 - min_y;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now that we know the sizes, we can declare the two-dimensional array. Again,
+older versions of the C standard do not allow runtime determination of the array
+sizes for stack declarations; if you are stuck using an old version, you will
+need to allocate the array on the heap with &lt;code&gt;malloc&lt;/code&gt; or the like. Since we only
+need to track if a house has been visited or not, we&amp;rsquo;ll use the &lt;code&gt;bool&lt;/code&gt; data type
+for our grid. The more astute reader might know that &lt;code&gt;bool&lt;/code&gt; is still represented
+with a full byte in C, but we can still use the type as a hint to those who
+might read your code as to the function.&lt;/p&gt;
+
+&lt;p&gt;Once we&amp;rsquo;ve declared the array, we will need to initialize it; while we can
+declare the array in this fashion now, we still cannot initialize it at
+declaration. We&amp;rsquo;ll use the &lt;code&gt;memset&lt;/code&gt; function to zero out the allocated arrays.
+This is safe with our &lt;code&gt;bool&lt;/code&gt; data type as &lt;code&gt;false&lt;/code&gt; is represented as 0.&lt;/p&gt;
+
+&lt;p&gt;Finally, we&amp;rsquo;ll set our initial indices for x and y for the upcoming run. Since
+we cannot have negative indices in an array, we&amp;rsquo;ll need to offset them using the
+minimum values previously found.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    grid[x][y] = true;
+    for (int i = 0; i &amp;lt; filesize; i++)
+    {
+        switch (input[i])
+        {
+        case &#39;&amp;gt;&#39;:
+            x++;
+            break;
+        case &#39;v&#39;:
+            y--;
+            break;
+        case &#39;&amp;lt;&#39;:
+            x--;
+            break;
+        case &#39;^&#39;:
+            y++;
+            break;
+        default:;
+        }
+        grid[x][y] = true;
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We&amp;rsquo;re finally ready to gather our data. We&amp;rsquo;ll iterate through the input again,
+flipping the value on the grid to true as we visit each space. Notice that we
+set the origin space to &lt;code&gt;true&lt;/code&gt; as well per the problem parameters (&lt;code&gt;He begins by delivering a present to the house at his starting location...&lt;/code&gt;).&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    /* count the houses touched */
+    int houses = 0;
+    for (int i = 0; i &amp;lt; w; i++)
+        for (int j = 0; j &amp;lt; h; j++)
+            houses += grid[i][j] ? 1 : 0;
+    printf(&amp;quot;\tSolution 1: %d\n&amp;quot;, houses);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Once we&amp;rsquo;ve completed the loop, we can count the houses by iterating through the
+grid and incrementing a counter for each set of coordinates that is true. The
+ternary operator is used as a shortcut here.&lt;/p&gt;
+
+&lt;p&gt;Once we submit our solution, the second problem appears:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;The next year, to speed up the process, Santa creates a robot version of himself, &lt;strong&gt;Robo-Santa&lt;/strong&gt;, to deliver presents with him.&lt;/p&gt;
+
+&lt;p&gt;Santa and Robo-Santa start at the same location (delivering two presents to the same starting house), then take turns moving based on instructions from the elf, who is eggnoggedly reading from the same script as the previous year.&lt;/p&gt;
+
+&lt;p&gt;This year, how many houses receive &lt;strong&gt;at least one present&lt;/strong&gt;?&lt;/p&gt;
+
+&lt;p&gt;For example:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;^v&lt;/code&gt; delivers presents to &lt;code&gt;3&lt;/code&gt; houses, because Santa goes north, and then Robo-Santa goes south.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;^&amp;gt;v&amp;lt;&lt;/code&gt; now delivers presents to &lt;code&gt;3&lt;/code&gt; houses, and Santa and Robo-Santa end up back where they started.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;^v^v^v^v^v&lt;/code&gt; now delivers presents to &lt;code&gt;11&lt;/code&gt; houses, with Santa going one direction and Robo-Santa going the other.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;As we read, the difference here is that we have a second &amp;ldquo;Santa&amp;rdquo;, and they
+alternate directions in the input, rather than one taking all the directions.
+This means we will need to implement a toggle, as well as keep two sets of
+coordinates on the same grid. As with previous answers, I chose to integrate
+this solution into the original problem rather than writing a completely new
+set of code to solve problem 2.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    printf(&amp;quot;Day 3:\n&amp;quot;);
+
+    /* size the grid */
+    int x = 0, y = 0, min_x = 0, min_y = 0, max_x = 0, max_y = 0;
+    int x2[2] = {0}, y2[2] = {0}, min_x2 = 0, min_y2 = 0, max_x2 = 0, max_y2 = 0;
+    int s = 0;
+    for (int i = 0; i &amp;lt; filesize; i++)
+    {
+        switch (input[i])
+        {
+        case &#39;&amp;gt;&#39;:
+            x++;
+            x2[s]++;
+            break;
+        case &#39;v&#39;:
+            y--;
+            y2[s]--;
+            break;
+        case &#39;&amp;lt;&#39;:
+            x--;
+            x2[s]--;
+            break;
+        case &#39;^&#39;:
+            y++;
+            y2[s]++;
+            break;
+        default:;
+        }
+
+        if (x &amp;gt; max_x)
+            max_x = x;
+        if (y &amp;gt; max_y)
+            max_y = y;
+        if (x &amp;lt; min_x)
+            min_x = x;
+        if (y &amp;lt; min_y)
+            min_y = y;
+
+        if (x2[s] &amp;gt; max_x2)
+            max_x2 = x2[s];
+        if (y2[s] &amp;gt; max_y2)
+            max_y2 = y2[s];
+        if (x2[s] &amp;lt; min_x2)
+            min_x2 = x2[s];
+        if (y2[s] &amp;lt; min_y2)
+            min_y2 = y2[s];
+
+        s ^= 1;
+    }
+
+    int w = (max_x - min_x) + 1;
+    int h = (max_y - min_y) + 1;
+    int w2 = (max_x2 - min_x2) + 1;
+    int h2 = (max_y2 - min_y2) + 1;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In addition to the single &lt;code&gt;x&lt;/code&gt; and &lt;code&gt;y&lt;/code&gt; value for the first problem, I declare
+a two-element array to represent the coordinates of both santas for the second
+problem. I alse declare and initialize another set of min/max variables.
+Finally, a variable is declared to act as a toggle between &lt;code&gt;0&lt;/code&gt; and &lt;code&gt;1&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Now to find our coordinates, we run through the loop. We increment the x and y
+of the appropriate Santa, and check that against the x and y minimums and
+maximums for the second grid (remember, both Santas share the grid, so there
+is only one set of mins and maxes). We&amp;rsquo;ll update the values for the second grid
+based on the active Santa, and then once all values have been updated, we use
+the bitwise XOR assignment operator to flip the toggle value. Once the loop is
+complete, we calculate the width and height of the second grid.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;
+    /* create the grids and travel again */
+    bool grid[w][h];
+    bool grid2[w2][h2];
+    memset(grid, 0, w * h * sizeof(bool));
+    memset(grid2, 0, w2 * h2 * sizeof(bool));
+
+    x = 0 - min_x;
+    y = 0 - min_y;
+    x2[0] = 0 - min_x2;
+    x2[1] = 0 - min_x2;
+    y2[0] = 0 - min_y2;
+    y2[1] = 0 - min_y2;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The grid creation for the second problem is identical to the first problem. The
+only difference comes in assigning the initial coordinates; this needs to be
+done for both Santas for the second problem.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    s = 0;
+    grid[x][y] = true;
+    grid[x2[0]][y2[0]] = true;
+    for (int i = 0; i &amp;lt; filesize; i++)
+    {
+        switch (input[i])
+        {
+        case &#39;&amp;gt;&#39;:
+            x++;
+            x2[s]++;
+            break;
+        case &#39;v&#39;:
+            y--;
+            y2[s]--;
+            break;
+        case &#39;&amp;lt;&#39;:
+            x--;
+            x2[s]--;
+            break;
+        case &#39;^&#39;:
+            y++;
+            y2[s]++;
+            break;
+        default:;
+        }
+        grid[x][y] = true;
+        grid2[x2[s]][y2[s]] = true;
+        s ^= 1;
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;During the second iteration of the input, we&amp;rsquo;ll toggle the Santa as we did
+during the range finding iteration.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    /* count the houses touched */
+    int houses = 0;
+    for (int i = 0; i &amp;lt; w; i++)
+        for (int j = 0; j &amp;lt; h; j++)
+            houses += grid[i][j] ? 1 : 0;
+    printf(&amp;quot;\tSolution 1: %d\n&amp;quot;, houses);
+
+    houses = 0;
+    for (int i = 0; i &amp;lt; w2; i++)
+        for (int j = 0; j &amp;lt; h2; j++)
+            houses += grid2[i][j] ? 1 : 0;
+    printf(&amp;quot;\tSolution 2: %d\n&amp;quot;, houses);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We&amp;rsquo;ll count the number of visited houses for the second grid, exactly
+as we did the first grid.&lt;/p&gt;
+
+&lt;p&gt;Finally, we&amp;rsquo;ll free our allocated input array for completeness and return
+success:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    free(input);
+    return rval;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;All together now:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;#include &amp;lt;errno.h&amp;gt;
+#include &amp;lt;stdbool.h&amp;gt;
+#include &amp;lt;stdlib.h&amp;gt;
+#include &amp;lt;stdio.h&amp;gt;
+#include &amp;lt;string.h&amp;gt;
+#include &amp;quot;common.h&amp;quot;
+
+int main(int argc, char const *argv[])
+{
+    int rval = 0;
+
+    /* check that filename was provided */
+    if (argc &amp;lt; 2)
+    {
+        fprintf(stderr, &amp;quot;Must provide filename of input file\n&amp;quot;);
+        return -1;
+    }
+
+    /* read the file into memory */
+    char *input;
+    int filesize = read_file_to_buffer(&amp;amp;input, argv[1]);
+    if (filesize &amp;lt; 0)
+    {
+        fprintf(stderr, &amp;quot;File read failed: %s\n&amp;quot;, strerror(errno));
+        return -1;
+    }
+
+    printf(&amp;quot;Day 3:\n&amp;quot;);
+
+    /* size the grid */
+    int x = 0, y = 0, min_x = 0, min_y = 0, max_x = 0, max_y = 0;
+    int x2[2] = {0}, y2[2] = {0}, min_x2 = 0, min_y2 = 0, max_x2 = 0, max_y2 = 0;
+    int s = 0;
+    for (int i = 0; i &amp;lt; filesize; i++)
+    {
+        switch (input[i])
+        {
+        case &#39;&amp;gt;&#39;:
+            x++;
+            x2[s]++;
+            break;
+        case &#39;v&#39;:
+            y--;
+            y2[s]--;
+            break;
+        case &#39;&amp;lt;&#39;:
+            x--;
+            x2[s]--;
+            break;
+        case &#39;^&#39;:
+            y++;
+            y2[s]++;
+            break;
+        default:;
+        }
+
+        if (x &amp;gt; max_x)
+            max_x = x;
+        if (y &amp;gt; max_y)
+            max_y = y;
+        if (x &amp;lt; min_x)
+            min_x = x;
+        if (y &amp;lt; min_y)
+            min_y = y;
+
+        if (x2[s] &amp;gt; max_x2)
+            max_x2 = x2[s];
+        if (y2[s] &amp;gt; max_y2)
+            max_y2 = y2[s];
+        if (x2[s] &amp;lt; min_x2)
+            min_x2 = x2[s];
+        if (y2[s] &amp;lt; min_y2)
+            min_y2 = y2[s];
+        s ^= 1;
+    }
+
+    int w = (max_x - min_x) + 1;
+    int h = (max_y - min_y) + 1;
+    int w2 = (max_x2 - min_x2) + 1;
+    int h2 = (max_y2 - min_y2) + 1;
+
+    /* create the grids and travel again */
+    bool grid[w][h];
+    bool grid2[w2][h2];
+    memset(grid, 0, w * h * sizeof(bool));
+    memset(grid2, 0, w2 * h2 * sizeof(bool));
+
+    x = 0 - min_x;
+    y = 0 - min_y;
+    x2[0] = 0 - min_x2;
+    x2[1] = 0 - min_x2;
+    y2[0] = 0 - min_y2;
+    y2[1] = 0 - min_y2;
+
+    s = 0;
+    grid[x][y] = true;
+    grid[x2[0]][y2[0]] = true;
+    for (int i = 0; i &amp;lt; filesize; i++)
+    {
+        switch (input[i])
+        {
+        case &#39;&amp;gt;&#39;:
+            x++;
+            x2[s]++;
+            break;
+        case &#39;v&#39;:
+            y--;
+            y2[s]--;
+            break;
+        case &#39;&amp;lt;&#39;:
+            x--;
+            x2[s]--;
+            break;
+        case &#39;^&#39;:
+            y++;
+            y2[s]++;
+            break;
+        default:;
+        }
+        grid[x][y] = true;
+        grid2[x2[s]][y2[s]] = true;
+        s ^= 1;
+    }
+
+    /* count the houses touched */
+    int houses = 0;
+    for (int i = 0; i &amp;lt; w; i++)
+        for (int j = 0; j &amp;lt; h; j++)
+            houses += grid[i][j] ? 1 : 0;
+    printf(&amp;quot;\tSolution 1: %d\n&amp;quot;, houses);
+
+    houses = 0;
+    for (int i = 0; i &amp;lt; w2; i++)
+        for (int j = 0; j &amp;lt; h2; j++)
+            houses += grid2[i][j] ? 1 : 0;
+    printf(&amp;quot;\tSolution 2: %d\n&amp;quot;, houses);
+
+    free(input);
+    return rval;
+}
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
     
     <item>
       <title>Advent of Code 2015 Day 2: I Was Told There Would Be No Math</title>

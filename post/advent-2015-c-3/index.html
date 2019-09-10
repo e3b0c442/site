@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.4.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Nick Meyer">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="You&rsquo;ve made it this far, so either nobody&rsquo;s reading this, you&rsquo;re all masochists, or I&rsquo;m doing OK. Let&rsquo;s take a look at day 3:
+ Santa is delivering presents to an infinite two-dimensional grid of houses.
+He begins by delivering a present to the house at his starting location, and then an elf at the North Pole calls him via radio and tells him where to move next. Moves are always exactly one house to the north (^), south (v), east (&gt;), or west (&lt;).">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/advent-2015-c-3/">
+
+  
+
+
+  
+
+  
+  
+  
+  <meta name="theme-color" content="#2962ff">
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css" integrity="sha384-aOkxzJ5uQz7WBObEZcHvV5JvRW3TUc2rNPA7pe3AwnsUohiw1Vj2Rgx2KSOkF5+h" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css" integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ==" crossorigin="anonymous">
+    
+
+    
+
+  
+
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700|Roboto:400,400italic,700|Roboto+Mono&display=swap">
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.min.3bc694af15fd1e4ff7262e7dd46f11a8.css">
+
+  
+
+  
+  
+  
+
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/advent-2015-c-3/">
+
+  
+  
+  
+  
+    
+    
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="twitter:site" content="@0xe3b0c442">
+  <meta property="twitter:creator" content="@0xe3b0c442">
+  
+  <meta property="og:site_name" content="e3b0c442.io">
+  <meta property="og:url" content="/post/advent-2015-c-3/">
+  <meta property="og:title" content="Advent of Code 2015 Day 3: Perfectly Spherical Houses in a Vacuum | e3b0c442.io">
+  <meta property="og:description" content="You&rsquo;ve made it this far, so either nobody&rsquo;s reading this, you&rsquo;re all masochists, or I&rsquo;m doing OK. Let&rsquo;s take a look at day 3:
+ Santa is delivering presents to an infinite two-dimensional grid of houses.
+He begins by delivering a present to the house at his starting location, and then an elf at the North Pole calls him via radio and tells him where to move next. Moves are always exactly one house to the north (^), south (v), east (&gt;), or west (&lt;)."><meta property="og:image" content="/img/icon-192.png">
+  <meta property="twitter:image" content="/img/icon-192.png"><meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2019-09-10T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2019-09-10T00:00:00&#43;00:00">
+  
+
+  
+
+
+  <meta name="robots" content="noindex,nofollow">
+
+
+  <title>Advent of Code 2015 Day 3: Perfectly Spherical Houses in a Vacuum | e3b0c442.io</title>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+<nav class="navbar navbar-light fixed-top navbar-expand-lg py-0 compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+      <a class="navbar-brand" href="/">e3b0c442.io</a>
+      
+      <button type="button" class="navbar-toggler" data-toggle="collapse"
+              data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span><i class="fas fa-bars"></i></span>
+      </button>
+      
+
+    
+    <div class="collapse navbar-collapse" id="navbar">
+
+      
+      
+      <ul class="navbar-nav mr-auto">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#banner"><span>Home</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/about/"><span>About</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+      
+      </ul>
+      <ul class="navbar-nav ml-auto">
+      
+
+        
+
+        
+        <li class="nav-item">
+          <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+        </li>
+        
+
+        
+
+        
+        <li class="nav-item">
+          <a class="nav-link js-dark-toggle" href="#"><i class="fas fa-moon" aria-hidden="true"></i></a>
+        </li>
+        
+
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+  <article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  
+<div class="article-container pt-3">
+  <h1 itemprop="name">Advent of Code 2015 Day 3: Perfectly Spherical Houses in a Vacuum</h1>
+
+  
+
+  
+    
+
+
+
+<meta content="2019-09-10 00:00:00 &#43;0000 UTC" itemprop="datePublished">
+<meta content="2019-09-10 00:00:00 &#43;0000 UTC" itemprop="dateModified">
+
+<div class="article-metadata">
+
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+    
+    <time>Sep 10, 2019</time>
+  </span>
+  
+
+  
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    11 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/advent-2015-c-3/#disqus_thread"></a>
+  
+
+  
+  
+
+  
+    
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=/post/advent-2015-c-3/&amp;text=Advent%20of%20Code%202015%20Day%203:%20Perfectly%20Spherical%20Houses%20in%20a%20Vacuum" target="_blank" rel="noopener" class="share-btn-twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=/post/advent-2015-c-3/&amp;t=Advent%20of%20Code%202015%20Day%203:%20Perfectly%20Spherical%20Houses%20in%20a%20Vacuum" target="_blank" rel="noopener" class="share-btn-facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=Advent%20of%20Code%202015%20Day%203:%20Perfectly%20Spherical%20Houses%20in%20a%20Vacuum&amp;body=/post/advent-2015-c-3/" target="_blank" rel="noopener" class="share-btn-email">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=/post/advent-2015-c-3/&amp;title=Advent%20of%20Code%202015%20Day%203:%20Perfectly%20Spherical%20Houses%20in%20a%20Vacuum" target="_blank" rel="noopener" class="share-btn-linkedin">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://web.whatsapp.com/send?text=Advent%20of%20Code%202015%20Day%203:%20Perfectly%20Spherical%20Houses%20in%20a%20Vacuum%20/post/advent-2015-c-3/" target="_blank" rel="noopener" class="share-btn-whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=/post/advent-2015-c-3/&amp;title=Advent%20of%20Code%202015%20Day%203:%20Perfectly%20Spherical%20Houses%20in%20a%20Vacuum" target="_blank" rel="noopener" class="share-btn-weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style" itemprop="articleBody">
+      <p>You&rsquo;ve made it this far, so either nobody&rsquo;s reading this, you&rsquo;re all masochists,
+or I&rsquo;m doing OK. Let&rsquo;s take a look at day 3:</p>
+
+<blockquote>
+<p>Santa is delivering presents to an infinite two-dimensional grid of houses.</p>
+
+<p>He begins by delivering a present to the house at his starting location, and then an elf at the North Pole calls him via radio and tells him where to move next. Moves are always exactly one house to the north (<code>^</code>), south (<code>v</code>), east (<code>&gt;</code>), or west (<code>&lt;</code>). After each move, he delivers another present to the house at his new location.</p>
+
+<p>However, the elf back at the north pole has had a little too much eggnog, and so his directions are a little off, and Santa ends up visiting some houses more than once. How many houses receive <strong>at least one present</strong>?</p>
+
+<p>For example:</p>
+
+<ul>
+<li><code>&gt;</code> delivers presents to <code>2</code> houses: one at the starting location, and one to the east.</li>
+<li><code>^&gt;v&lt;</code> delivers presents to <code>4</code> houses in a square, including twice to the house at his starting/ending location.</li>
+<li><code>^v^v^v^v^v</code> delivers a bunch of presents to some very lucky children at only 2 houses.</li>
+</ul>
+</blockquote>
+
+<p>This problem seems pretty simple on the face of it, but let&rsquo;s break it down. We
+will need to:</p>
+
+<ul>
+<li>Read the input from the file</li>
+<li>Iterate over the input</li>
+<li>Track which locations have been visited</li>
+<li>Count the visited locations</li>
+</ul>
+
+<p>In order to track the location, we&rsquo;ll need to use a slightly more advanced data
+structure. Since we are working with quantities in 2D space, a 2D array makes
+sense. Thankfully, in newer versions of the C standard, the array sizes do not
+need to be known at compile time, so we can avoid some messy pointer arithmetic.</p>
+
+<p>Let&rsquo;s get to work.</p>
+
+<pre><code class="language-c">int main(int argc, char const *argv[])
+{
+    int rval = 0;
+
+    /* check that filename was provided */
+    if (argc &lt; 2)
+    {
+        fprintf(stderr, &quot;Must provide filename of input file\n&quot;);
+        return -1;
+    }
+
+    /* read the file into memory */
+    char *input;
+    int filesize = read_file_to_buffer(&amp;input, argv[1]);
+    if (filesize &lt; 0)
+    {
+        fprintf(stderr, &quot;File read failed: %s\n&quot;, strerror(errno));
+        return -1;
+    }
+</code></pre>
+
+<p>If this looks familiar, you&rsquo;re catching on. We check that the filename is
+provided, read the input file to memory, and handle any errors.</p>
+
+<p>Now we&rsquo;re ready to get started&hellip; but are we? We still have no idea how big
+our grid array needs to be. We could guess, but we run the danger of either
+making the arrays too small and going out-of-bounds, or making them too big and
+unnecessarily tying up memory. The better plan would be to iterate over the
+input and test the constraints.</p>
+
+<pre><code class="language-c">    printf(&quot;Day 3:\n&quot;);
+
+    /* size the grid */
+    int x = 0, y = 0, min_x = 0, min_y = 0, max_x = 0, max_y = 0;
+    for (int i = 0; i &lt; filesize; i++)
+    {
+        switch (input[i])
+        {
+        case '&gt;':
+            x++;
+            break;
+        case 'v':
+            y--;
+            break;
+        case '&lt;':
+            x--;
+            break;
+        case '^':
+            y++;
+            break;
+        default:;
+        }
+
+        if (x &gt; max_x)
+            max_x = x;
+        if (y &gt; max_y)
+            max_y = y;
+        if (x &lt; min_x)
+            min_x = x;
+        if (y &lt; min_y)
+            min_y = y;
+    }
+
+    int w = (max_x - min_x) + 1;
+    int h = (max_y - min_y) + 1;
+</code></pre>
+
+<p>After printing our preamble, we&rsquo;ll create tracking variables for the current x
+and y positions, and the minimum and maximums of both. We&rsquo;ll initialize all of
+them to zero, and then iterate over the input, adjusting the current value of
+x and y and keeping the maximums and minimums updated as needed. Once the loop
+is complete, we have enough information to compute the sizes of the arrays. Note
+that we need to add 1 to the total; e.g. <code>1 - (-1) = 2</code>, but that covers the
+values <code>-1, 0, 1</code>.</p>
+
+<pre><code class="language-c">    /* create the grid and travel again */
+    bool grid[w][h];
+    memset(grid, 0, w * h * sizeof(bool));
+
+    x = 0 - min_x;
+    y = 0 - min_y;
+</code></pre>
+
+<p>Now that we know the sizes, we can declare the two-dimensional array. Again,
+older versions of the C standard do not allow runtime determination of the array
+sizes for stack declarations; if you are stuck using an old version, you will
+need to allocate the array on the heap with <code>malloc</code> or the like. Since we only
+need to track if a house has been visited or not, we&rsquo;ll use the <code>bool</code> data type
+for our grid. The more astute reader might know that <code>bool</code> is still represented
+with a full byte in C, but we can still use the type as a hint to those who
+might read your code as to the function.</p>
+
+<p>Once we&rsquo;ve declared the array, we will need to initialize it; while we can
+declare the array in this fashion now, we still cannot initialize it at
+declaration. We&rsquo;ll use the <code>memset</code> function to zero out the allocated arrays.
+This is safe with our <code>bool</code> data type as <code>false</code> is represented as 0.</p>
+
+<p>Finally, we&rsquo;ll set our initial indices for x and y for the upcoming run. Since
+we cannot have negative indices in an array, we&rsquo;ll need to offset them using the
+minimum values previously found.</p>
+
+<pre><code class="language-c">    grid[x][y] = true;
+    for (int i = 0; i &lt; filesize; i++)
+    {
+        switch (input[i])
+        {
+        case '&gt;':
+            x++;
+            break;
+        case 'v':
+            y--;
+            break;
+        case '&lt;':
+            x--;
+            break;
+        case '^':
+            y++;
+            break;
+        default:;
+        }
+        grid[x][y] = true;
+    }
+</code></pre>
+
+<p>We&rsquo;re finally ready to gather our data. We&rsquo;ll iterate through the input again,
+flipping the value on the grid to true as we visit each space. Notice that we
+set the origin space to <code>true</code> as well per the problem parameters (<code>He begins by delivering a present to the house at his starting location...</code>).</p>
+
+<pre><code class="language-c">    /* count the houses touched */
+    int houses = 0;
+    for (int i = 0; i &lt; w; i++)
+        for (int j = 0; j &lt; h; j++)
+            houses += grid[i][j] ? 1 : 0;
+    printf(&quot;\tSolution 1: %d\n&quot;, houses);
+</code></pre>
+
+<p>Once we&rsquo;ve completed the loop, we can count the houses by iterating through the
+grid and incrementing a counter for each set of coordinates that is true. The
+ternary operator is used as a shortcut here.</p>
+
+<p>Once we submit our solution, the second problem appears:</p>
+
+<blockquote>
+<p>The next year, to speed up the process, Santa creates a robot version of himself, <strong>Robo-Santa</strong>, to deliver presents with him.</p>
+
+<p>Santa and Robo-Santa start at the same location (delivering two presents to the same starting house), then take turns moving based on instructions from the elf, who is eggnoggedly reading from the same script as the previous year.</p>
+
+<p>This year, how many houses receive <strong>at least one present</strong>?</p>
+
+<p>For example:</p>
+
+<ul>
+<li><code>^v</code> delivers presents to <code>3</code> houses, because Santa goes north, and then Robo-Santa goes south.</li>
+<li><code>^&gt;v&lt;</code> now delivers presents to <code>3</code> houses, and Santa and Robo-Santa end up back where they started.</li>
+<li><code>^v^v^v^v^v</code> now delivers presents to <code>11</code> houses, with Santa going one direction and Robo-Santa going the other.</li>
+</ul>
+</blockquote>
+
+<p>As we read, the difference here is that we have a second &ldquo;Santa&rdquo;, and they
+alternate directions in the input, rather than one taking all the directions.
+This means we will need to implement a toggle, as well as keep two sets of
+coordinates on the same grid. As with previous answers, I chose to integrate
+this solution into the original problem rather than writing a completely new
+set of code to solve problem 2.</p>
+
+<pre><code class="language-c">    printf(&quot;Day 3:\n&quot;);
+
+    /* size the grid */
+    int x = 0, y = 0, min_x = 0, min_y = 0, max_x = 0, max_y = 0;
+    int x2[2] = {0}, y2[2] = {0}, min_x2 = 0, min_y2 = 0, max_x2 = 0, max_y2 = 0;
+    int s = 0;
+    for (int i = 0; i &lt; filesize; i++)
+    {
+        switch (input[i])
+        {
+        case '&gt;':
+            x++;
+            x2[s]++;
+            break;
+        case 'v':
+            y--;
+            y2[s]--;
+            break;
+        case '&lt;':
+            x--;
+            x2[s]--;
+            break;
+        case '^':
+            y++;
+            y2[s]++;
+            break;
+        default:;
+        }
+
+        if (x &gt; max_x)
+            max_x = x;
+        if (y &gt; max_y)
+            max_y = y;
+        if (x &lt; min_x)
+            min_x = x;
+        if (y &lt; min_y)
+            min_y = y;
+
+        if (x2[s] &gt; max_x2)
+            max_x2 = x2[s];
+        if (y2[s] &gt; max_y2)
+            max_y2 = y2[s];
+        if (x2[s] &lt; min_x2)
+            min_x2 = x2[s];
+        if (y2[s] &lt; min_y2)
+            min_y2 = y2[s];
+
+        s ^= 1;
+    }
+
+    int w = (max_x - min_x) + 1;
+    int h = (max_y - min_y) + 1;
+    int w2 = (max_x2 - min_x2) + 1;
+    int h2 = (max_y2 - min_y2) + 1;
+</code></pre>
+
+<p>In addition to the single <code>x</code> and <code>y</code> value for the first problem, I declare
+a two-element array to represent the coordinates of both santas for the second
+problem. I alse declare and initialize another set of min/max variables.
+Finally, a variable is declared to act as a toggle between <code>0</code> and <code>1</code>.</p>
+
+<p>Now to find our coordinates, we run through the loop. We increment the x and y
+of the appropriate Santa, and check that against the x and y minimums and
+maximums for the second grid (remember, both Santas share the grid, so there
+is only one set of mins and maxes). We&rsquo;ll update the values for the second grid
+based on the active Santa, and then once all values have been updated, we use
+the bitwise XOR assignment operator to flip the toggle value. Once the loop is
+complete, we calculate the width and height of the second grid.</p>
+
+<pre><code class="language-c">
+    /* create the grids and travel again */
+    bool grid[w][h];
+    bool grid2[w2][h2];
+    memset(grid, 0, w * h * sizeof(bool));
+    memset(grid2, 0, w2 * h2 * sizeof(bool));
+
+    x = 0 - min_x;
+    y = 0 - min_y;
+    x2[0] = 0 - min_x2;
+    x2[1] = 0 - min_x2;
+    y2[0] = 0 - min_y2;
+    y2[1] = 0 - min_y2;
+</code></pre>
+
+<p>The grid creation for the second problem is identical to the first problem. The
+only difference comes in assigning the initial coordinates; this needs to be
+done for both Santas for the second problem.</p>
+
+<pre><code class="language-c">    s = 0;
+    grid[x][y] = true;
+    grid[x2[0]][y2[0]] = true;
+    for (int i = 0; i &lt; filesize; i++)
+    {
+        switch (input[i])
+        {
+        case '&gt;':
+            x++;
+            x2[s]++;
+            break;
+        case 'v':
+            y--;
+            y2[s]--;
+            break;
+        case '&lt;':
+            x--;
+            x2[s]--;
+            break;
+        case '^':
+            y++;
+            y2[s]++;
+            break;
+        default:;
+        }
+        grid[x][y] = true;
+        grid2[x2[s]][y2[s]] = true;
+        s ^= 1;
+    }
+</code></pre>
+
+<p>During the second iteration of the input, we&rsquo;ll toggle the Santa as we did
+during the range finding iteration.</p>
+
+<pre><code class="language-c">    /* count the houses touched */
+    int houses = 0;
+    for (int i = 0; i &lt; w; i++)
+        for (int j = 0; j &lt; h; j++)
+            houses += grid[i][j] ? 1 : 0;
+    printf(&quot;\tSolution 1: %d\n&quot;, houses);
+
+    houses = 0;
+    for (int i = 0; i &lt; w2; i++)
+        for (int j = 0; j &lt; h2; j++)
+            houses += grid2[i][j] ? 1 : 0;
+    printf(&quot;\tSolution 2: %d\n&quot;, houses);
+</code></pre>
+
+<p>We&rsquo;ll count the number of visited houses for the second grid, exactly
+as we did the first grid.</p>
+
+<p>Finally, we&rsquo;ll free our allocated input array for completeness and return
+success:</p>
+
+<pre><code class="language-c">    free(input);
+    return rval;
+}
+</code></pre>
+
+<p>All together now:</p>
+
+<pre><code class="language-c">#include &lt;errno.h&gt;
+#include &lt;stdbool.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &quot;common.h&quot;
+
+int main(int argc, char const *argv[])
+{
+    int rval = 0;
+
+    /* check that filename was provided */
+    if (argc &lt; 2)
+    {
+        fprintf(stderr, &quot;Must provide filename of input file\n&quot;);
+        return -1;
+    }
+
+    /* read the file into memory */
+    char *input;
+    int filesize = read_file_to_buffer(&amp;input, argv[1]);
+    if (filesize &lt; 0)
+    {
+        fprintf(stderr, &quot;File read failed: %s\n&quot;, strerror(errno));
+        return -1;
+    }
+
+    printf(&quot;Day 3:\n&quot;);
+
+    /* size the grid */
+    int x = 0, y = 0, min_x = 0, min_y = 0, max_x = 0, max_y = 0;
+    int x2[2] = {0}, y2[2] = {0}, min_x2 = 0, min_y2 = 0, max_x2 = 0, max_y2 = 0;
+    int s = 0;
+    for (int i = 0; i &lt; filesize; i++)
+    {
+        switch (input[i])
+        {
+        case '&gt;':
+            x++;
+            x2[s]++;
+            break;
+        case 'v':
+            y--;
+            y2[s]--;
+            break;
+        case '&lt;':
+            x--;
+            x2[s]--;
+            break;
+        case '^':
+            y++;
+            y2[s]++;
+            break;
+        default:;
+        }
+
+        if (x &gt; max_x)
+            max_x = x;
+        if (y &gt; max_y)
+            max_y = y;
+        if (x &lt; min_x)
+            min_x = x;
+        if (y &lt; min_y)
+            min_y = y;
+
+        if (x2[s] &gt; max_x2)
+            max_x2 = x2[s];
+        if (y2[s] &gt; max_y2)
+            max_y2 = y2[s];
+        if (x2[s] &lt; min_x2)
+            min_x2 = x2[s];
+        if (y2[s] &lt; min_y2)
+            min_y2 = y2[s];
+        s ^= 1;
+    }
+
+    int w = (max_x - min_x) + 1;
+    int h = (max_y - min_y) + 1;
+    int w2 = (max_x2 - min_x2) + 1;
+    int h2 = (max_y2 - min_y2) + 1;
+
+    /* create the grids and travel again */
+    bool grid[w][h];
+    bool grid2[w2][h2];
+    memset(grid, 0, w * h * sizeof(bool));
+    memset(grid2, 0, w2 * h2 * sizeof(bool));
+
+    x = 0 - min_x;
+    y = 0 - min_y;
+    x2[0] = 0 - min_x2;
+    x2[1] = 0 - min_x2;
+    y2[0] = 0 - min_y2;
+    y2[1] = 0 - min_y2;
+
+    s = 0;
+    grid[x][y] = true;
+    grid[x2[0]][y2[0]] = true;
+    for (int i = 0; i &lt; filesize; i++)
+    {
+        switch (input[i])
+        {
+        case '&gt;':
+            x++;
+            x2[s]++;
+            break;
+        case 'v':
+            y--;
+            y2[s]--;
+            break;
+        case '&lt;':
+            x--;
+            x2[s]--;
+            break;
+        case '^':
+            y++;
+            y2[s]++;
+            break;
+        default:;
+        }
+        grid[x][y] = true;
+        grid2[x2[s]][y2[s]] = true;
+        s ^= 1;
+    }
+
+    /* count the houses touched */
+    int houses = 0;
+    for (int i = 0; i &lt; w; i++)
+        for (int j = 0; j &lt; h; j++)
+            houses += grid[i][j] ? 1 : 0;
+    printf(&quot;\tSolution 1: %d\n&quot;, houses);
+
+    houses = 0;
+    for (int i = 0; i &lt; w2; i++)
+        for (int j = 0; j &lt; h2; j++)
+            houses += grid2[i][j] ? 1 : 0;
+    printf(&quot;\tSolution 2: %d\n&quot;, houses);
+
+    free(input);
+    return rval;
+}
+</code></pre>
+
+    </div>
+
+    
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/tags/programming/">Programming</a>
+  
+  <a class="badge badge-light" href="/tags/advent-of-code/">Advent of Code</a>
+  
+  <a class="badge badge-light" href="/tags/c/">C</a>
+  
+</div>
+
+
+
+    
+      
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+  
+  
+    
+  
+  
+  <div class="media author-card" itemscope itemtype="http://schema.org/Person">
+    
+      <img class="portrait mr-3" src="https://s.gravatar.com/avatar/19df311615fff265c919af6f4e1db103?s=200')" itemprop="image" alt="Avatar">
+    
+
+    <div class="media-body">
+      <h5 class="card-title" itemprop="name"><a href="/">Nick Meyer</a></h5>
+      <h6 class="card-subtitle">Sr Software Engineer, Infrastructure as a Service</h6>
+      <p class="card-text" itemprop="description">Building the infrastructure for building the Internet.</p>
+      <ul class="network-icon" aria-hidden="true">
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+            
+          
+          <li>
+            <a itemprop="sameAs" href="https://twitter.com/0xe3b0c442" target="_blank" rel="noopener">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+            
+          
+          <li>
+            <a itemprop="sameAs" href="https://linkedin.com/in/meyerns" target="_blank" rel="noopener">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+            
+          
+          <li>
+            <a itemprop="sameAs" href="https://github.com/e3b0c442" target="_blank" rel="noopener">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+            
+          
+          <li>
+            <a itemprop="sameAs" href="https://gitlab.com/e3b0c442" target="_blank" rel="noopener">
+              <i class="fab fa-gitlab"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+
+      
+      
+      <div class="article-widget">
+        <div class="hr-light"></div>
+        <h3>Related</h3>
+        <ul>
+          
+          <li><a href="/post/advent-2015-c-2/">Advent of Code 2015 Day 2: I Was Told There Would Be No Math</a></li>
+          
+          <li><a href="/post/advent-2015-c-1/">Advent of Code 2015 Day 1: Not Quite Lisp</a></li>
+          
+          <li><a href="/post/advent-setup-c/">Advent of Code deep dive kickoff</a></li>
+          
+        </ul>
+      </div>
+      
+    
+
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "e3b0c442" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+      
+
+    
+    
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js" integrity="sha256-aYTdUrn6Ow1DDgh5JTc3aDGnnju48y/1c8s1dgkYPQ8=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/languages/r.min.js"></script>
+        
+      
+
+      
+      
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.js" integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log==" crossorigin="anonymous"></script>
+    
+
+    
+    
+    
+    <script id="dsq-count-scr" src="https://e3b0c442.disqus.com/count.js" async></script>
+    
+
+    
+    
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script>
+      const search_index_filename = "/index.json";
+      const i18n = {
+        'placeholder': "Search...",
+        'results': "results found",
+        'no_results': "No results found"
+      };
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.16bbb3750feb7244c9bc409a5a4fe678.js"></script>
+
+    
+
+
+
+
+
+
+  
+  <div class="container">
+    <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+    <span class="float-right" aria-hidden="true">
+      <a href="#" id="back_to_top">
+        <span class="button_icon">
+          <i class="fas fa-chevron-up fa-2x"></i>
+        </span>
+      </a>
+    </span>
+    
+  </p>
+</footer>
+
+  </div>
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
