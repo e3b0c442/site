@@ -32,12 +32,15 @@
 &lt;/ul&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;As always, we&amp;rsquo;ll start with breaking down the problem into discrete parts:
-* Read the input
-* Convert a number to a string
-* Combine the input and the number string
-* Get the MD5 digest of the combined string
-* Check that the first five digits of the digest are &lt;code&gt;0&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;As always, we&amp;rsquo;ll start with breaking down the problem into discrete parts:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Read the input&lt;/li&gt;
+&lt;li&gt;Convert a number to a string&lt;/li&gt;
+&lt;li&gt;Combine the input and the number string&lt;/li&gt;
+&lt;li&gt;Get the MD5 digest of the combined string&lt;/li&gt;
+&lt;li&gt;Check that the first five digits of the digest are &lt;code&gt;0&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;p&gt;Rather than write our own MD5 hashing implementation, we will use the well-known
 and commonly-installed OpenSSL library&amp;rsquo;s implementation. You&amp;rsquo;ll need to make

@@ -6,10 +6,367 @@
     <description>Recent content on e3b0c442.io</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 10 Sep 2019 03:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 14 Sep 2019 00:00:00 +0000</lastBuildDate>
     
 	    <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Advent of Code 2015 Day 5: Doesn&#39;t He Have Intern-Elves For This?</title>
+      <link>/post/advent-2015-c-5/</link>
+      <pubDate>Sat, 14 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/advent-2015-c-5/</guid>
+      <description>&lt;p&gt;Welcome back! I feel refreshed after a few days, hopefully you do too. Today, we
+are going to look at day 5:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Santa needs help figuring out which strings in his text file are naughty or nice.&lt;/p&gt;
+
+&lt;p&gt;A &lt;strong&gt;nice string&lt;/strong&gt; is one with all of the following properties:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;It contains at least three vowels (&lt;code&gt;aeiou&lt;/code&gt; only), like &lt;code&gt;aei&lt;/code&gt;, &lt;code&gt;xazegov&lt;/code&gt;, or &lt;code&gt;aeiouaeiouaeiou&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;It contains at least one letter that appears twice in a row, like &lt;code&gt;xx&lt;/code&gt;, &lt;code&gt;abcdde&lt;/code&gt; (&lt;code&gt;dd&lt;/code&gt;), or &lt;code&gt;aabbccdd&lt;/code&gt; (&lt;code&gt;aa&lt;/code&gt;, &lt;code&gt;bb&lt;/code&gt;, &lt;code&gt;cc&lt;/code&gt;, or &lt;code&gt;dd&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;It does &lt;strong&gt;not&lt;/strong&gt; contain the strings &lt;code&gt;ab&lt;/code&gt;, &lt;code&gt;cd&lt;/code&gt;, &lt;code&gt;pq&lt;/code&gt;, or &lt;code&gt;xy&lt;/code&gt;, even if they are part of one of the other requirements.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;For example:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;ugknbfddgicrmopn&lt;/code&gt; is nice because it has at least three vowels (&lt;code&gt;u...i...o...&lt;/code&gt;), a double letter (&lt;code&gt;...dd...&lt;/code&gt;), and none of the disallowed substrings.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;aaa&lt;/code&gt; is nice because it has at least three vowels and a double letter, even though the letters used by different rules overlap.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;jchzalrnumimnmhp&lt;/code&gt; is naughty because it has no double letter.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;haegwjzuvuyypxyu&lt;/code&gt; is naughty because it contains the string &lt;code&gt;xy&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;dvszwmarrgswjxmb&lt;/code&gt; is naughty because it contains only one vowel.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;How many strings are nice?&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Let&amp;rsquo;s begin by breaking down the problem. We need to:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Read the input file into memory&lt;/li&gt;
+&lt;li&gt;Split the input into its components&lt;/li&gt;
+&lt;li&gt;Determine whether the string meets the naughty or nice requirements&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The first two parts of this problem are familiar, and generally speaking,
+identical. We&amp;rsquo;ll use the variable &lt;code&gt;good&lt;/code&gt; to track the good strings.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;int main(int argc, char const *argv[])
+{
+    int rc = 0;
+    /* check that filename was provided */
+    if (argc &amp;lt; 2)
+    {
+        fprintf(stderr, &amp;quot;Must provide filename of input file\n&amp;quot;);
+        return -1;
+    }
+
+    /* read the file into memory */
+    char *input;
+    int filesize = read_file_to_buffer(&amp;amp;input, argv[1]);
+    if (filesize &amp;lt; 0)
+    {
+        fprintf(stderr, &amp;quot;File read failed: %s\n&amp;quot;, strerror(errno));
+        return -1;
+    }
+
+    printf(&amp;quot;Day 5:\n&amp;quot;);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The last part, however, is the most difficult problem that has yet been
+presented. How are we going to check the strings?&lt;/p&gt;
+
+&lt;p&gt;While it might be tempting to loop over the strings and implement tracking
+variables to check these conditions (and, depending on the implementation, might
+be faster), the more appropriate tool in this situation is regular expressions.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    regex_t rule1, rule2, rule3;
+    if (regcomp(&amp;amp;rule1, &amp;quot;[aeiou].*[aeiou].*[aeiou]&amp;quot;, 0))
+        goto err_cleanup;
+
+    if (regcomp(&amp;amp;rule2, &amp;quot;\\(.\\)\\1&amp;quot;, 0))
+        goto err_cleanup;
+
+    if (regcomp(&amp;amp;rule3, &amp;quot;\\(ab\\|cd\\|pq\\|xy\\)&amp;quot;, 0))
+        goto err_cleanup;
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Each of the three rules can be checked using a valid POSIX basic regular
+expression (note that in the code snippet above, the appropriate escape
+characters have been added):&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;at least 3 vowels: &lt;code&gt;[aeiou].*[aeiou].*[aeiou]&lt;/code&gt;
+
+&lt;ul&gt;
+&lt;li&gt;This regular expression says: &lt;em&gt;find a letter a, e, i, o, or u. Then find
+zero or more of any character, then a letter a,e,i,o,u, then zero or more of
+any character, then a, e, i, o, or u.&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;at least one letter that occurs twice in a row: &lt;code&gt;(.)\1&lt;/code&gt;
+
+&lt;ul&gt;
+&lt;li&gt;This regular expression uses a backreference to refer to a prior character.
+It says: &lt;em&gt;find a group containing any one character, then find the first
+group&lt;/em&gt;. In this case, the first group is the matched one character.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;does not contain ab, cd, pq, xy: &lt;code&gt;(ab|cd|pq|xy)&lt;/code&gt;
+
+&lt;ul&gt;
+&lt;li&gt;We&amp;rsquo;ll actually be looking for a negative result on this one because it is
+simpler than trying to do the negation in the expression itself. This
+expression says, &lt;em&gt;find the strings ab or cd or pq or xy&lt;/em&gt;.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;We compile the expressions once to be used to quickly match the strings as we
+loop through the input:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    int good = 0;
+
+    char *cursor = input;
+    char *line = strsep(&amp;amp;cursor, &amp;quot;\n&amp;quot;);
+    while (line != NULL)
+    {
+        if (strlen(line) == 0)
+            goto tokenize;
+
+        if (regexec(&amp;amp;rule3, line, 0, NULL, 0) &amp;amp;&amp;amp; !regexec(&amp;amp;rule1, line, 0, NULL, 0) &amp;amp;&amp;amp; !regexec(&amp;amp;rule2, line, 0, NULL, 0))
+            good++;
+
+    tokenize:
+        line = strsep(&amp;amp;cursor, &amp;quot;\n&amp;quot;);
+    }
+
+    printf(&amp;quot;\tSolution 1: %d\n&amp;quot;, good);
+
+    goto cleanup;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If rule 3 does not match (we put this one in front to short-circuit, since if
+it matches the string is automatically invalid) and rules 1 and 2 match, then
+the string is a good string. Note that this appears backwards due to &lt;code&gt;regexec&lt;/code&gt;
+returning 0 on match and 1 on no match. We output the counted good strings for
+our solution.&lt;/p&gt;
+
+&lt;p&gt;Then, we just need to clean up:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;err_cleanup:
+    rc = -1;
+    printf(&amp;quot;badman\n&amp;quot;);
+cleanup:
+    regfree(&amp;amp;rule1);
+    regfree(&amp;amp;rule2);
+    regfree(&amp;amp;rule3);
+    free(input);
+    return rc;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;With our solution submitted, we then get our second problem:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Realizing the error of his ways, Santa has switched to a better model of determining whether a string is naughty or nice. None of the old rules apply, as they are all clearly ridiculous.&lt;/p&gt;
+
+&lt;p&gt;Now, a nice string is one with all of the following properties:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;It contains a pair of any two letters that appears at least twice in the string without overlapping, like &lt;code&gt;xyxy&lt;/code&gt; (&lt;code&gt;xy&lt;/code&gt;) or &lt;code&gt;aabcdefgaa&lt;/code&gt; (&lt;code&gt;aa&lt;/code&gt;), but not like &lt;code&gt;aaa&lt;/code&gt; (&lt;code&gt;aa&lt;/code&gt;, but it overlaps).&lt;/li&gt;
+&lt;li&gt;It contains at least one letter which repeats with exactly one letter between them, like &lt;code&gt;xyx&lt;/code&gt;, &lt;code&gt;abcdefeghi&lt;/code&gt; (&lt;code&gt;efe&lt;/code&gt;), or even &lt;code&gt;aaa&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;For example:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;qjhvhtzxzqqjkmpb&lt;/code&gt; is nice because is has a pair that appears twice (&lt;code&gt;qj&lt;/code&gt;) and a letter that repeats with exactly one letter between them (&lt;code&gt;zxz&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;xxyxx&lt;/code&gt; is nice because it has a pair that appears twice and a letter that repeats with one between, even though the letters used by each rule overlap.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;uurcxstgmygtbstg&lt;/code&gt; is naughty because it has a pair (&lt;code&gt;tg&lt;/code&gt;) but no repeat with a single letter between them.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ieodomkazucvgmuy&lt;/code&gt; is naughty because it has a repeating letter with one between (&lt;code&gt;odo&lt;/code&gt;), but no pair that appears twice.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;How many strings are nice under these new rules?&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;As expected, the problem is very similar, if slightly more complicated. The good
+news is that these rules can also be checked with valid POSIX basic regular
+expressions, so we can easily add the new rules to the existing loop.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    regex_t rule1, rule2, rule3, rule4, rule5;
+    if (regcomp(&amp;amp;rule1, &amp;quot;[aeiou].*[aeiou].*[aeiou]&amp;quot;, 0))
+        goto err_cleanup;
+
+    if (regcomp(&amp;amp;rule2, &amp;quot;\\(.\\)\\1&amp;quot;, 0))
+        goto err_cleanup;
+
+    if (regcomp(&amp;amp;rule3, &amp;quot;\\(ab\\|cd\\|pq\\|xy\\)&amp;quot;, 0))
+        goto err_cleanup;
+
+    if (regcomp(&amp;amp;rule4, &amp;quot;\\(..\\).*\\1&amp;quot;, 0))
+        goto err_cleanup;
+
+    if (regcomp(&amp;amp;rule5, &amp;quot;\\(.\\).\\1&amp;quot;, 0))
+        goto err_cleanup;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The two new rules are:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;A pair of two letters that appear at least twice in the string without
+overlapping: &lt;code&gt;(..).*\1&lt;/code&gt;
+
+&lt;ul&gt;
+&lt;li&gt;This regular expression says: &lt;em&gt;find a group with two of any character, then
+find zero or more of any character, then find the first group&lt;/em&gt;.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;one letter which repeats with exactly one letter between: &lt;code&gt;(.).\1&lt;/code&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;This regular expression says: &lt;em&gt;find a group with one of any character, then
+find one of any character, then find the first group&lt;/em&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;int good = 0;
+int great = 0;
+
+char *cursor = input;
+char *line = strsep(&amp;amp;cursor, &amp;quot;\n&amp;quot;);
+while (line != NULL)
+{
+if (strlen(line) == 0)
+    goto tokenize;
+
+if (regexec(&amp;amp;rule3, line, 0, NULL, 0) &amp;amp;&amp;amp; !regexec(&amp;amp;rule1, line, 0, NULL, 0) &amp;amp;&amp;amp; !regexec(&amp;amp;rule2, line, 0, NULL, 0))
+    good++;
+
+if (!regexec(&amp;amp;rule4, line, 0, NULL, 0) &amp;amp;&amp;amp; !regexec(&amp;amp;rule5, line, 0, NULL, 0))
+    great++;
+
+tokenize:
+line = strsep(&amp;amp;cursor, &amp;quot;\n&amp;quot;);
+}
+
+printf(&amp;quot;\tSolution 1: %d\n&amp;quot;, good);
+printf(&amp;quot;\tSolution 2: %d\n&amp;quot;, great);
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;We add a second check for the two new rules, with a separate counter, then print
+the second result after the first.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;err_cleanup:
+    rc = -1;
+    printf(&amp;quot;badman\n&amp;quot;);
+cleanup:
+    regfree(&amp;amp;rule1);
+    regfree(&amp;amp;rule2);
+    regfree(&amp;amp;rule3);
+    regfree(&amp;amp;rule4);
+    regfree(&amp;amp;rule5);
+    free(input);
+    return rc;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Finally, we clean up the new compiled regexes in addition to the previous ones.&lt;/p&gt;
+
+&lt;p&gt;All together, we have:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;#include &amp;lt;errno.h&amp;gt;
+#include &amp;lt;regex.h&amp;gt;
+#include &amp;lt;stdio.h&amp;gt;
+#include &amp;lt;stdlib.h&amp;gt;
+#include &amp;lt;string.h&amp;gt;
+#include &amp;quot;common.h&amp;quot;
+
+int main(int argc, char const *argv[])
+{
+    int rc = 0;
+    /* check that filename was provided */
+    if (argc &amp;lt; 2)
+    {
+        fprintf(stderr, &amp;quot;Must provide filename of input file\n&amp;quot;);
+        return -1;
+    }
+
+    /* read the file into memory */
+    char *input;
+    int filesize = read_file_to_buffer(&amp;amp;input, argv[1]);
+    if (filesize &amp;lt; 0)
+    {
+        fprintf(stderr, &amp;quot;File read failed: %s\n&amp;quot;, strerror(errno));
+        return -1;
+    }
+
+    printf(&amp;quot;Day 5:\n&amp;quot;);
+
+    regex_t rule1, rule2, rule3, rule4, rule5;
+    if (regcomp(&amp;amp;rule1, &amp;quot;[aeiou].*[aeiou].*[aeiou]&amp;quot;, 0))
+        goto err_cleanup;
+
+    if (regcomp(&amp;amp;rule2, &amp;quot;\\(.\\)\\1&amp;quot;, 0))
+        goto err_cleanup;
+
+    if (regcomp(&amp;amp;rule3, &amp;quot;\\(ab\\|cd\\|pq\\|xy\\)&amp;quot;, 0))
+        goto err_cleanup;
+
+    if (regcomp(&amp;amp;rule4, &amp;quot;\\(..\\).*\\1&amp;quot;, 0))
+        goto err_cleanup;
+
+    if (regcomp(&amp;amp;rule5, &amp;quot;\\(.\\).\\1&amp;quot;, 0))
+        goto err_cleanup;
+
+    int good = 0;
+    int great = 0;
+
+    char *cursor = input;
+    char *line = strsep(&amp;amp;cursor, &amp;quot;\n&amp;quot;);
+    while (line != NULL)
+    {
+        if (strlen(line) == 0)
+            goto tokenize;
+
+        if (regexec(&amp;amp;rule3, line, 0, NULL, 0) &amp;amp;&amp;amp; !regexec(&amp;amp;rule1, line, 0, NULL, 0) &amp;amp;&amp;amp; !regexec(&amp;amp;rule2, line, 0, NULL, 0))
+            good++;
+
+        if (!regexec(&amp;amp;rule4, line, 0, NULL, 0) &amp;amp;&amp;amp; !regexec(&amp;amp;rule5, line, 0, NULL, 0))
+            great++;
+
+    tokenize:
+        line = strsep(&amp;amp;cursor, &amp;quot;\n&amp;quot;);
+    }
+
+    printf(&amp;quot;\tSolution 1: %d\n&amp;quot;, good);
+    printf(&amp;quot;\tSolution 2: %d\n&amp;quot;, great);
+
+    goto cleanup;
+
+err_cleanup:
+    rc = -1;
+    printf(&amp;quot;badman\n&amp;quot;);
+cleanup:
+    regfree(&amp;amp;rule1);
+    regfree(&amp;amp;rule2);
+    regfree(&amp;amp;rule3);
+    regfree(&amp;amp;rule4);
+    regfree(&amp;amp;rule5);
+    free(input);
+    return rc;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is just one instance where a problem that is potentially complex can be
+simplified with regular expressions (note: this goes both ways!)&lt;/p&gt;
+
+&lt;p&gt;As always, if you have questions, comments, or suggestions, feel free to leave
+a comment!&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Advent of Code 2015 Day 4: The Ideal Stocking Stuffer</title>
@@ -32,12 +389,15 @@
 &lt;/ul&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;As always, we&amp;rsquo;ll start with breaking down the problem into discrete parts:
-* Read the input
-* Convert a number to a string
-* Combine the input and the number string
-* Get the MD5 digest of the combined string
-* Check that the first five digits of the digest are &lt;code&gt;0&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;As always, we&amp;rsquo;ll start with breaking down the problem into discrete parts:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Read the input&lt;/li&gt;
+&lt;li&gt;Convert a number to a string&lt;/li&gt;
+&lt;li&gt;Combine the input and the number string&lt;/li&gt;
+&lt;li&gt;Get the MD5 digest of the combined string&lt;/li&gt;
+&lt;li&gt;Check that the first five digits of the digest are &lt;code&gt;0&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;p&gt;Rather than write our own MD5 hashing implementation, we will use the well-known
 and commonly-installed OpenSSL library&amp;rsquo;s implementation. You&amp;rsquo;ll need to make
