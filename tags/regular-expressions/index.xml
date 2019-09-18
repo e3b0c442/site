@@ -6,10 +6,334 @@
     <description>Recent content in Regular Expressions on e3b0c442.io</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 14 Sep 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 17 Sep 2019 00:00:00 +0000</lastBuildDate>
     
 	    <atom:link href="/tags/regular-expressions/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Advent of Code 2015 Day 6: Probably a Fire Hazard</title>
+      <link>/post/advent-2015-c-6/</link>
+      <pubDate>Tue, 17 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/advent-2015-c-6/</guid>
+      <description>&lt;p&gt;Welcome back to my Advent of Code series. I hope you&amp;rsquo;re enjoying exploring these
+problems in depth in C. Let&amp;rsquo;s take a look at the problem for day 6:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Because your neighbors keep defeating you in the holiday house decorating contest year after year, you&amp;rsquo;ve decided to deploy one million lights in a 1000x1000 grid.&lt;/p&gt;
+
+&lt;p&gt;Furthermore, because you&amp;rsquo;ve been especially nice this year, Santa has mailed you instructions on how to display the ideal lighting configuration.&lt;/p&gt;
+
+&lt;p&gt;Lights in your grid are numbered from 0 to 999 in each direction; the lights at each corner are at &lt;code&gt;0,0&lt;/code&gt;, &lt;code&gt;0,999&lt;/code&gt;, &lt;code&gt;999,999&lt;/code&gt;, and &lt;code&gt;999,0&lt;/code&gt;. The instructions include whether to &lt;code&gt;turn on&lt;/code&gt;, &lt;code&gt;turn off&lt;/code&gt;, or &lt;code&gt;toggle&lt;/code&gt; various inclusive ranges given as coordinate pairs. Each coordinate pair represents opposite corners of a rectangle, inclusive; a coordinate pair like &lt;code&gt;0,0 through 2,2&lt;/code&gt; therefore refers to 9 lights in a 3x3 square. The lights all start turned off.&lt;/p&gt;
+
+&lt;p&gt;To defeat your neighbors this year, all you have to do is set up your lights by doing the instructions Santa sent you in order.&lt;/p&gt;
+
+&lt;p&gt;For example:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;turn on 0,0 through 999,999&lt;/code&gt; would turn on (or leave on) every light.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;toggle 0,0 through 999,0&lt;/code&gt; would toggle the first line of 1000 lights, turning off the ones that were on, and turning on the ones that were off.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;turn off 499,499 through 500,500&lt;/code&gt; would turn off (or leave off) the middle four lights.&lt;/li&gt;
+&lt;li&gt;After following the instructions, &lt;strong&gt;how many lights are lit&lt;/strong&gt;?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Let&amp;rsquo;s look at our constituent problems:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Read the input file into memory&lt;/li&gt;
+&lt;li&gt;Set up a grid&lt;/li&gt;
+&lt;li&gt;Parse the input lines&lt;/li&gt;
+&lt;li&gt;Follow the input instructions&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;We already know how to read our file into memory, so we&amp;rsquo;ll move onto setting up
+the grid. As with &lt;a href=&#34;/post/advent-2015-c-3/&#34; target=&#34;_blank&#34;&gt;Day 3&lt;/a&gt;, we will use a
+two-dimensional array to represent the grid. Unlike day 3, we know in advance
+what the size of the grid is, so we don&amp;rsquo;t need to do an extra loop to size it;
+we can just declare &lt;code&gt;bool grid[1000][1000]&lt;/code&gt;, initialize, and move on.&lt;/p&gt;
+
+&lt;p&gt;Likewise, parsing the input lines is also a situation we have previously
+encountered. In previous days, we have used &lt;a href=&#34;/post/advent-2015-c-2/&#34; target=&#34;_blank&#34;&gt;scanners&lt;/a&gt; and &lt;a href=&#34;/post/advent-2015-c-5/&#34; target=&#34;_blank&#34;&gt;regular expressions&lt;/a&gt;. While using scanners is ideal for simple situations,
+we have to remember the downsides: scanners are tokenized by any whitespace, and
+scanners cannot safely be used to scan into strings. Both of these cases are
+disqualifiers for our input; we have a component of the input that might have a
+space in it, and we also need to scan into a string. For this reason, we&amp;rsquo;ll use
+regular expressions to parse our input. Because we can only parse into strings
+with regular expressions, we will also need to convert our number strings to
+numerical values.&lt;/p&gt;
+
+&lt;p&gt;Once we have our values, we can use them to set up a nested loop to update the
+values on the grid.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s look at some code:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;int main(int argc, char const *argv[])
+{
+    int rc = 0;
+    /* check that filename was provided */
+    if (argc &amp;lt; 2)
+    {
+        fprintf(stderr, &amp;quot;Must provide filename of input file\n&amp;quot;);
+        return -1;
+    }
+
+    /* read the file into memory */
+    char *input;
+    int filesize = read_file_to_buffer(&amp;amp;input, argv[1]);
+    if (filesize &amp;lt; 0)
+    {
+        fprintf(stderr, &amp;quot;File read failed: %s\n&amp;quot;, strerror(errno));
+        return -1;
+    }
+
+    printf(&amp;quot;Day 6:\n&amp;quot;);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is our now familiar check for argument, read input, and print preamble,
+included only for completeness at this point.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    regex_t inst_r;
+    int result = regcomp(&amp;amp;inst_r, &amp;quot;\\(turn on\\|turn off\\|toggle\\) \\([[:digit:]]\\{1,\\}\\),\\([[:digit:]]\\{1,\\}\\) through \\([[:digit:]]\\{1,\\}\\),\\([[:digit:]]\\{1,\\}\\)&amp;quot;, 0);
+    if (result != 0)
+        goto err_cleanup;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Next, we compile the regular expression to match against. Without the escape
+characters, this expression looks like: &lt;code&gt;(turn on|turn off|toggle) ([[:digit:]]{1,}),([[:digit:]]{1,}) through ([[:digit:]]{1,}),([[:digit:]]{1,})&lt;/code&gt;.
+Reading this expression aloud, we get &lt;em&gt;Capture a group containing &amp;ldquo;turn on&amp;rdquo;,
+&amp;ldquo;turn off&amp;rdquo;, or &amp;ldquo;toggle&amp;rdquo;. Find a space. Capture a group of one or more digits,
+then find a comma, then capture a group of one or more digits. Find the phrase
+&amp;ldquo; through &amp;ldquo;. Capture a group of one or more digits, then find a comma, then
+capture a group of one or more digits.&lt;/em&gt; At the end of it, we have captured five submatches; one for the command, and then one each for the low and high X and Y coordinates.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    char *cursor = input;
+    char *line = strsep(&amp;amp;cursor, &amp;quot;\n&amp;quot;);
+    regmatch_t matches[6] = {0};
+    bool grid[1000][1000];
+    memset(grid, 0, 1000 * 1000 * sizeof(bool));
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We now prepare to start our loop. We create the cursor variable and get the
+first line, declare an array to hold the regular expression match coordinates
+and initialize it, and declare and initialize the grid array. Note that we use
+&lt;code&gt;memset&lt;/code&gt; for the grid array because the &lt;code&gt;{0}&lt;/code&gt; initialization shorthand cannot be
+used with multidimensional arrays. Also note that we declared a six member array
+for the regular expression matches; the first match is always the full matched
+string, so we need room for this plus the five submatches that we actually care
+about.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    while (line != NULL)
+    {
+        if (strlen(line) == 0)
+            goto tokenize;
+
+        memset(matches, 0, 6 * sizeof(regmatch_t));
+        result = regexec(&amp;amp;inst_r, line, 6, matches, 0);
+        if (result != 0)
+            goto err_cleanup;
+
+        char instr[9] = {0};
+        char oxs[4] = {0};
+        char oys[4] = {0};
+        char dxs[4] = {0};
+        char dys[4] = {0};
+
+        strncpy(instr, line + matches[1].rm_so, matches[1].rm_eo - matches[1].rm_so);
+        strncpy(oxs, line + matches[2].rm_so, matches[2].rm_eo - matches[2].rm_so);
+        strncpy(oys, line + matches[3].rm_so, matches[3].rm_eo - matches[3].rm_so);
+        strncpy(dxs, line + matches[4].rm_so, matches[4].rm_eo - matches[4].rm_so);
+        strncpy(dys, line + matches[5].rm_so, matches[5].rm_eo - matches[5].rm_so);
+
+        unsigned long ox = strtoul(oxs, NULL, 10);
+        if (ox == 0 &amp;amp;&amp;amp; errno == EINVAL)
+            goto err_cleanup;
+        unsigned long oy = strtoul(oys, NULL, 10);
+        if (oy == 0 &amp;amp;&amp;amp; errno == EINVAL)
+            goto err_cleanup;
+        unsigned long dx = strtoul(dxs, NULL, 10);
+        if (dx == 0 &amp;amp;&amp;amp; errno == EINVAL)
+            goto err_cleanup;
+        unsigned long dy = strtoul(dys, NULL, 10);
+        if (dy == 0 &amp;amp;&amp;amp; errno == EINVAL)
+            goto err_cleanup;
+
+        if (strcmp(&amp;quot;turn on&amp;quot;, instr) == 0)
+        {
+            for (int x = ox; x &amp;lt;= dx; x++)
+                for (int y = oy; y &amp;lt;= dy; y++)
+                    grid[x][y] = true;
+        }
+        else if (strcmp(&amp;quot;turn off&amp;quot;, instr) == 0)
+        {
+            for (int x = ox; x &amp;lt;= dx; x++)
+                for (int y = oy; y &amp;lt;= dy; y++)
+                    grid[x][y] = false;
+        }
+        else if (strcmp(&amp;quot;toggle&amp;quot;, instr) == 0)
+        {
+            for (int x = ox; x &amp;lt;= dx; x++)
+                for (int y = oy; y &amp;lt;= dy; y++)
+                    grid[x][y] = !grid[x][y];
+        }
+        else
+        {
+            goto err_cleanup;
+        }
+
+    tokenize:
+        line = strsep(&amp;amp;cursor, &amp;quot;\n&amp;quot;);
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now, we perform our loop on each of the input lines, parsing and following the
+directions. We&amp;rsquo;ll zero out the match array, then execute the compiled regular
+expression against the input line. We then initialize destination variables for
+each of the five submatch values, and use the match coordinates to copy the
+matched substrings into the destination variables.&lt;/p&gt;
+
+&lt;p&gt;Once the destination variables are populated, we&amp;rsquo;ll use &lt;code&gt;strtoul&lt;/code&gt; to parse the
+four numerical values into integral equivalents, giving us the final set of
+parsed values to handle our input.&lt;/p&gt;
+
+&lt;p&gt;At this point, we use strcmp to compare the instruction string against the known
+instructions, and then set up a nested loop using the X and Y values. Finally,
+the interior of the loop sets the value of that coordinate per the instruction.
+You&amp;rsquo;ll notice that we parsed the instruction first, requiring the loop to be
+specified multiple times, seemingly breaking the &lt;em&gt;don&amp;rsquo;t-repeat-yourself&lt;/em&gt; rule.
+In this case, however, this is justified, as if we reversed things, the string
+comparison would need to be done for each position, which would be prohibitvely
+computationally expensive. Once the loop is complete, the values of the grid
+are set.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    int on = 0;
+    for (int x = 0; x &amp;lt; 1000; x++)
+        for (int y = 0; y &amp;lt; 1000; y++)
+            if (grid[x][y])
+                on++;
+
+    printf(&amp;quot;\tSolution 1: %d\n&amp;quot;, on);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In order to get our solution, we set up a counter variable and then another
+nested loop over the entire two-dimensional surface. Each time we encounter
+a &lt;code&gt;true&lt;/code&gt; value, we increment the counter. We then print our solution.&lt;/p&gt;
+
+&lt;p&gt;After submitting the solution, the second problem is presented:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;You just finish implementing your winning light pattern when you realize you mistranslated Santa&amp;rsquo;s message from Ancient Nordic Elvish.&lt;/p&gt;
+
+&lt;p&gt;The light grid you bought actually has individual brightness controls; each light can have a brightness of zero or more. The lights all start at zero.&lt;/p&gt;
+
+&lt;p&gt;The phrase &lt;code&gt;turn on&lt;/code&gt; actually means that you should increase the brightness of those lights by &lt;code&gt;1&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;The phrase &lt;code&gt;turn off&lt;/code&gt; actually means that you should decrease the brightness of those lights by &lt;code&gt;1&lt;/code&gt;, to a minimum of zero.&lt;/p&gt;
+
+&lt;p&gt;The phrase &lt;code&gt;toggle&lt;/code&gt; actually means that you should increase the brightness of those lights by &lt;code&gt;2&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;What is the &lt;strong&gt;total brightness&lt;/strong&gt; of all lights combined after following Santa&amp;rsquo;s instructions?&lt;/p&gt;
+
+&lt;p&gt;For example:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;turn on 0,0 through 0,0&lt;/code&gt; would increase the total brightness by 1.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;toggle 0,0 through 999,999&lt;/code&gt; would increase the total brightness by 2000000.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;As with previous problems, this one is simalar, and we can implement it in the
+existing loop to avoid the need to loop the input a second time.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    char *cursor = input;
+    char *line = strsep(&amp;amp;cursor, &amp;quot;\n&amp;quot;);
+    regmatch_t matches[6] = {0};
+    bool grid[1000][1000];
+    int grid2[1000][1000];
+    memset(grid, 0, 1000 * 1000 * sizeof(bool));
+    memset(grid2, 0, 1000 * 1000 * sizeof(int));
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We will declare a second grid variable, this time of type &lt;code&gt;int[][]&lt;/code&gt;, since we
+need to track more than just on or off.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;        if (strcmp(&amp;quot;turn on&amp;quot;, instr) == 0)
+        {
+            for (int x = ox; x &amp;lt;= dx; x++)
+                for (int y = oy; y &amp;lt;= dy; y++)
+                {
+                    grid[x][y] = true;
+                    grid2[x][y]++;
+                }
+        }
+        else if (strcmp(&amp;quot;turn off&amp;quot;, instr) == 0)
+        {
+            for (int x = ox; x &amp;lt;= dx; x++)
+                for (int y = oy; y &amp;lt;= dy; y++)
+                {
+                    grid[x][y] = false;
+                    grid2[x][y] = grid2[x][y] &amp;gt; 0 ? grid2[x][y] - 1 : 0;
+                }
+        }
+        else if (strcmp(&amp;quot;toggle&amp;quot;, instr) == 0)
+        {
+            for (int x = ox; x &amp;lt;= dx; x++)
+                for (int y = oy; y &amp;lt;= dy; y++)
+                {
+                    grid[x][y] = !grid[x][y];
+                    grid2[x][y] += 2;
+                }
+        }
+        else
+        {
+            goto err_cleanup;
+        }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The instructions are equivalent for both loops; we just need to add the
+application of the instructions to the second grid following the second
+transation&amp;rsquo;s directions.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    int on = 0;
+    int bright = 0;
+    for (int x = 0; x &amp;lt; 1000; x++)
+        for (int y = 0; y &amp;lt; 1000; y++)
+        {
+            if (grid[x][y])
+                on++;
+            bright += grid2[x][y];
+        }
+
+    printf(&amp;quot;\tSolution 1: %d\n&amp;quot;, on);
+    printf(&amp;quot;\tSolution 2: %d\n&amp;quot;, bright);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We&amp;rsquo;ll add a second counter variable and perform the addition during the same
+nested loop as the first solution, and then print both solutions.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;
+    goto cleanup;
+
+err_cleanup:
+    rc = -1;
+cleanup:
+    regfree(&amp;amp;inst_r);
+    free(input);
+    return rc;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Finally, we will clean up. As before, we need to call &lt;code&gt;regfree&lt;/code&gt; to free the
+compiled regular expression in addition to freeing the input.&lt;/p&gt;
+
+&lt;p&gt;Our problems are gradually getting more difficult, but we&amp;rsquo;re almost a week
+through! Day seven&amp;rsquo;s solution requires implementing a new data structure, so our
+next article will take a break to discuss this in detail.&lt;/p&gt;
+
+&lt;p&gt;As always, comments, criticism, and banter are welcome, just leave a comment!&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Advent of Code 2015 Day 5: Doesn&#39;t He Have Intern-Elves For This?</title>
@@ -223,38 +547,39 @@ overlapping: &lt;code&gt;(..).*\1&lt;/code&gt;
 &lt;li&gt;This regular expression says: &lt;em&gt;find a group with two of any character, then
 find zero or more of any character, then find the first group&lt;/em&gt;.&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;one letter which repeats with exactly one letter between: &lt;code&gt;(.).\1&lt;/code&gt;&lt;/p&gt;
+&lt;li&gt;one letter which repeats with exactly one letter between: &lt;code&gt;(.).\1&lt;/code&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;p&gt;This regular expression says: &lt;em&gt;find a group with one of any character, then
-find one of any character, then find the first group&lt;/em&gt;.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;int good = 0;
-int great = 0;
-
-char *cursor = input;
-char *line = strsep(&amp;amp;cursor, &amp;quot;\n&amp;quot;);
-while (line != NULL)
-{
-if (strlen(line) == 0)
-    goto tokenize;
-
-if (regexec(&amp;amp;rule3, line, 0, NULL, 0) &amp;amp;&amp;amp; !regexec(&amp;amp;rule1, line, 0, NULL, 0) &amp;amp;&amp;amp; !regexec(&amp;amp;rule2, line, 0, NULL, 0))
-    good++;
-
-if (!regexec(&amp;amp;rule4, line, 0, NULL, 0) &amp;amp;&amp;amp; !regexec(&amp;amp;rule5, line, 0, NULL, 0))
-    great++;
-
-tokenize:
-line = strsep(&amp;amp;cursor, &amp;quot;\n&amp;quot;);
-}
-
-printf(&amp;quot;\tSolution 1: %d\n&amp;quot;, good);
-printf(&amp;quot;\tSolution 2: %d\n&amp;quot;, great);
-&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;This regular expression says: &lt;em&gt;find a group with one of any character, then
+find one of any character, then find the first group&lt;/em&gt;.&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;
+
+&lt;p&gt;These are again compiled.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;    int good = 0;
+    int great = 0;
+
+    char *cursor = input;
+    char *line = strsep(&amp;amp;cursor, &amp;quot;\n&amp;quot;);
+    while (line != NULL)
+    {
+        if (strlen(line) == 0)
+            goto tokenize;
+
+        if (regexec(&amp;amp;rule3, line, 0, NULL, 0) &amp;amp;&amp;amp; !regexec(&amp;amp;rule1, line, 0, NULL, 0) &amp;amp;&amp;amp; !regexec(&amp;amp;rule2, line, 0, NULL, 0))
+            good++;
+
+        if (!regexec(&amp;amp;rule4, line, 0, NULL, 0) &amp;amp;&amp;amp; !regexec(&amp;amp;rule5, line, 0, NULL, 0))
+            great++;
+
+    tokenize:
+        line = strsep(&amp;amp;cursor, &amp;quot;\n&amp;quot;);
+    }
+
+    printf(&amp;quot;\tSolution 1: %d\n&amp;quot;, good);
+    printf(&amp;quot;\tSolution 2: %d\n&amp;quot;, great);
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;We add a second check for the two new rules, with a separate counter, then print
 the second result after the first.&lt;/p&gt;
