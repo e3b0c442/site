@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.4.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Nick Meyer">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Note: I am not receiving any compensation either for what I&rsquo;m saying here or for the product links on this page. I think the YubiKey is a great product, and I want to share why.
+With the upcoming release of macOS Catalina &ndash; and with it, the end of the last major browser holdout from the FIDO standards, I wanted to take a moment to talk about the YubiKey and the promise of the standards that it supports for secure internet authentication.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/yubikey/">
+
+  
+
+
+  
+
+  
+  
+  
+  <meta name="theme-color" content="#2962ff">
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css" integrity="sha384-aOkxzJ5uQz7WBObEZcHvV5JvRW3TUc2rNPA7pe3AwnsUohiw1Vj2Rgx2KSOkF5+h" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css" integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ==" crossorigin="anonymous">
+    
+
+    
+
+  
+
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700|Roboto:400,400italic,700|Roboto+Mono&display=swap">
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.min.3bc694af15fd1e4ff7262e7dd46f11a8.css">
+
+  
+
+  
+  
+  
+
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/yubikey/">
+
+  
+  
+  
+  
+    
+    
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="twitter:site" content="@0xe3b0c442">
+  <meta property="twitter:creator" content="@0xe3b0c442">
+  
+  <meta property="og:site_name" content="e3b0c442.io">
+  <meta property="og:url" content="/post/yubikey/">
+  <meta property="og:title" content="The YubiKey; or, why are you still using a password in 2019? | e3b0c442.io">
+  <meta property="og:description" content="Note: I am not receiving any compensation either for what I&rsquo;m saying here or for the product links on this page. I think the YubiKey is a great product, and I want to share why.
+With the upcoming release of macOS Catalina &ndash; and with it, the end of the last major browser holdout from the FIDO standards, I wanted to take a moment to talk about the YubiKey and the promise of the standards that it supports for secure internet authentication."><meta property="og:image" content="/img/icon-192.png">
+  <meta property="twitter:image" content="/img/icon-192.png"><meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2019-09-18T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2019-09-18T00:00:00&#43;00:00">
+  
+
+  
+
+
+  <meta name="robots" content="noindex,nofollow">
+
+
+  <title>The YubiKey; or, why are you still using a password in 2019? | e3b0c442.io</title>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+<nav class="navbar navbar-light fixed-top navbar-expand-lg py-0 compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+      <a class="navbar-brand" href="/">e3b0c442.io</a>
+      
+      <button type="button" class="navbar-toggler" data-toggle="collapse"
+              data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span><i class="fas fa-bars"></i></span>
+      </button>
+      
+
+    
+    <div class="collapse navbar-collapse" id="navbar">
+
+      
+      
+      <ul class="navbar-nav mr-auto">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#banner"><span>Home</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/about/"><span>About</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+      
+      </ul>
+      <ul class="navbar-nav ml-auto">
+      
+
+        
+
+        
+        <li class="nav-item">
+          <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+        </li>
+        
+
+        
+
+        
+        <li class="nav-item">
+          <a class="nav-link js-dark-toggle" href="#"><i class="fas fa-moon" aria-hidden="true"></i></a>
+        </li>
+        
+
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+  <article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  
+<div class="article-container pt-3">
+  <h1 itemprop="name">The YubiKey; or, why are you still using a password in 2019?</h1>
+
+  
+
+  
+    
+
+
+
+<meta content="2019-09-18 00:00:00 &#43;0000 UTC" itemprop="datePublished">
+<meta content="2019-09-18 00:00:00 &#43;0000 UTC" itemprop="dateModified">
+
+<div class="article-metadata">
+
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+    
+    <time>Sep 18, 2019</time>
+  </span>
+  
+
+  
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    6 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/yubikey/#disqus_thread"></a>
+  
+
+  
+  
+
+  
+    
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=/post/yubikey/&amp;text=The%20YubiKey;%20or,%20why%20are%20you%20still%20using%20a%20password%20in%202019?" target="_blank" rel="noopener" class="share-btn-twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=/post/yubikey/&amp;t=The%20YubiKey;%20or,%20why%20are%20you%20still%20using%20a%20password%20in%202019?" target="_blank" rel="noopener" class="share-btn-facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=The%20YubiKey;%20or,%20why%20are%20you%20still%20using%20a%20password%20in%202019?&amp;body=/post/yubikey/" target="_blank" rel="noopener" class="share-btn-email">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=/post/yubikey/&amp;title=The%20YubiKey;%20or,%20why%20are%20you%20still%20using%20a%20password%20in%202019?" target="_blank" rel="noopener" class="share-btn-linkedin">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://web.whatsapp.com/send?text=The%20YubiKey;%20or,%20why%20are%20you%20still%20using%20a%20password%20in%202019?%20/post/yubikey/" target="_blank" rel="noopener" class="share-btn-whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=/post/yubikey/&amp;title=The%20YubiKey;%20or,%20why%20are%20you%20still%20using%20a%20password%20in%202019?" target="_blank" rel="noopener" class="share-btn-weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style" itemprop="articleBody">
+      <p><em>Note: I am not receiving any compensation either for what I&rsquo;m saying here or
+for the product links on this page. I think the YubiKey is a great product, and
+I want to share why.</em></p>
+
+<p>With the upcoming release of macOS Catalina &ndash; and with it, the end of the last
+major browser holdout from the <a href="https://fidoalliance.org" target="_blank">FIDO</a> standards, I
+wanted to take a moment to talk about the YubiKey and the promise of the
+standards that it supports for secure internet authentication.</p>
+
+<p>Before we dive into the YubiKey itself, I&rsquo;d like to explain why this is
+important to me. The economic impact of compromised accounts is astronomical;
+according to a 2018 <a href="https://www.mcafee.com/us/resources/reports/restricted/economic-impact-cybercrime.pdf?utm_source=Press&amp;utm_campaign=bb9303ae70-EMAIL_CAMPAIGN_2018_02_21&amp;utm_medium=email&amp;utm_term=0_7623d157be-bb9303ae70-" target="_blank">study</a>
+by the <a href="https://csis.org" target="_blank">Center for Strategic and International Studies</a> in
+collaboration with McAfee, the economic impact of cyber crime is nearly $600
+billion per year, or 1% of total global GDP. At the same time, password security
+is either misunderstood or ignored by both end users and system administrators
+alike; <a href="https://en.wikipedia.org/wiki/List_of_the_most_common_passwords" target="_blank">according to multiple sources</a>,
+the most commonly-used password in recent years is <code>123456</code>. In addition,
+password requirements vary greatly amongst services, with many still enforcing
+maximum length limits and the use of special characters (or limitation of
+characters) <a href="https://xkcd.com/936/" target="_blank">despite mathematical evidence</a> that the use
+of easy-to-remember long passphrases is far more secure than requiring multiple
+special characters in a shorter password. Simply put - passwords need to be put
+out to pasture.</p>
+
+<p>With what do we replace passwords? Public key cryptography has been widely-used
+and battle-tested for decades &ndash; every time you visit a site with the <code>https</code>
+URL scheme, you are using it! &ndash; and while some implementations have been shown
+to have weaknesses over time, the basic concepts are solid. As long as the
+private key can be protected, public key cryptograhy is an effective method of
+authenticating an end user and encrypting communications, which is where the
+YubiKey comes in.</p>
+
+<p>If you are not familiar with the YubiKey, it is a multi-protocol hardware
+cryptographic token. The premise behind this kind of token is that the secret
+key is stored on the token and the token itself performs cryptographic
+operations using the key without making it accessible to the host system, thus
+preventing the key from being siphoned off by an unscrupulous actor. The latest
+generation YubiKey 5 family has support for the following protocols:</p>
+
+<ul>
+<li><strong>USB HID</strong>: these protocols take advantage of the capability of the YubiKey
+to act as a keyboard and send data as keystrokes:
+
+<ul>
+<li>Static password: The YubiKey can generate a secure password that can be
+combined with an easy-to-remember value to simulate a 2nd-factor auth.</li>
+<li>Yubico OTP: A custom OTP implementation that relies on a shared key known
+by the YubiKey and the server. Yubico provides this service for all
+fresh-from-factory YubiKeys; if you don&rsquo;t trust Yubico with your key, you can
+run the service by yourself and reprogram your YubiKey with a new shared key.</li>
+</ul></li>
+<li><strong>OTP (One-time password)</strong>: These protocols allow for time- or event-based
+one-time passwords:
+
+<ul>
+<li>OATH-TOTP: This is the same protocol utilized by the nearly-ubiquitous
+mobile authenticators out there. In the case of the YubiKey, the one-time
+password values are read from the key with a special Yubico Authenticator
+application.</li>
+<li>OATH-HOTP: This one-time password mechanism is not nearly as commonly used
+due to its reliance on counters and susceptibility to synchronization
+issues.</li>
+<li>HMAC-SHA1 Challenge/Response: This protocol relies on a shared secret. The
+remote party sends a challenge, and the YubiKey calculates the HMAC-SHA1 code
+of the challenge using the shared secret, and returns it to the remote party.</li>
+</ul></li>
+<li><strong>CCID (Smart cards)</strong>: These protocols allow the YubiKey to emulate smart
+cards:
+
+<ul>
+<li>OpenPGP: The YubiKey acts as an OpenPGP smart card, with three key slots
+available. The YubiKey then performs all sign/encrypt/decrypt operations using
+the stored keys.</li>
+<li>PIV: The YubiKey acts as a PIV card and can be accessed using the standard
+PKCS#11 protocols. In addition to raw keys, the PIV applet can store
+certificates and generate CSRs, allowing for the keys to be certified and have
+enforced expiration and revocation capabilities.</li>
+</ul></li>
+<li><strong>FIDO (web authentication)</strong>: These protocols allow for the usage of public
+key cryptography for authentication in the Web browser:
+
+<ul>
+<li>U2F, aka CTAP1: This protocol allows for 2nd-factor authentication using the
+private key stored on the YubiKey. It was never standardized beyond FIDO and
+thus there are implementation and support issues across common browsers.</li>
+<li>FIDO2, aka CTAP2: This protocol is backwards-compatible with CTAP1, and
+works in concert with the W3C WebAuthn standard to allow not only 2nd-factor
+authentication, but completely passwordless authentication. This is the future
+of web authentication.</li>
+</ul></li>
+</ul>
+
+<p>In addition to the fully-featured Yubikey 5 line, Yubico offers a &ldquo;Security Key&rdquo;
+line which only support the FIDO protocols. For the majority of people out
+there, this is sufficient.</p>
+
+<p><a href="https://www.w3.org/TR/webauthn/" target="_blank">WebAuthn</a> is a recently ratified standard by
+the W3C specifying a JavaScript API for facilitating authentication with public
+key cryptography. This works together with the <a href="https://fidoalliance.org/specs/fido-v2.0-rd-20170927/fido-client-to-authenticator-protocol-v2.0-rd-20170927.html" target="_blank">CTAP device protocols</a>
+to enable the web browser to communicate with a CTAP-compatible USB device and
+use it to securely authenticate a user to a service. Per the <a href="https://fidoalliance.org/fido2" target="_blank">FIDO2</a>
+website: <code>FIDO2 cryptographic login credentials are unique across every website, never leave the user’s device and are never stored on a server. This security model eliminates the risks of phishing, all forms of password theft and replay attacks.</code> The FIDO2 protocol also supports requiring a local second
+factor such as physical presence (push the button) or a PIN. In the case of a
+PIN, this can be a simpler value as it is never transmitted over the Internet
+nor stored outside of the device.</p>
+
+<p>I utilize my YubiKey 4 as much as possible. I use the PIV applet to log in
+locally to my computers; the OpenPGP  applet to store my PGP auth, signing, and
+encryption keys that I use for signing git commits or remotely logging into
+servers. I utilize Yubico OTP as a second factor on my most sensitive servers as
+well as the secnod factor on my password manager. I utilize FIDO U2F wherever
+possible (Google, AWS, Facebook). I understand I am a power user, and that many
+of these use cases are quite advanced, but I simply see too much value in
+eschewing the world of the password and moving exclusively to public-key
+cryptography, now that I have the tools to do it. I only wish more things
+supported it, e.g. LUKS, which still requires a passphrase.</p>
+
+<p>Regardless of your level of expertise, I hope you are at least using a
+<a href="https://www.yubico.com/products/security-key-3/" target="_blank">Security Key</a>. If not, get
+one ASAP, and pressure every provider that does not yet support WebAuthn/FIDO2
+to build that support as soon as possible. Hopefully we can start seeing that
+$600 billion number trend downward as more people adopt YubiKeys or other
+FIDO2-compliant devices.</p>
+
+    </div>
+
+    
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/tags/security/">Security</a>
+  
+  <a class="badge badge-light" href="/tags/cryptography/">Cryptography</a>
+  
+  <a class="badge badge-light" href="/tags/yubikey/">YubiKey</a>
+  
+</div>
+
+
+
+    
+      
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+  
+  
+    
+  
+  
+  <div class="media author-card" itemscope itemtype="http://schema.org/Person">
+    
+      <img class="portrait mr-3" src="https://s.gravatar.com/avatar/19df311615fff265c919af6f4e1db103?s=200')" itemprop="image" alt="Avatar">
+    
+
+    <div class="media-body">
+      <h5 class="card-title" itemprop="name"><a href="/">Nick Meyer</a></h5>
+      <h6 class="card-subtitle">Sr Software Engineer, Infrastructure as a Service</h6>
+      <p class="card-text" itemprop="description">Building the infrastructure for building the Internet.</p>
+      <ul class="network-icon" aria-hidden="true">
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+            
+          
+          <li>
+            <a itemprop="sameAs" href="https://twitter.com/0xe3b0c442" target="_blank" rel="noopener">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+            
+          
+          <li>
+            <a itemprop="sameAs" href="https://linkedin.com/in/meyerns" target="_blank" rel="noopener">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+            
+          
+          <li>
+            <a itemprop="sameAs" href="https://github.com/e3b0c442" target="_blank" rel="noopener">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+            
+          
+          <li>
+            <a itemprop="sameAs" href="https://gitlab.com/e3b0c442" target="_blank" rel="noopener">
+              <i class="fab fa-gitlab"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+
+      
+      
+      <div class="article-widget">
+        <div class="hr-light"></div>
+        <h3>Related</h3>
+        <ul>
+          
+          <li><a href="/post/advent-2015-c-4/">Advent of Code 2015 Day 4: The Ideal Stocking Stuffer</a></li>
+          
+        </ul>
+      </div>
+      
+    
+
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "e3b0c442" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+      
+
+    
+    
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js" integrity="sha256-aYTdUrn6Ow1DDgh5JTc3aDGnnju48y/1c8s1dgkYPQ8=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/languages/r.min.js"></script>
+        
+      
+
+      
+      
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.js" integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log==" crossorigin="anonymous"></script>
+    
+
+    
+    
+    
+    <script id="dsq-count-scr" src="https://e3b0c442.disqus.com/count.js" async></script>
+    
+
+    
+    
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script>
+      const search_index_filename = "/index.json";
+      const i18n = {
+        'placeholder': "Search...",
+        'results': "results found",
+        'no_results': "No results found"
+      };
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.16bbb3750feb7244c9bc409a5a4fe678.js"></script>
+
+    
+
+
+
+
+
+
+  
+  <div class="container">
+    <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+    <span class="float-right" aria-hidden="true">
+      <a href="#" id="back_to_top">
+        <span class="button_icon">
+          <i class="fas fa-chevron-up fa-2x"></i>
+        </span>
+      </a>
+    </span>
+    
+  </p>
+</footer>
+
+  </div>
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -6,10 +6,143 @@
     <description>Recent content in Posts on e3b0c442.io</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 17 Sep 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 18 Sep 2019 00:00:00 +0000</lastBuildDate>
     
 	    <atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>The YubiKey; or, why are you still using a password in 2019?</title>
+      <link>/post/yubikey/</link>
+      <pubDate>Wed, 18 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/yubikey/</guid>
+      <description>&lt;p&gt;&lt;em&gt;Note: I am not receiving any compensation either for what I&amp;rsquo;m saying here or
+for the product links on this page. I think the YubiKey is a great product, and
+I want to share why.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;With the upcoming release of macOS Catalina &amp;ndash; and with it, the end of the last
+major browser holdout from the &lt;a href=&#34;https://fidoalliance.org&#34; target=&#34;_blank&#34;&gt;FIDO&lt;/a&gt; standards, I
+wanted to take a moment to talk about the YubiKey and the promise of the
+standards that it supports for secure internet authentication.&lt;/p&gt;
+
+&lt;p&gt;Before we dive into the YubiKey itself, I&amp;rsquo;d like to explain why this is
+important to me. The economic impact of compromised accounts is astronomical;
+according to a 2018 &lt;a href=&#34;https://www.mcafee.com/us/resources/reports/restricted/economic-impact-cybercrime.pdf?utm_source=Press&amp;amp;utm_campaign=bb9303ae70-EMAIL_CAMPAIGN_2018_02_21&amp;amp;utm_medium=email&amp;amp;utm_term=0_7623d157be-bb9303ae70-&#34; target=&#34;_blank&#34;&gt;study&lt;/a&gt;
+by the &lt;a href=&#34;https://csis.org&#34; target=&#34;_blank&#34;&gt;Center for Strategic and International Studies&lt;/a&gt; in
+collaboration with McAfee, the economic impact of cyber crime is nearly $600
+billion per year, or 1% of total global GDP. At the same time, password security
+is either misunderstood or ignored by both end users and system administrators
+alike; &lt;a href=&#34;https://en.wikipedia.org/wiki/List_of_the_most_common_passwords&#34; target=&#34;_blank&#34;&gt;according to multiple sources&lt;/a&gt;,
+the most commonly-used password in recent years is &lt;code&gt;123456&lt;/code&gt;. In addition,
+password requirements vary greatly amongst services, with many still enforcing
+maximum length limits and the use of special characters (or limitation of
+characters) &lt;a href=&#34;https://xkcd.com/936/&#34; target=&#34;_blank&#34;&gt;despite mathematical evidence&lt;/a&gt; that the use
+of easy-to-remember long passphrases is far more secure than requiring multiple
+special characters in a shorter password. Simply put - passwords need to be put
+out to pasture.&lt;/p&gt;
+
+&lt;p&gt;With what do we replace passwords? Public key cryptography has been widely-used
+and battle-tested for decades &amp;ndash; every time you visit a site with the &lt;code&gt;https&lt;/code&gt;
+URL scheme, you are using it! &amp;ndash; and while some implementations have been shown
+to have weaknesses over time, the basic concepts are solid. As long as the
+private key can be protected, public key cryptograhy is an effective method of
+authenticating an end user and encrypting communications, which is where the
+YubiKey comes in.&lt;/p&gt;
+
+&lt;p&gt;If you are not familiar with the YubiKey, it is a multi-protocol hardware
+cryptographic token. The premise behind this kind of token is that the secret
+key is stored on the token and the token itself performs cryptographic
+operations using the key without making it accessible to the host system, thus
+preventing the key from being siphoned off by an unscrupulous actor. The latest
+generation YubiKey 5 family has support for the following protocols:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;USB HID&lt;/strong&gt;: these protocols take advantage of the capability of the YubiKey
+to act as a keyboard and send data as keystrokes:
+
+&lt;ul&gt;
+&lt;li&gt;Static password: The YubiKey can generate a secure password that can be
+combined with an easy-to-remember value to simulate a 2nd-factor auth.&lt;/li&gt;
+&lt;li&gt;Yubico OTP: A custom OTP implementation that relies on a shared key known
+by the YubiKey and the server. Yubico provides this service for all
+fresh-from-factory YubiKeys; if you don&amp;rsquo;t trust Yubico with your key, you can
+run the service by yourself and reprogram your YubiKey with a new shared key.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;OTP (One-time password)&lt;/strong&gt;: These protocols allow for time- or event-based
+one-time passwords:
+
+&lt;ul&gt;
+&lt;li&gt;OATH-TOTP: This is the same protocol utilized by the nearly-ubiquitous
+mobile authenticators out there. In the case of the YubiKey, the one-time
+password values are read from the key with a special Yubico Authenticator
+application.&lt;/li&gt;
+&lt;li&gt;OATH-HOTP: This one-time password mechanism is not nearly as commonly used
+due to its reliance on counters and susceptibility to synchronization
+issues.&lt;/li&gt;
+&lt;li&gt;HMAC-SHA1 Challenge/Response: This protocol relies on a shared secret. The
+remote party sends a challenge, and the YubiKey calculates the HMAC-SHA1 code
+of the challenge using the shared secret, and returns it to the remote party.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;CCID (Smart cards)&lt;/strong&gt;: These protocols allow the YubiKey to emulate smart
+cards:
+
+&lt;ul&gt;
+&lt;li&gt;OpenPGP: The YubiKey acts as an OpenPGP smart card, with three key slots
+available. The YubiKey then performs all sign/encrypt/decrypt operations using
+the stored keys.&lt;/li&gt;
+&lt;li&gt;PIV: The YubiKey acts as a PIV card and can be accessed using the standard
+PKCS#11 protocols. In addition to raw keys, the PIV applet can store
+certificates and generate CSRs, allowing for the keys to be certified and have
+enforced expiration and revocation capabilities.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;FIDO (web authentication)&lt;/strong&gt;: These protocols allow for the usage of public
+key cryptography for authentication in the Web browser:
+
+&lt;ul&gt;
+&lt;li&gt;U2F, aka CTAP1: This protocol allows for 2nd-factor authentication using the
+private key stored on the YubiKey. It was never standardized beyond FIDO and
+thus there are implementation and support issues across common browsers.&lt;/li&gt;
+&lt;li&gt;FIDO2, aka CTAP2: This protocol is backwards-compatible with CTAP1, and
+works in concert with the W3C WebAuthn standard to allow not only 2nd-factor
+authentication, but completely passwordless authentication. This is the future
+of web authentication.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;In addition to the fully-featured Yubikey 5 line, Yubico offers a &amp;ldquo;Security Key&amp;rdquo;
+line which only support the FIDO protocols. For the majority of people out
+there, this is sufficient.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://www.w3.org/TR/webauthn/&#34; target=&#34;_blank&#34;&gt;WebAuthn&lt;/a&gt; is a recently ratified standard by
+the W3C specifying a JavaScript API for facilitating authentication with public
+key cryptography. This works together with the &lt;a href=&#34;https://fidoalliance.org/specs/fido-v2.0-rd-20170927/fido-client-to-authenticator-protocol-v2.0-rd-20170927.html&#34; target=&#34;_blank&#34;&gt;CTAP device protocols&lt;/a&gt;
+to enable the web browser to communicate with a CTAP-compatible USB device and
+use it to securely authenticate a user to a service. Per the &lt;a href=&#34;https://fidoalliance.org/fido2&#34; target=&#34;_blank&#34;&gt;FIDO2&lt;/a&gt;
+website: &lt;code&gt;FIDO2 cryptographic login credentials are unique across every website, never leave the user’s device and are never stored on a server. This security model eliminates the risks of phishing, all forms of password theft and replay attacks.&lt;/code&gt; The FIDO2 protocol also supports requiring a local second
+factor such as physical presence (push the button) or a PIN. In the case of a
+PIN, this can be a simpler value as it is never transmitted over the Internet
+nor stored outside of the device.&lt;/p&gt;
+
+&lt;p&gt;I utilize my YubiKey 4 as much as possible. I use the PIV applet to log in
+locally to my computers; the OpenPGP  applet to store my PGP auth, signing, and
+encryption keys that I use for signing git commits or remotely logging into
+servers. I utilize Yubico OTP as a second factor on my most sensitive servers as
+well as the secnod factor on my password manager. I utilize FIDO U2F wherever
+possible (Google, AWS, Facebook). I understand I am a power user, and that many
+of these use cases are quite advanced, but I simply see too much value in
+eschewing the world of the password and moving exclusively to public-key
+cryptography, now that I have the tools to do it. I only wish more things
+supported it, e.g. LUKS, which still requires a passphrase.&lt;/p&gt;
+
+&lt;p&gt;Regardless of your level of expertise, I hope you are at least using a
+&lt;a href=&#34;https://www.yubico.com/products/security-key-3/&#34; target=&#34;_blank&#34;&gt;Security Key&lt;/a&gt;. If not, get
+one ASAP, and pressure every provider that does not yet support WebAuthn/FIDO2
+to build that support as soon as possible. Hopefully we can start seeing that
+$600 billion number trend downward as more people adopt YubiKeys or other
+FIDO2-compliant devices.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Advent of Code 2015 Day 6: Probably a Fire Hazard</title>

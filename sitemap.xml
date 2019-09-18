@@ -3,6 +3,41 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>/tags/cryptography/</loc>
+    <lastmod>2019-09-18T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/</loc>
+    <lastmod>2019-09-18T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/</loc>
+    <lastmod>2019-09-18T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/security/</loc>
+    <lastmod>2019-09-18T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/</loc>
+    <lastmod>2019-09-18T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/yubikey/</loc>
+    <lastmod>2019-09-18T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/yubikey/</loc>
+    <lastmod>2019-09-18T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/tags/advent-of-code/</loc>
     <lastmod>2019-09-17T00:00:00+00:00</lastmod>
   </url>
@@ -18,16 +53,6 @@
   </url>
   
   <url>
-    <loc>/</loc>
-    <lastmod>2019-09-17T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/</loc>
-    <lastmod>2019-09-17T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>/tags/programming/</loc>
     <lastmod>2019-09-17T00:00:00+00:00</lastmod>
   </url>
@@ -38,22 +63,12 @@
   </url>
   
   <url>
-    <loc>/tags/</loc>
-    <lastmod>2019-09-17T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>/post/advent-2015-c-5/</loc>
     <lastmod>2019-09-14T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>/post/advent-2015-c-4/</loc>
-    <lastmod>2019-09-10T03:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/cryptography/</loc>
     <lastmod>2019-09-10T03:00:00+00:00</lastmod>
   </url>
   

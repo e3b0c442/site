@@ -6,10 +6,37 @@
     <description>Recent content in Tags on e3b0c442.io</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 17 Sep 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 18 Sep 2019 00:00:00 +0000</lastBuildDate>
     
 	    <atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Cryptography</title>
+      <link>/tags/cryptography/</link>
+      <pubDate>Wed, 18 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/cryptography/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Security</title>
+      <link>/tags/security/</link>
+      <pubDate>Wed, 18 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/security/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>YubiKey</title>
+      <link>/tags/yubikey/</link>
+      <pubDate>Wed, 18 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/yubikey/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Advent of Code</title>
@@ -44,15 +71,6 @@
       <pubDate>Tue, 17 Sep 2019 00:00:00 +0000</pubDate>
       
       <guid>/tags/regular-expressions/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Cryptography</title>
-      <link>/tags/cryptography/</link>
-      <pubDate>Tue, 10 Sep 2019 03:00:00 +0000</pubDate>
-      
-      <guid>/tags/cryptography/</guid>
       <description></description>
     </item>
     
