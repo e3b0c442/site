@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.4.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Nick Meyer">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="The code discussed here can be found on Github
+Before we tackle Day 7, we need to talk a bit about data structures. Choosing the proper data structures for your program&rsquo;s data is extremely important in making your application both performant and easily understood.
+As we will see in Day 7&rsquo;s discussion, we will need to be able to access an item by a provided string key. Storing these items in a linked list or array would work, but would be unnecessarily slow as the array would need to be iterated each time we try to find the item we are searching for.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/esht/">
+
+  
+
+
+  
+
+  
+  
+  
+  <meta name="theme-color" content="#2962ff">
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css" integrity="sha384-aOkxzJ5uQz7WBObEZcHvV5JvRW3TUc2rNPA7pe3AwnsUohiw1Vj2Rgx2KSOkF5+h" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css" integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ==" crossorigin="anonymous">
+    
+
+    
+
+  
+
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700|Roboto:400,400italic,700|Roboto+Mono&display=swap">
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.min.3bc694af15fd1e4ff7262e7dd46f11a8.css">
+
+  
+
+  
+  
+  
+
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/esht/">
+
+  
+  
+  
+  
+    
+    
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="twitter:site" content="@0xe3b0c442">
+  <meta property="twitter:creator" content="@0xe3b0c442">
+  
+  <meta property="og:site_name" content="e3b0c442.io">
+  <meta property="og:url" content="/post/esht/">
+  <meta property="og:title" content="In which Nick creates a hash table | e3b0c442.io">
+  <meta property="og:description" content="The code discussed here can be found on Github
+Before we tackle Day 7, we need to talk a bit about data structures. Choosing the proper data structures for your program&rsquo;s data is extremely important in making your application both performant and easily understood.
+As we will see in Day 7&rsquo;s discussion, we will need to be able to access an item by a provided string key. Storing these items in a linked list or array would work, but would be unnecessarily slow as the array would need to be iterated each time we try to find the item we are searching for."><meta property="og:image" content="/img/icon-192.png">
+  <meta property="twitter:image" content="/img/icon-192.png"><meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2019-09-23T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2019-09-23T00:00:00&#43;00:00">
+  
+
+  
+
+
+  <meta name="robots" content="noindex,nofollow">
+
+
+  <title>In which Nick creates a hash table | e3b0c442.io</title>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+<nav class="navbar navbar-light fixed-top navbar-expand-lg py-0 compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+      <a class="navbar-brand" href="/">e3b0c442.io</a>
+      
+      <button type="button" class="navbar-toggler" data-toggle="collapse"
+              data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span><i class="fas fa-bars"></i></span>
+      </button>
+      
+
+    
+    <div class="collapse navbar-collapse" id="navbar">
+
+      
+      
+      <ul class="navbar-nav mr-auto">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#banner"><span>Home</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/about/"><span>About</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+      
+      </ul>
+      <ul class="navbar-nav ml-auto">
+      
+
+        
+
+        
+        <li class="nav-item">
+          <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+        </li>
+        
+
+        
+
+        
+        <li class="nav-item">
+          <a class="nav-link js-dark-toggle" href="#"><i class="fas fa-moon" aria-hidden="true"></i></a>
+        </li>
+        
+
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+  <article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  
+<div class="article-container pt-3">
+  <h1 itemprop="name">In which Nick creates a hash table</h1>
+
+  
+
+  
+    
+
+
+
+<meta content="2019-09-23 00:00:00 &#43;0000 UTC" itemprop="datePublished">
+<meta content="2019-09-23 00:00:00 &#43;0000 UTC" itemprop="dateModified">
+
+<div class="article-metadata">
+
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+    
+    <time>Sep 23, 2019</time>
+  </span>
+  
+
+  
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    14 min read
+  </span>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/esht/#disqus_thread"></a>
+  
+
+  
+  
+
+  
+    
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=/post/esht/&amp;text=In%20which%20Nick%20creates%20a%20hash%20table" target="_blank" rel="noopener" class="share-btn-twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=/post/esht/&amp;t=In%20which%20Nick%20creates%20a%20hash%20table" target="_blank" rel="noopener" class="share-btn-facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=In%20which%20Nick%20creates%20a%20hash%20table&amp;body=/post/esht/" target="_blank" rel="noopener" class="share-btn-email">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=/post/esht/&amp;title=In%20which%20Nick%20creates%20a%20hash%20table" target="_blank" rel="noopener" class="share-btn-linkedin">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://web.whatsapp.com/send?text=In%20which%20Nick%20creates%20a%20hash%20table%20/post/esht/" target="_blank" rel="noopener" class="share-btn-whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=/post/esht/&amp;title=In%20which%20Nick%20creates%20a%20hash%20table" target="_blank" rel="noopener" class="share-btn-weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style" itemprop="articleBody">
+      <p><em>The code discussed here can be found <a href="https://github.com/e3b0c442/esht" target="_blank">on Github</a></em></p>
+
+<p>Before we tackle Day 7, we need to talk a bit about data structures. Choosing the proper data structures for your program&rsquo;s data is extremely important in making your application both performant and easily understood.</p>
+
+<p>As we will see in Day 7&rsquo;s discussion, we will need to be able to access an item by a provided string key. Storing these items in a linked list or array would work, but would be unnecessarily slow as the array would need to be iterated each time we try to find the item we are searching for. While there are ways to optimize this, such as by using binary search on a sorted array, these still only achieve an average time complexity of O(log(n)).</p>
+
+<p>The solution in this case is to use a hash table. Hash tables allow for a quick access given a piece of data (generally a string) as a key. This is accomplished by using a hashing algorithm to convert the key into a numerical value which can then be used as an array index. Given a well designed hash table, average search time can be constant time.</p>
+
+<p>Unfortunately, the C standard library comes with neither a hash table implementation nor a hash algorithm. POSIX defines a hash table, but it is defined and stored globally, making it effectively <em>non-reentrant</em>. While this is of only a minor concern for us at this time, it also means that only one such table can be defined at a given time, which will likely be an issue in all but the most simple programs. GNU provides an extension which contains reentrant versions of the POSIX algorithm, but it is not available on even all UNIX platforms, most notably macOS.</p>
+
+<p>For these reasons, we will take some time and thought in this post to design and construct a hash table that gets around these limitations. We will have two primary design motivations:</p>
+
+<ul>
+<li>The table will be universal, so it must compile on standard C. I&rsquo;m going to take this a step further and make it valid ANSI C.</li>
+<li>The table will be simple for end users. We will make a clear demarcation of responsibility for memory; each time the user adds something to the table, the key and value are copied, and the hash table owns those copies. When an item is retrieved, it is copied out. Therefore the end user is responsible for freeing all items provided to or retrieved from the table, but <em>not</em> the copies in the table.</li>
+</ul>
+
+<p>Regardless of platform, there are two important design decisions that need to be made when designing a hash table:</p>
+
+<ul>
+<li><strong>Hashing algorithm</strong>. The choice of hashing algorithm is very important. If a slow algorithm is used, the speed benefits of the hash table are reduced as the time to calculate hashes is high. If an algorithm with poor distributions are used, there will be additional collisions and therefore additional need to iterate over the hash buckets to find the requested item. Realistically, we need a hash algorithm which will produce a hash that fits in a standard numerical data type.</li>
+<li><strong>Collision handling</strong>. Even with a proper hash algorithm, unless you are using the full value of a modern cryptographic hash (Hint: don&rsquo;t do this, they are slow and unnecessary, and you can&rsquo;t use the full value anyway!), you will inevitably have collisions &ndash; two identical keys which produce the same hash digest. There are two common ways to handle this: using <em>chaining</em>, i.e. each hash key points to an array or linked list instead of a single item; or by using <em>open addressing</em>, in which we make the primary array larger and, if an item already occupies the hash slot, iterating along the array until an open position is found.</li>
+</ul>
+
+<p>For our hash table, we will use Daniel J. Bernstein&rsquo;s DJB2a algorithm. This algorithm is simple and extremely fast, yet has reasonably good distribution. To handle collisions, we will use chaining with a singly-linked list. This reduces the complexity of adding and removing items from the chain with little to no performance penalty over an array iteration.</p>
+
+<p>In order to implement our hash table, we need to handle five different operations:</p>
+
+<ul>
+<li>Allocating and initializing the table</li>
+<li>Inserting items into the table (or updating items already in the table)</li>
+<li>Searching for items in the table</li>
+<li>Deleting items from the table</li>
+<li>Destroying the table when we are done using it.</li>
+</ul>
+
+<p>Depending on one&rsquo;s use case, there may be a desire to separate the <em>adding</em> and <em>updating</em> functions. As we are trying to keep things simple though, we will keep them as one function under the assumption that if an item exists for the key, it will be updated.</p>
+
+<p>To start things off, we will need to create structures for the data in the table. In addition to the data itself, we need to track the key used to access the data and, since we will not be assuming a data type, the size of the data. In addition, since we are using linked-list chaining to handle collisions, we will need to have a pointer to the next item in the chain.</p>
+
+<pre><code class="language-c">typedef struct esht_entry
+{
+    char *k;                /* key */
+    void *v;                /* value */ 
+    size_t l;               /* size */
+    struct esht_entry *n;   /* pointer to next item in chain */
+} esht_entry;
+</code></pre>
+
+<p>With this structure defined, we can then define the structure for the table. This structures tracks both the current number of entries in the table, and the current size of the array backing the table, as well as the array itself. The size and capacity are used to calculate the <em>load factor</em>. Generally speaking, the load factor of a hash table should be kept below 80% to ensure minimal collisions, thus keeping performance high.</p>
+
+<pre><code class="language-c">struct esht
+{
+    size_t len;             /* current size */
+    size_t cap;             /* current size of backing array */
+    esht_entry **entries;   /* array of pointers to entries */
+};
+</code></pre>
+
+<p>With these structs defined, we now have a place for all of the information that needs to be stored as part of our hash table. Now, we want to define our hash function. As mentioned before, this is Daniel J. Bernstein&rsquo;s DJB2a algorithm:</p>
+
+<pre><code class="language-c">unsigned long esht_hash(char *str)
+{
+    unsigned long hash = 5381;
+    int c;
+
+    while ((c = *str++))
+        hash = ((hash &lt;&lt; 5) + hash) ^ c;
+
+    return hash;
+}
+</code></pre>
+
+<p>Now we can get down to the business of allocating and initializing the hash table. For simplicity&rsquo;s sake, we are going to design our table with an initial capacity of 1. We will allocate the memory for the table struct, set the capacity and length, and allocate the memory for the backing array. We will check for errors after each allocation and return NULL on error, or return a pointer to the table struct if everything goes as planned. Note that we will use an array of pointers to item structs, rather than making an array of item structs themselves; this will simplify the addition and removal of items later on. We also use <code>malloc</code> to allocate the table, but <code>calloc</code> to allocate the array. This is because we will explicitly initialize the table members, but the array will just have <code>NULL</code> pointers to start since there are no items. (The value of a <code>NULL</code> pointer is <code>0</code>).</p>
+
+<pre><code class="language-c">esht *esht_create()
+{
+    esht *table;
+
+    table = malloc(sizeof(esht)); 
+    if (table == NULL)
+        return NULL;
+
+    table-&gt;cap = 1;
+    table-&gt;len = 0;
+    table-&gt;entries = calloc(1, sizeof(esht_entry *));
+    if (table-&gt;entries == NULL)
+    {
+        free(table);
+        return NULL;
+    }
+
+    return table;
+}
+</code></pre>
+
+<p>Now that we have a table, we can start doing operations on it. However, there is one common piece of code that can be factored out, and that is the <em>resize</em> operation, which will resize the backing array and redistribute the elements.</p>
+
+<p>A bit of explanation: In order to not consume an inordinate amount of memory (e.g. 2**32 * sizeof(esht_entry *)), we don&rsquo;t actually use the full hash value, but the modulus of the hash value against the capacity of the array. The size of the array then becomes the second operand of the modulus. The side effect of this is that the array lookup index will change any time the array is resized, so we need to recompute the lookup index by re-hashing and modulizing the key.</p>
+
+<p>What this means is that you want to be judicious with resizing, as there will be a performance hit while the entirety of the table&rsquo;s keys are hashed again. For our table, we are setting a maximum load factor of 0.75 and a minimum load factor of 0.25, and then either doubling or cutting in half the size once those limits are breached. This allows for a bit of hysteresis, so that if there are several insert or delete operatinos close to either limit, the table wouldn&rsquo;t be resized on every insert/delete. If we wanted to simplify further, we could remove the minimum load factor and only allow the table to grow, but this potentially causes a memory leak.</p>
+
+<pre><code class="language-c">int esht_resize(esht *table, size_t new_cap)
+{
+    /* declare variables at the beginning to conform with ANSI C */
+    int i, ii;
+    esht_entry *cur, *next, **old;
+
+    /* allocate and zero out a new backing array */
+    esht_entry **new_entries = calloc(new_cap, sizeof(esht_entry *));
+    if (new_entries == NULL)
+        return 1;
+
+    /* iterate over the old array... */
+    for (i = 0; i &lt; table-&gt;cap; i++)
+    {
+        /* ...and then over the chains, recompute the hash index for each item, 
+           and insert the item into the new array */
+        next = table-&gt;entries[i];
+        while (next != NULL)
+        {
+            cur = next;
+            next = cur-&gt;n;
+
+            ii = esht_hash(cur-&gt;k) % new_cap;
+            cur-&gt;n = new_entries[ii];
+            new_entries[ii] = cur;
+        }
+    }
+
+    /* replace the old array with the new array, and free the old array */
+    old = table-&gt;entries;
+    table-&gt;entries = new_entries;
+    table-&gt;cap = new_cap;
+    free(old);
+
+    return 0;
+}
+</code></pre>
+
+<p>One additional factored-out operation is finding the value for a key. This is used both by our searching and adding (read: updating) operations, and returns a pointer to the table entry for either updating or copying out a value to return.</p>
+
+<pre><code class="language-c">esht_entry *esht_get_entry(esht *table, char *key)
+{
+    /* declare variables for ANSI C conformance */
+    unsigned long i;
+    esht_entry *e;
+
+    /* hash the key and perform a modulus against the table capacity to get the
+       lookup index */
+    i = esht_hash(key) % table-&gt;cap;
+
+    /* iterate the chain until a matching key is found and return the entry */
+    e = table-&gt;entries[i];
+    while (e != NULL)
+    {
+        if (!strcmp(key, e-&gt;k))
+            return e;
+        e = e-&gt;n;
+    }
+
+    /* if no entry is found, return NULL */
+    return NULL;
+}
+</code></pre>
+
+<p>Now we can get down to the meat and potatoes: adding (updating), finding, and removing items from the table. First, we will write our insertion function. This function searches for an existing item with the same key and updates it; absent an existing item for the key, it allocates a new item and inserts it into the table. Finally, if the insertion causes the load factor to be exceeded, the table is resized.</p>
+
+<pre><code class="language-c">int esht_update(esht *table, char *key, void *value, size_t len)
+{
+    /* declare variables for ANSI C conformance */
+    unsigned long i;
+    esht_entry *e;
+    void *v, *k, *old;
+
+    /* find an existing entry for the key... */
+    e = esht_get_entry(table, key);
+    if (e != NULL)
+    {
+        /* allocate memory for and copy the value */
+        v = malloc(len);
+        if (v == NULL)
+            return 1;
+        memcpy(v, value, len);
+
+        /* replace the value, update the value size, and free the old value */
+        old = e-&gt;v;
+        e-&gt;l = len;
+        e-&gt;v = v;
+        free(old);
+
+        return 0;
+    }
+
+    /* ...or allocate memory for a new entry */
+    e = malloc(sizeof(esht_entry));
+    if (e == NULL)
+        return 1;
+
+    /* allocate for and copy the value */
+    v = malloc(len);
+    if (v == NULL)
+    {
+        free(e);
+        return 1;
+    }
+    memcpy(v, value, len);
+
+    /* allocate for and copy the key */
+    k = malloc(strlen(key) + 1);
+    if (k == NULL)
+    {
+        free(e);
+        free(v);
+        return 1;
+    }
+    strcpy(k, key);
+
+    /* set the entry variables */
+    e-&gt;k = k;
+    e-&gt;v = v;
+    e-&gt;l = len;
+
+    /* hash the key and perform a modulus against the table capacity to get the
+       lookup index */
+    i = esht_hash(key) % table-&gt;cap;
+
+    /* insert the item into the table and update the size */
+    e-&gt;n = table-&gt;entries[i];
+    table-&gt;entries[i] = e;
+    table-&gt;len++;
+
+    /* if the load factor has been exceeded, resize the backing array */
+    if ((float)table-&gt;len / (float)table-&gt;cap &gt; ESHT_MAX_FACTOR)
+        if (esht_resize(table, table-&gt;cap * 2))
+            return 1;
+
+    return 0;
+}
+</code></pre>
+
+<p>We&rsquo;ve already written most of the logic for finding an item; we&rsquo;ll use that to find the item, then copy the value out to the end user. For end-user friendliness, we return a pointer to the value and not an entry struct. If the caller needs to know the size of the data (i.e. it is not a <code>NULL</code>-terminated string or known data size), they can pass a pointer to a <code>size_t</code> value, in which we can place the size of the data.</p>
+
+<pre><code class="language-c">void *esht_get(esht *table, char *key, size_t *len)
+{
+    /* declare variables for ANSI C conformance */
+    esht_entry *e;
+    void *r;
+
+    /* find an existing entry. If there is no entry matching the key, set the 
+       value of the length pointer to 0 and return NULL */
+    e = esht_get_entry(table, key);
+    if (e == NULL)
+    {
+        if (len != NULL)
+            *len = 0;
+        return NULL;
+    }
+
+    /* allocate memory for and copy the value of the table entry */
+    r = malloc(e-&gt;l);
+    if (r == NULL)
+    {
+        if (len != NULL)
+            *len = 0;
+        return NULL;
+    }
+    memcpy(r, e-&gt;v, e-&gt;l);
+
+    /* if a valid pointer was provided, set the length of the return data, then
+       return a pointer to the copied value */
+    if (len != NULL)
+        *len = e-&gt;l;
+    return r;
+}
+</code></pre>
+
+<p>Now, we will provide a way for end users to remove items from the table that are no longer needed. This function takes the key as an argument and returns <code>1</code> if no item was found, or <code>0</code> if the item was found and successfully removed. Then the table is resized if the load factor exceeds the minimum value.</p>
+
+<pre><code class="language-c">int esht_remove(esht *table, char *key)
+{
+    /* declare variables for ANSI C conformance */
+    unsigned long i;
+    esht_entry *e;
+
+    /* hash and modulus the key. Note: we are not reusing the esht_get_entry
+       function here because we need to know the previous item in the chain */
+    i = esht_hash(key) % table-&gt;cap;
+    e = table-&gt;entries[i];
+
+    /* if the initial lookup is NULL, the item does not exist */
+    if (e == NULL)
+        return 1;
+
+    /* otherwise, check the first key, and if the key matches, adjust the chain */
+    if (!strcmp(e-&gt;k, key))
+    {
+        table-&gt;entries[i] = e-&gt;n;
+        goto cleanup;
+    }
+
+    /* If the first key did not match, iterate the table until it is found and
+       adjust the chain */
+    while (e-&gt;n != NULL)
+    {
+        if (!strcmp(e-&gt;n-&gt;k, key))
+        {
+            e-&gt;n = e-&gt;n-&gt;n;
+            goto cleanup;
+        }
+    }
+
+    return 1;
+
+    /* This jump is only taken if a valid entry is found */
+cleanup:
+    /* Free the key, value, and entry struct */
+    free(e-&gt;k);
+    free(e-&gt;v);
+    free(e);
+
+    /* adjust the table size and resize if needed */
+    table-&gt;len--;
+    if ((float)table-&gt;len / (float)table-&gt;cap &lt; ESHT_MIN_FACTOR)
+        if (esht_resize(table, table-&gt;cap / 2))
+            return 1;
+
+    return 0;
+}
+</code></pre>
+
+<p>We now have a table to which we can add, find, and remove items. Now, we need to be able to clean the table up. The destroy function iterates the backing array and chains, frees the key and value of every entry and then the entry itself, frees the backing array, then finally frees the table struct.</p>
+
+<pre><code class="language-c">void esht_destroy(esht *table)
+{
+    /* declare variables for ANSI C conformance */
+    int i;
+    esht_entry *e, *n;
+
+    /* iterate the backing array... */
+    for (i = 0; i &lt; table-&gt;cap; i++)
+    {
+        /* and then the chains, freeing all keys, values, and entries */
+        e = table-&gt;entries[i];
+        while (e != NULL)
+        {
+            n = e-&gt;n;
+            free(e-&gt;k);
+            free(e-&gt;v);
+            free(e);
+            e = n;
+        }
+    }
+
+    /* free the backing array and then the table itself */
+    free(table-&gt;entries);
+    free(table);
+}
+</code></pre>
+
+<p>We now have an ANSI-C compliant, end-user-friendly hash table. The end user is  responsible for managing items provided to or retrieved from the table, and is insulated from accidentally changing internal table values. The end user only needs to know about the table struct itself; the entry struct is internal-only and the find operation returns a pointer to a copy of the value with an optional length.</p>
+
+<p>We will use this table to complete Day 7 in the next post. Until then, your
+comments, criticisms, and inputs are appreciated in the comments.</p>
+
+    </div>
+
+    
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/tags/data-structures/">Data Structures</a>
+  
+</div>
+
+
+
+    
+      
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+  
+  
+    
+  
+  
+  <div class="media author-card" itemscope itemtype="http://schema.org/Person">
+    
+      <img class="portrait mr-3" src="https://s.gravatar.com/avatar/19df311615fff265c919af6f4e1db103?s=200')" itemprop="image" alt="Avatar">
+    
+
+    <div class="media-body">
+      <h5 class="card-title" itemprop="name"><a href="/">Nick Meyer</a></h5>
+      <h6 class="card-subtitle">Sr Software Engineer, Infrastructure as a Service</h6>
+      <p class="card-text" itemprop="description">Building the infrastructure for building the Internet.</p>
+      <ul class="network-icon" aria-hidden="true">
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+            
+          
+          <li>
+            <a itemprop="sameAs" href="https://twitter.com/0xe3b0c442" target="_blank" rel="noopener">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+            
+          
+          <li>
+            <a itemprop="sameAs" href="https://linkedin.com/in/meyerns" target="_blank" rel="noopener">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+            
+          
+          <li>
+            <a itemprop="sameAs" href="https://github.com/e3b0c442" target="_blank" rel="noopener">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+            
+          
+          <li>
+            <a itemprop="sameAs" href="https://gitlab.com/e3b0c442" target="_blank" rel="noopener">
+              <i class="fab fa-gitlab"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+
+      
+      
+    
+
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "e3b0c442" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+      
+
+    
+    
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js" integrity="sha256-aYTdUrn6Ow1DDgh5JTc3aDGnnju48y/1c8s1dgkYPQ8=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/languages/r.min.js"></script>
+        
+      
+
+      
+      
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.js" integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log==" crossorigin="anonymous"></script>
+    
+
+    
+    
+    
+    <script id="dsq-count-scr" src="https://e3b0c442.disqus.com/count.js" async></script>
+    
+
+    
+    
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script>
+      const search_index_filename = "/index.json";
+      const i18n = {
+        'placeholder': "Search...",
+        'results': "results found",
+        'no_results': "No results found"
+      };
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.16bbb3750feb7244c9bc409a5a4fe678.js"></script>
+
+    
+
+
+
+
+
+
+  
+  <div class="container">
+    <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+    <span class="float-right" aria-hidden="true">
+      <a href="#" id="back_to_top">
+        <span class="button_icon">
+          <i class="fas fa-chevron-up fa-2x"></i>
+        </span>
+      </a>
+    </span>
+    
+  </p>
+</footer>
+
+  </div>
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
