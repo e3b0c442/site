@@ -6,17 +6,53 @@
     <description>Recent content in Tags on e3b0c442.io</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 23 Sep 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 14 Oct 2019 00:00:00 +0000</lastBuildDate>
     
 	    <atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>Advent of Code</title>
+      <link>/tags/advent-of-code/</link>
+      <pubDate>Mon, 14 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/advent-of-code/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>C</title>
+      <link>/tags/c/</link>
+      <pubDate>Mon, 14 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/c/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Data Structures</title>
       <link>/tags/data-structures/</link>
-      <pubDate>Mon, 23 Sep 2019 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 14 Oct 2019 00:00:00 +0000</pubDate>
       
       <guid>/tags/data-structures/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Programming</title>
+      <link>/tags/programming/</link>
+      <pubDate>Mon, 14 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/programming/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Regular Expressions</title>
+      <link>/tags/regular-expressions/</link>
+      <pubDate>Mon, 14 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/regular-expressions/</guid>
       <description></description>
     </item>
     
@@ -44,42 +80,6 @@
       <pubDate>Wed, 18 Sep 2019 00:00:00 +0000</pubDate>
       
       <guid>/tags/yubikey/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Advent of Code</title>
-      <link>/tags/advent-of-code/</link>
-      <pubDate>Tue, 17 Sep 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/advent-of-code/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>C</title>
-      <link>/tags/c/</link>
-      <pubDate>Tue, 17 Sep 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/c/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Programming</title>
-      <link>/tags/programming/</link>
-      <pubDate>Tue, 17 Sep 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/programming/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Regular Expressions</title>
-      <link>/tags/regular-expressions/</link>
-      <pubDate>Tue, 17 Sep 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/regular-expressions/</guid>
       <description></description>
     </item>
     

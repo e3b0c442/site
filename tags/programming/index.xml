@@ -6,10 +6,121 @@
     <description>Recent content in Programming on e3b0c442.io</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 17 Sep 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 14 Oct 2019 00:00:00 +0000</lastBuildDate>
     
 	    <atom:link href="/tags/programming/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Advent of Code 2015 Day 7: Some Assembly Required</title>
+      <link>/post/advent-2015-c-7/</link>
+      <pubDate>Mon, 14 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/advent-2015-c-7/</guid>
+      <description>&lt;p&gt;It&amp;rsquo;s been a few weeks, but I&amp;rsquo;m glad to be able to pick up the Advent of Code series again. In the last post, I took a bit of a digression to discuss hash tables. In today&amp;rsquo;s post, we&amp;rsquo;ll see why. Let&amp;rsquo;s see what we have in store for day 7:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;This year, Santa brought little Bobby Tables a set of wires and &lt;a href=&#34;https://en.wikipedia.org/wiki/Bitwise_operation&#34; target=&#34;_blank&#34;&gt;bitwise logic gates&lt;/a&gt;! Unfortunately, little Bobby is a little under the recommended age range, and he needs help assembling the circuit.&lt;/p&gt;
+
+&lt;p&gt;Each wire has an identifier (some lowercase letters) and can carry a &lt;a href=&#34;https://en.wikipedia.org/wiki/16-bit&#34; target=&#34;_blank&#34;&gt;16-bit&lt;/a&gt; signal (a number from &lt;code&gt;0&lt;/code&gt; to &lt;code&gt;65535&lt;/code&gt;). A signal is provided to each wire by a gate, another wire, or some specific value. Each wire can only get a signal from one source, but can provide its signal to multiple destinations. A gate provides no signal until all of its inputs have a signal.&lt;/p&gt;
+
+&lt;p&gt;The included instructions booklet describes how to connect the parts together: &lt;code&gt;x AND y -&amp;gt; z&lt;/code&gt; means to connect wires &lt;code&gt;x&lt;/code&gt; and &lt;code&gt;y&lt;/code&gt; to an AND gate, and then connect its output to wire &lt;code&gt;z&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;For example:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;123 -&amp;gt; x&lt;/code&gt; means that the signal &lt;code&gt;123&lt;/code&gt; is provided to wire &lt;code&gt;x&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;x AND y -&amp;gt; z&lt;/code&gt; means that the &lt;a href=&#34;https://en.wikipedia.org/wiki/Bitwise_operation#AND&#34; target=&#34;_blank&#34;&gt;bitwise AND&lt;/a&gt; of wire &lt;code&gt;x&lt;/code&gt; and wire &lt;code&gt;y&lt;/code&gt; is provided to wire &lt;code&gt;z&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;p LSHIFT 2 -&amp;gt; q&lt;/code&gt; means that the value from wire &lt;code&gt;p&lt;/code&gt; is &lt;a href=&#34;https://en.wikipedia.org/wiki/Logical_shift&#34; target=&#34;_blank&#34;&gt;left-shifted&lt;/a&gt; by &lt;code&gt;2&lt;/code&gt; and then provided to wire &lt;code&gt;q&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;NOT e -&amp;gt; f&lt;/code&gt; means that the &lt;a href=&#34;https://en.wikipedia.org/wiki/Bitwise_operation#NOT&#34; target=&#34;_blank&#34;&gt;bitwise complement&lt;/a&gt; of the value from wire &lt;code&gt;e&lt;/code&gt; is provided to wire &lt;code&gt;f&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Other possible gates include &lt;code&gt;OR&lt;/code&gt; (&lt;a href=&#34;https://en.wikipedia.org/wiki/Bitwise_operation#OR&#34; target=&#34;_blank&#34;&gt;bitwise OR&lt;/a&gt;) and &lt;code&gt;RSHIFT&lt;/code&gt; (&lt;a href=&#34;https://en.wikipedia.org/wiki/Logical_shift&#34; target=&#34;_blank&#34;&gt;right-shift&lt;/a&gt;). If, for some reason, you&amp;rsquo;d like to &lt;strong&gt;emulate&lt;/strong&gt; the circuit instead, almost all programming languages (for example, &lt;a href=&#34;https://en.wikipedia.org/wiki/Bitwise_operations_in_C&#34; target=&#34;_blank&#34;&gt;C&lt;/a&gt;, &lt;a href=&#34;https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_Operators&#34; target=&#34;_blank&#34;&gt;JavaScript&lt;/a&gt;, or &lt;a href=&#34;https://wiki.python.org/moin/BitwiseOperators&#34; target=&#34;_blank&#34;&gt;Python&lt;/a&gt;) provide operators for these gates.&lt;/p&gt;
+
+&lt;p&gt;For example, here is a simple circuit:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;gt; 123 -&amp;gt; x
+&amp;gt; 456 -&amp;gt; y
+&amp;gt; x AND y -&amp;gt; d
+&amp;gt; x OR y -&amp;gt; e
+&amp;gt; x LSHIFT 2 -&amp;gt; f
+&amp;gt; y RSHIFT 2 -&amp;gt; g
+&amp;gt; NOT x -&amp;gt; h
+&amp;gt; NOT y -&amp;gt; i
+&amp;gt; ```
+
+````
+&amp;gt;
+&amp;gt; After it is run, these are the signals on the wires:
+&amp;gt;
+&amp;gt; ```
+d: 72
+e: 507
+f: 492
+g: 114
+h: 65412
+i: 65079
+x: 123
+y: 456
+````
+
+&amp;gt; In little Bobby&#39;s kit&#39;s instructions booklet (provided as your puzzle input), what signal is ultimately provided to **wire `a`**?
+
+This is a fairly complex problem, and in contrast to previous days&#39; entries, there is more than one way to go about solving it successfully and efficiently. I chose to solve this problem by creating _hash tables_ with the gate statements, and then recursively calling an operator function to find the gate value. Hash tables are approprate for this task for two reasons:
+
+1. Accessing the gate instructions will effectively be random-access since there is no linearity to how the instructions are arranged. Hash tables on average have _O(1)_ time complexity for searches.
+2. The gates are named by strings, allowing us to translate them directly into hash table keys.
+
+We will utilize the [esht](/post/esht/) implementation discussed in the prior article. As noted in that article, while there is a POSIX hash table implementation, it is non-reentrant, and a re-entrant version included as part of the GNU C library is not present in many UNIX flavors, including macOS. In this case, reentrancy is important as we will soon see that we need to maintain two tables.
+
+As we examine this problem, what might immediately jump out is that each of these gates is a function that takes one or two 16-bit input values and outputs another value. Indeed, it would be possible, and some might consider elegant, to parse the inputs into a linked tree of function pointers using function pointers. However, I feel like this adds some unnecessary complexity and does not avoid the need for an additional caching mechanism, which is necessary due to the fact that we cannot guarantee that the gates are a true tree.
+
+Given this, it is much simpler and cleaner to parse the gate definitions into a data structure and make recursive calls to a single executor function to accomplish the goal of the task.
+
+With that lengthy discussion out of the way, let&#39;s break the problem down a bit as we have done in previous weeks.
+
+- Read the input file into memory
+- Parse the individual gates into a hash table
+- Execute the gates
+
+As gates can also be inputs to another gate, we will need to call the gate executor recursively, so we will make this a separate function. We&#39;ll start our coding here.
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;c
+uint16_t do_op(esht *instrs, esht *cache, char *key)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;
+Our gate execution function takes three arguments: the hash table with the gate instructions keyed by gate name, a cache of already-resolved values also keyed by the gate name, and the gate key itself. The return value is `uint16_t`, which is an unsigned 16-bit integer.
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;c
+{
+    uint16_t rval;
+    uint16_t *cached = (uint16_t *)esht_get(cache, key, NULL);
+    if (cached != NULL)
+    {
+        rval = *cached;
+        free(cached);
+        return rval;
+    }&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;
+The first thing we are going to do is check for a cached value. We use the provided key and cache table pointer to call `esht_get()`; we cast the return value to a pointer to `uint16_t` as the values are stored in the hash table as void pointers. If a result is found in the cache, we copy the value, clean up the allocated memory (remember that with `esht`, the caller is responsible for cleanup of returned values), and return the retrieved value.
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;c
+    char *instr = (char *)esht_get(instrs, key, NULL);
+    regmatch_t matches[4] = {0};
+    regexec(&amp;amp;instr_r, instr, 4, matches, 0);
+```&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;If there is no value in the cache for the key, it is time to start solving the gate value. We&amp;rsquo;ll first pull the gate definition from the hash table where we&amp;rsquo;ve already stored it. We then declare an array of four matches; the instruction parsing expression has three submatches in addition to the whole string match, which we will discuss later. For now, it is sufficient to know that we are capturing the three components of the gate expression. Finally, we execute the regular expression to populate the match variables.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Advent of Code 2015 Day 6: Probably a Fire Hazard</title>
