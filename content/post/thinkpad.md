@@ -12,7 +12,7 @@ As Mac computers have made up a progressively smaller slice of Apple's revenue p
 
 The end result? A machine which at the hardware level is functionally inferior at a greater price, without the Apple magic.
 
-The ThinkPad I ordered is a half-inch wider, two-tenths of an inch deeper, and one-tenth of an inch thicker than a current 15-inch MacBook Pro, yet there is no glue, almost everything is repairable, and the expected parts are upgradeable (2 SO-DIMM slots and _two_ NVMe M.2 slots). It doesn't force me to use a port which, while superior, still has a dearth of released hardware. It has a fantastic keyboard with full travel. It is Mil-Spec tested for durability. It has all of this _in spite of_ its relative thinness, and _in spite of_ the fact that it costs two-thirds the price of a comparable MacBook Pro.
+The ThinkPad I ordered is a half-inch wider, two-tenths of an inch deeper, and one-tenth of an inch thicker than a current 15-inch MacBook Pro and weighs the same svelte 4 pounds, yet there is no glue, almost everything is repairable, and the expected parts are upgradeable (2 SO-DIMM slots and _two_ NVMe M.2 slots). It doesn't force me to use a port which, while superior, still has a dearth of released hardware. It has a fantastic keyboard with full travel. It is Mil-Spec tested for durability. It has all of this _in spite of_ its relative thinness and lightness, and _in spite of_ the fact that it costs two-thirds the price of a comparable MacBook Pro.
 
 My current MacBook Pro has served me well for six years, but I couldn't keep waiting for Apple to figure out that thin and light doesn't need to mean expensive and disposable. 
 
