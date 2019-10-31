@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Lenovo on e3b0c442.io</title>
+    <link>/tags/lenovo/</link>
+    <description>Recent content in Lenovo on e3b0c442.io</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 30 Oct 2019 00:00:00 +0000</lastBuildDate>
+    
+	    <atom:link href="/tags/lenovo/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Passing the torch</title>
+      <link>/post/thinkpad/</link>
+      <pubDate>Wed, 30 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/thinkpad/</guid>
+      <description>&lt;p&gt;After 18 years of exclusively using Mac laptops, I ordered a ThinkPad today.&lt;/p&gt;
+
+&lt;p&gt;Why? In short, the value proposition of a Mac notebook no longer makes sense.&lt;/p&gt;
+
+&lt;p&gt;As Mac computers have made up a progressively smaller slice of Apple&amp;rsquo;s revenue pie, the effort put into innovation has waned, and with it, a lot of the magic of Apple&amp;rsquo;s unique ability to control both the hardware and software stacks. Couple this with advancements in hardware quality by other vendors, and improvements in the usability of both Windows and Linux operating systems, Apple&amp;rsquo;s lead in this space has narrowed significantly. This is compounded by Apple&amp;rsquo;s insistence on pushing form over function.&lt;/p&gt;
+
+&lt;p&gt;The end result? A machine which at the hardware level is functionally inferior at a greater price, without the Apple magic.&lt;/p&gt;
+
+&lt;p&gt;The ThinkPad I ordered is a half-inch wider, two-tenths of an inch deeper, and one-tenth of an inch thicker than a current 15-inch MacBook Pro, yet there is no glue, almost everything is repairable, and the expected parts are upgradeable (2 SO-DIMM slots and &lt;em&gt;two&lt;/em&gt; NVMe M.2 slots). It doesn&amp;rsquo;t force me to use a port which, while superior, still has a dearth of released hardware. It has a fantastic keyboard with full travel. It is Mil-Spec tested for durability. It has all of this &lt;em&gt;in spite of&lt;/em&gt; its relative thinness, and &lt;em&gt;in spite of&lt;/em&gt; the fact that it costs two-thirds the price of a comparable MacBook Pro.&lt;/p&gt;
+
+&lt;p&gt;My current MacBook Pro has served me well for six years, but I couldn&amp;rsquo;t keep waiting for Apple to figure out that thin and light doesn&amp;rsquo;t need to mean expensive and disposable.&lt;/p&gt;
+
+&lt;p&gt;I want to say I&amp;rsquo;ll miss macOS, but honestly, Linux and Windows have both come a long way in recent years, and macOS has stagnated. Given that iDevices have become more independent, and Apple is expanding its services to other platforms to extend their service revenue, the only thing one really &lt;em&gt;needs&lt;/em&gt; a Mac for anymore is writing code for macOS/iOS, which I haven&amp;rsquo;t done for nearly a decade at this point.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m not giving up my iPhone or iPad anytime soon, they are very clearly superior devices and I don&amp;rsquo;t expect that to change in the near term. But for general-purpose computers, I just can&amp;rsquo;t justify paying a 50% premium for a less-capable machine that I don&amp;rsquo;t even have the future option of making more capable.&lt;/p&gt;
+
+&lt;p&gt;Apple is showing glimmers of understanding that they have swung the needle too far on the form/function scale. The modularity and expandability of the new Mac Pro sets a new standard in the space. They have eschewed the proprietary Lightning port for a standard USB-C on the iPad Pro. Maybe in a few years when it&amp;rsquo;s time to look at upgrading again, the Apple magic will be back.&lt;/p&gt;
+
+&lt;p&gt;In the meantime, I&amp;rsquo;m going to enjoy that sweet, sweet Thinkpad keyboard.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

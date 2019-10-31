@@ -1,6 +1,51 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>/tags/apple/</loc>
+    <lastmod>2019-10-30T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/</loc>
+    <lastmod>2019-10-30T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/lenovo/</loc>
+    <lastmod>2019-10-30T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/macbook-pro/</loc>
+    <lastmod>2019-10-30T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/opinion/</loc>
+    <lastmod>2019-10-30T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/thinkpad/</loc>
+    <lastmod>2019-10-30T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/</loc>
+    <lastmod>2019-10-30T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/</loc>
+    <lastmod>2019-10-30T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/thinkpad/</loc>
+    <lastmod>2019-10-30T00:00:00+00:00</lastmod>
+  </url>
   
   <url>
     <loc>/tags/advent-of-code/</loc>
@@ -23,27 +68,12 @@
   </url>
   
   <url>
-    <loc>/</loc>
-    <lastmod>2019-10-15T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/</loc>
-    <lastmod>2019-10-15T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>/tags/programming/</loc>
     <lastmod>2019-10-15T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>/tags/regular-expressions/</loc>
-    <lastmod>2019-10-15T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/</loc>
     <lastmod>2019-10-15T00:00:00+00:00</lastmod>
   </url>
   
