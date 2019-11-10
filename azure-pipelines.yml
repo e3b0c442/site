@@ -18,8 +18,8 @@ pool:
   vmImage: "ubuntu-latest"
 
 variables:
-  hugo_version: 0.59.0
-  hugo_checksum: 348944c8a078b1b11a9a15716554a87b9b9aec74418f7a0d5bb578bac938dcbe
+  hugo_version: 0.59.1
+  hugo_checksum: 851b3ac01b86969196b8ca40f0c58a6639f243bcb06541fcd27eff4117f7a3f7
   dist_folder: public
   domain: e3b0c442.io
   pr_repo: e3b0c442/site
